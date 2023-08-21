@@ -2,6 +2,9 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\Authorization\OauthController;
+use App\Http\Controllers\Api\Quotation\AutocompleteController;
+use App\Http\Middleware\Auth;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,6 +17,20 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+Route::middleware([Auth::class])->group(function () {
+
+    Route::prefix('v1')->group(function () {
+        //Ruta de autenticación
+        Route::post('/oauth', [OauthController::class,'index'])->withoutMiddleware([Auth::class]);
+
+        //Rutas de cotización
+        Route::post('/autocomplete', [AutocompleteController::class,'index']);
+        //Route::post('/quote', [SearchController::class,'index']);
+        //Route::post('/create', [CreationController::class,'index']);
+        //Route::get('/phone', [PhoneController::class,'index']);
+
+        //Nota: En producción habilitar el pago, para habilitar el HTTPS y la busqueda por fecha...
+        //Route::post('/flights/search', [FlightSearch::class,'index']);
+    });
+    
 });
