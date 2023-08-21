@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\Authorization\OauthController;
 use App\Http\Controllers\Api\Quotation\AutocompleteController;
+use App\Http\Controllers\Api\Quotation\SearchController;
 use App\Http\Middleware\Auth;
 
 /*
@@ -25,7 +26,7 @@ Route::middleware([Auth::class])->group(function () {
 
         //Rutas de cotización
         Route::post('/autocomplete', [AutocompleteController::class,'index']);
-        //Route::post('/quote', [SearchController::class,'index']);
+        Route::post('/quote', [SearchController::class,'index']);
         //Route::post('/create', [CreationController::class,'index']);
         //Route::get('/phone', [PhoneController::class,'index']);
 
