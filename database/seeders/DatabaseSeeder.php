@@ -326,7 +326,7 @@ class DatabaseSeeder extends Seeder
             'up_8_rt' => 0,
             'created_at' => now(),
             'updated_at' => now(),
-        ]);
+        ]); 
 
         //Tarfias de Transfers
         DB::table('rates_transfers')->insert([
