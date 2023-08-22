@@ -20,7 +20,7 @@ return new class extends Migration
             $table->unsignedBigInteger('destination_id');
             $table->tinyInteger('status')->default(0);
             $table->string('image_url');
-            $table->enum('price_type', ['vehicle', 'passenger'])->default('vehicle');
+            $table->enum('price_type', ['vehicle', 'passenger', 'shared'])->default('vehicle');
             $table->timestamps();
             $table->foreign('destination_id')->references('id')->on('destinations')->onDelete('cascade');
         });
