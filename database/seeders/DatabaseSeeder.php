@@ -177,6 +177,18 @@ class DatabaseSeeder extends Seeder
             'created_at' => now(),
             'updated_at' => now(),
         ]);
+        DB::table('destination_services')->insert([
+            'name' => 'Shared Shuttle',
+            'passengers' => 8,
+            'luggage' => 5,
+            'order' => 3,
+            'destination_id' => 1,
+            'status' => 1,
+            'image_url' => '',
+            'price_type' => 'shared',
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
         #Servicios - Traducciones
         DB::table('destination_services_translate')->insert([
             'lang' => 'es',
@@ -190,6 +202,13 @@ class DatabaseSeeder extends Seeder
             'lang' => 'es',
             'translation' => "Servicio privado",
             'destination_services_id' => 2,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+        DB::table('destination_services_translate')->insert([
+            'lang' => 'es',
+            'translation' => "Transportación compartida",
+            'destination_services_id' => 3,
             'created_at' => now(),
             'updated_at' => now(),
         ]);
@@ -239,6 +258,23 @@ class DatabaseSeeder extends Seeder
             'updated_at' => now(),
         ]);
 
+        DB::table('rates')->insert([
+            'destination_service_id' => 3,
+            'destination_id' => 1,
+            'rate_group_id' => 1,
+            'zone_id' => 2,
+            'one_way' => 10,
+            'round_trip' => 18,
+            'ow_12' => 0,
+            'rt_12' => 0,
+            'ow_37' => 0,
+            'rt_37' => 0,
+            'up_8_ow' => 0,
+            'up_8_rt' => 0,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
         //Cancun Hotel Zone
         #Precios - Taxi
         DB::table('rates')->insert([
@@ -275,7 +311,22 @@ class DatabaseSeeder extends Seeder
             'created_at' => now(),
             'updated_at' => now(),
         ]);
-
+        DB::table('rates')->insert([
+            'destination_service_id' => 3,
+            'destination_id' => 1,
+            'rate_group_id' => 1,
+            'zone_id' => 3,
+            'one_way' => 12,
+            'round_trip' => 22,
+            'ow_12' => 0,
+            'rt_12' => 0,
+            'ow_37' => 0,
+            'rt_37' => 0,
+            'up_8_ow' => 0,
+            'up_8_rt' => 0,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
 
         //Tarfias de Transfers
         DB::table('rates_transfers')->insert([
