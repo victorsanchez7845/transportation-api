@@ -11,10 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('sites', function (Blueprint $table) {
+        Schema::create('sales_types', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->tinyInteger('is_commissionable')->default(1);
+            $table->string('name', 80);
             $table->timestamps();
         });
     }
@@ -24,6 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('sites');
+        Schema::dropIfExists('sales_types');
     }
 };

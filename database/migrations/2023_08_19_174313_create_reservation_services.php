@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('reservation_services', function (Blueprint $table) {
+        Schema::create('reservations_services', function (Blueprint $table) {
             $table->id();
             
             $table->unsignedBigInteger('reservation_id');
@@ -19,23 +19,23 @@ return new class extends Migration
 
             $table->string('from_name');
             $table->string('from_lat');
-            $table->string('from_lng');
-            $table->string('from_km');
-            $table->string('from_minutes');
+            $table->string('from_lng');        
             $table->unsignedBigInteger('from_zone');
 
             $table->string('to_name');
             $table->string('to_lat');
             $table->string('to_lng');
-            $table->string('to_km');
-            $table->string('to_minutes');
             $table->unsignedBigInteger('to_zone');
+
+            $table->integer('distance_time'); //Seconds
+            $table->string('distance_km');
 
             $table->enum('status', ['PENDING', 'COMPLETED', 'NOSHOW', 'CANCELLED'])->default('PENDING');
             $table->dateTime('pickup')->nullable();
             
             $table->string('flight_number')->nullable();
             $table->text('flight_data')->nullable();
+            $table->integer('passengers');
 
             $table->foreign('destination_service_id')->references('id')->on('destination_services')->onDelete('cascade');
             $table->foreign('reservation_id')->references('id')->on('reservations')->onDelete('cascade');
@@ -48,6 +48,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('reservation_services');
+        Schema::dropIfExists('reservations_services');
     }
 };

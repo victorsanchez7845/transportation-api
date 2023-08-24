@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('description');            
             $table->decimal('total', 10, 2);
+            $table->decimal('exchange_rate', 10, 2);
             $table->enum('payment_method', ['CASH', 'PAYPAL', 'STRIPE'])->default('CASH');
-            $table->tinyInteger('is_paid')->default(0);
             $table->text('object')->nullable();
             $table->timestamps();
         });

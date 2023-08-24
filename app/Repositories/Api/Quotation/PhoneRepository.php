@@ -7,6 +7,6 @@ class PhoneRepository{
     private $request = [];
 
     public function get($request = []){
-        return DB::select('SELECT code, name, phone FROM countries');        
+        return DB::select('SELECT phonecode as code, nicename as name FROM countries ORDER BY nicename ASC');        
     }
 }

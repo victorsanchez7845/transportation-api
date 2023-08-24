@@ -63,7 +63,7 @@ class RatesRepository{
                 "round_trip" => 0,
             ];
  
-            if($value->price_type == "vehicle"):
+            if(in_array($value->price_type, ["vehicle","shared"])):
                 $price['one_way'] = $value->one_way;
                 $price['round_trip'] = $value->round_trip;
             endif;
@@ -91,9 +91,11 @@ class RatesRepository{
             
             $final_price = $price['one_way'];        
             if($this->request['type'] == "round-trip") $final_price = $price['round_trip'];
-
+            
             //Si es un servicio Shared, debemos multiplicar el precio por la cantidad de personas..
-            //if($value->price_type == "vehicle"):
+            if($value->price_type == "shared"):
+                $final_price = $final_price * $this->request['passengers'];
+            endif;
 
             $token_data = [
                 "request" => $this->request,
@@ -156,7 +158,7 @@ class RatesRepository{
                 "round_trip" => 0,
             ];
  
-            if($value->price_type == "vehicle"):
+            if(in_array($value->price_type, ["vehicle","shared"])):
                 $price['one_way'] = $value->one_way;
                 $price['round_trip'] = $value->round_trip;
             endif;
@@ -184,7 +186,12 @@ class RatesRepository{
             
             $final_price = $price['one_way'];        
             if($this->request['type'] == "round-trip") $final_price = $price['round_trip'];
-
+            
+            //Si es un servicio Shared, debemos multiplicar el precio por la cantidad de personas..
+            if($value->price_type == "shared"):
+                $final_price = $final_price * $this->request['passengers'];
+            endif;
+            
             $token_data = [
                 "request" => $this->request,
                 "item" => [

@@ -5,6 +5,9 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\Authorization\OauthController;
 use App\Http\Controllers\Api\Quotation\AutocompleteController;
 use App\Http\Controllers\Api\Quotation\SearchController;
+use App\Http\Controllers\Api\Quotation\PhoneController;
+use App\Http\Controllers\Api\Quotation\CreationController;
+use App\Http\Controllers\Api\Flights\SearchController as FlightSearch;
 use App\Http\Middleware\Auth;
 
 /*
@@ -27,11 +30,11 @@ Route::middleware([Auth::class])->group(function () {
         //Rutas de cotización
         Route::post('/autocomplete', [AutocompleteController::class,'index']);
         Route::post('/quote', [SearchController::class,'index']);
-        //Route::post('/create', [CreationController::class,'index']);
-        //Route::get('/phone', [PhoneController::class,'index']);
+        Route::get('/phone', [PhoneController::class,'index']);
+        Route::post('/create', [CreationController::class,'index']);
 
         //Nota: En producción habilitar el pago, para habilitar el HTTPS y la busqueda por fecha...
-        //Route::post('/flights/search', [FlightSearch::class,'index']);
+        Route::post('/flights/search', [FlightSearch::class,'index']);
     });
     
 });

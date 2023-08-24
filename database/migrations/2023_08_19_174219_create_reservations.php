@@ -19,9 +19,11 @@ return new class extends Migration
             $table->string('client_email');
             $table->string('client_phone');          
             $table->enum('currency', ['USD', 'MXN'])->default('USD');
+            $table->enum('language', ['en', 'es'])->default('en');
+            $table->string('rate_group');
             $table->text('special_request')->nullable();
             $table->tinyInteger('is_cancelled')->default(0);            
-            $table->tinyInteger('is_commissionable')->default(0);
+            $table->tinyInteger('is_commissionable')->default(1);            
 
             $table->unsignedBigInteger('site_id');
             $table->foreign('site_id')->references('id')->on('sites');

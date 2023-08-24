@@ -14,10 +14,12 @@ return new class extends Migration
         Schema::create('sales', function (Blueprint $table) {
             $table->id();
             $table->string('description');
-            $table->decimal('exchange_rate', 10, 2);
+            $table->integer('quantity');
             $table->decimal('total', 10, 2);
-            $table->unsignedBigInteger('user_id');
-            $table->tinyInteger('system_only')->default(0); // Por defecto es 0 e indica que si se debe mostrar en panel de operación, si es 1 indica que no.
+            $table->unsignedBigInteger('call_center_agent_id')->default(0);
+            $table->unsignedBigInteger('sale_type_id')->default(1);
+
+            $table->foreign('sale_type_id')->references('id')->on('sales');
             $table->timestamps();
         });
     }

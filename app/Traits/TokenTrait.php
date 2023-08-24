@@ -26,7 +26,8 @@ trait TokenTrait
 
     public static function get($jwt = []){
         try{
-            return JWT::decode($jwt, new Key(self::$key, 'HS256'));            
+            $decoded = JWT::decode($jwt, new Key(self::$key, 'HS256'));
+            return json_decode(json_encode($decoded), true);            
         }catch(\Exception $e){            
             return false;
         }

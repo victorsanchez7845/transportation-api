@@ -36,7 +36,7 @@ class SearchController extends Controller
             'language' => 'required|in:en,es',
             'passengers' => 'required|integer|min:1|max:35',
             'currency' => 'required|in:USD,MXN',
-            'rate_group' => 'required|max:10',            
+            'rate_group' => 'required|max:10',
         ]);
 
         if ($validator->fails()) {
@@ -100,7 +100,7 @@ class SearchController extends Controller
                             "lat" => (float) $request['end']['lat'],
                             "lng" => (float) $request['end']['lng'],
                         ],
-                        "time" => $request['end']['pickup'],
+                        "time" => ((isset( $request['end']['pickup'] ))? $request['end']['pickup'] : NULL),
                     ],
                     "end" => [
                         "name" => $request['start']['place'],
@@ -108,7 +108,7 @@ class SearchController extends Controller
                             "lat" => (float) $request['start']['lat'],
                             "lng" => (float) $request['start']['lng'],
                         ],
-                        "time" => date("Y-m-d H:i", strtotime($request['end']['pickup']) + $geospacial['time_seconds'])                        
+                        "time" => ((isset( $request['end']['pickup'] ))? date("Y-m-d H:i", strtotime($request['end']['pickup']) + $geospacial['time_seconds']) : NULL)                        
                     ]
                 ],
                 "distance" => $geospacial['distance'],
