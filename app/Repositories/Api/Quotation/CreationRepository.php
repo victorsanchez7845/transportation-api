@@ -7,6 +7,7 @@ use App\Models\Reservations;
 use App\Models\ReservationsItems;
 use App\Models\ReservationsServices;
 use App\Models\Sales;
+use App\Models\Payments;
 use App\Models\ReservationsFollowUp;
 use Illuminate\Support\Facades\DB;
 
@@ -35,11 +36,12 @@ class CreationRepository{
             'status' => false
         ];
 
-        try {
+        try {            
+
             DB::beginTransaction();           
             
             $bearer_token = TokenTrait::get( $this->bearer );
-            $service_token = TokenTrait::get( $this->request['service_token'] );            
+            $service_token = TokenTrait::get( $this->request['service_token'] );                       
             
             $site = $this->getSite($this->request['site_id']);
             if(!isset($site[0]->id)):
@@ -47,6 +49,9 @@ class CreationRepository{
                 $data['message'] = "Unknown site";
                 return $data;
             endif;
+
+            $pay_at_arrival = false;
+            if(isset($this->request['pay_at_arrival'])) $pay_at_arrival = true;
 
             $is_commissionable = 1;
             if($site[0]->is_commissionable == 0):
@@ -57,7 +62,7 @@ class CreationRepository{
             $distance_data = $distance->get( new \Illuminate\Http\Request($service_token['data']['request']) );
             $zones_data = $search->findDestinations( new \Illuminate\Http\Request($service_token['data']['request']) ); //Identificamos a que zona pertenecen los puntos..
             $quantity = $service_token['data']['item']['vehicles']; //Cantidad de reservaciones a crear
-        
+            $data_rez = [];
                            
                 $rez_db = new Reservations;                
                 $rez_db->client_first_name = $this->request['first_name'];
@@ -81,6 +86,10 @@ class CreationRepository{
                         $rez_item_db->code = CodeTrait::generateCode();
                         if($rez_item_db->save()):
                             
+                            $data_rez['code'] = $rez_item_db->code;
+                            $data_rez['email'] = $rez_db->client_email;
+                            $data_rez['language'] = $service_token['data']['request']['language'];
+
                             //Si es un viaje sencillo y viaje redondo, se ejecuta el siguiente bloque de código.
                             if(in_array($service_token['data']['request']['type'], ['one-way', 'round-trip']) ):
                                 $service_db = new ReservationsServices;
@@ -137,8 +146,7 @@ class CreationRepository{
 
                     $counter++;
                     }
-                                   
-                    
+
                     $label = $service_token['data']['item']['name'].' | '.(($service_token['data']['request']['type'] == "one-way")?'One Way':'Round Trip');
                     if($service_token['data']['request']['language'] == "en"):
                         $label = $service_token['data']['item']['name'].' | '.(($service_token['data']['request']['type'] == "one-way")?'Viaje Sencillo':'Viaje Redondo');
@@ -153,6 +161,17 @@ class CreationRepository{
                     $sales_db->reservation_id = $rez_db->id;
                     $sales_db->save();
 
+                    if($pay_at_arrival):
+                        $payments_db = new Payments;
+                        $payments_db->description = (($service_token['data']['request']['language'] == "en")?'Pay at arrival':'Pago a la llegada');
+                        $payments_db->total = $service_token['data']['item']['price'];
+                        $payments_db->exchange_rate = 0;
+                        $payments_db->request_payment = 1;
+                        $payments_db->payment_method = "CASH";
+                        $payments_db->reservation_id = $rez_db->id;
+                        $payments_db->save();
+                    endif;
+
                     $follow_up_db = new ReservationsFollowUp;
                     $follow_up_db->name = 'Cliente';
                     $follow_up_db->text = $this->request['special_request'];
@@ -165,7 +184,8 @@ class CreationRepository{
                 DB::commit();
                 
                 $data['status'] = true;
-                $data['data'] = 'Data de la reservación';
+                $data['data'] = $data_rez;
+
                 return $data;
 
         } catch (\Exception $e) {

@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\Quotation\PhoneController;
 use App\Http\Controllers\Api\Quotation\CreationController;
 use App\Http\Controllers\Api\Flights\SearchController as FlightSearch;
 use App\Http\Controllers\Api\Mailing\ReservationController as MailingReservation;
+use App\Http\Controllers\Api\Reservation\SearchController as SearchReservation;
 use App\Http\Middleware\Auth;
 
 /*
@@ -39,7 +40,9 @@ Route::middleware([Auth::class])->group(function () {
 
         //Mailing
         Route::get('/mailing/reservation/view', [MailingReservation::class,'view'])->withoutMiddleware([Auth::class]);
-        Route::get('/mailing/reservation/get', [MailingReservation::class,'index'])->withoutMiddleware([Auth::class]);
+
+        //Reservation
+        Route::post('/reservation/get', [SearchReservation::class,'index'])->withoutMiddleware([Auth::class]);
     });
     
 });

@@ -6,14 +6,13 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
-use App\Repositories\Api\Quotation\SearchRepository;
 
 class ReservationController extends Controller
 {
 
     public function view(Request $request){
          
-         $validator = Validator::make($request->all(), [
+        $validator = Validator::make($request->all(), [
             'id' => 'required|integer',
         ]);
 
@@ -28,6 +27,10 @@ class ReservationController extends Controller
 
 
         return view('mailing.transportation');
+    }
+
+    public function send(Request $request){
+        //Enviar el correo
     }
 
 }
