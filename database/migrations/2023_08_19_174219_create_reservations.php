@@ -12,8 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('reservations', function (Blueprint $table) {
-            $table->id();
-            $table->string('code')->unique();
+            $table->id();           
             $table->string('client_first_name');
             $table->string('client_last_name');
             $table->string('client_email');
@@ -21,7 +20,6 @@ return new class extends Migration
             $table->enum('currency', ['USD', 'MXN'])->default('USD');
             $table->enum('language', ['en', 'es'])->default('en');
             $table->string('rate_group');
-            $table->text('special_request')->nullable();
             $table->tinyInteger('is_cancelled')->default(0);            
             $table->tinyInteger('is_commissionable')->default(1);            
 

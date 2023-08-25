@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\Quotation\SearchController;
 use App\Http\Controllers\Api\Quotation\PhoneController;
 use App\Http\Controllers\Api\Quotation\CreationController;
 use App\Http\Controllers\Api\Flights\SearchController as FlightSearch;
+use App\Http\Controllers\Api\Mailing\ReservationController as MailingReservation;
 use App\Http\Middleware\Auth;
 
 /*
@@ -35,6 +36,10 @@ Route::middleware([Auth::class])->group(function () {
 
         //Nota: En producción habilitar el pago, para habilitar el HTTPS y la busqueda por fecha...
         Route::post('/flights/search', [FlightSearch::class,'index']);
+
+        //Mailing
+        Route::get('/mailing/reservation/view', [MailingReservation::class,'view'])->withoutMiddleware([Auth::class]);
+        Route::get('/mailing/reservation/get', [MailingReservation::class,'index'])->withoutMiddleware([Auth::class]);
     });
     
 });

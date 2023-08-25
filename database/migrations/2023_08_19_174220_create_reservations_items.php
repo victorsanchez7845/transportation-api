@@ -11,12 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('reservations_follow_up', function (Blueprint $table) {
+        Schema::create('reservations_items', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('reservation_id')->default(0);
-            $table->string('name', 150);
-            $table->text('text')->nullable();
-            $table->enum('type', ['CLIENT', 'INTERN', 'ALL', 'HISTORY'])->default('INTERN');
+            $table->unsignedBigInteger('reservation_id');
+            $table->string('code')->unique();
             $table->timestamps();
 
             $table->foreign('reservation_id')->references('id')->on('reservations');
@@ -28,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('reservations_follow_up');
+        Schema::dropIfExists('reservations_items');
     }
 };

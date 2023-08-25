@@ -4,8 +4,10 @@ namespace App\Repositories\Api\Quotation;
 use App\Traits\CodeTrait;
 use App\Traits\TokenTrait;
 use App\Models\Reservations;
+use App\Models\ReservationsItems;
 use App\Models\ReservationsServices;
 use App\Models\Sales;
+use App\Models\ReservationsFollowUp;
 use Illuminate\Support\Facades\DB;
 
 class CreationRepository{
@@ -28,9 +30,6 @@ class CreationRepository{
     }
 
     public function create($distance, $search){
-        // echo "<pre>";
-        // print_r();
-        // die();
 
         $data = [
             'status' => false
@@ -58,76 +57,87 @@ class CreationRepository{
             $distance_data = $distance->get( new \Illuminate\Http\Request($service_token['data']['request']) );
             $zones_data = $search->findDestinations( new \Illuminate\Http\Request($service_token['data']['request']) ); //Identificamos a que zona pertenecen los puntos..
             $quantity = $service_token['data']['item']['vehicles']; //Cantidad de reservaciones a crear
-
-            //$counter = 1;
-            //while ($counter <= $quantity) {
-                $code = CodeTrait::generateCode();
+        
                            
-                $rez_db = new Reservations;
-                $rez_db->code = $code;
+                $rez_db = new Reservations;                
                 $rez_db->client_first_name = $this->request['first_name'];
                 $rez_db->client_last_name = $this->request['last_name'];
                 $rez_db->client_email = trim( strtolower($this->request['email_address']) );
                 $rez_db->client_phone = $this->request['phone'];
                 $rez_db->currency = $service_token['data']['request']['currency'];
                 $rez_db->rate_group = $service_token['data']['request']['rate_group'];
-                $rez_db->special_request = $this->request['special_request']; 
                 $rez_db->is_cancelled = 0;
                 $rez_db->is_commissionable = $is_commissionable;    
                 $rez_db->site_id = $this->request['site_id'];
                 if($rez_db->save()):
                     
-                    //Si es un viaje sencillo y viaje redondo, se ejecuta el siguiente bloque de código.
-                    if(in_array($service_token['data']['request']['type'], ['one-way', 'round-trip']) ):
-                        $service_db = new ReservationsServices;
-                        $service_db->reservation_id = $rez_db->id;
-                        $service_db->destination_service_id = $service_token['data']['item']['id'];
+                    //Con este loop agregamos otro código de reservación en caso de que sobrepase el limite de la unidad (ASUR así lo pide).
+                    $counter = 1;
+                    while ($counter <= $quantity) {
+                        
+                        //Insertamos los códigos de reservación, esto se aplico porque un cliente puede tener multiples reservaciones en caso de que haya superado el limite de capacidad dela uto.
+                        $rez_item_db = new ReservationsItems;
+                        $rez_item_db->reservation_id = $rez_db->id;
+                        $rez_item_db->code = CodeTrait::generateCode();
+                        if($rez_item_db->save()):
+                            
+                            //Si es un viaje sencillo y viaje redondo, se ejecuta el siguiente bloque de código.
+                            if(in_array($service_token['data']['request']['type'], ['one-way', 'round-trip']) ):
+                                $service_db = new ReservationsServices;
+                                $service_db->reservation_item_id = $rez_item_db->id;
+                                $service_db->destination_service_id = $service_token['data']['item']['id'];
 
-                        $service_db->from_name = $service_token['data']['request']['start']['place'];
-                        $service_db->from_lat = $service_token['data']['request']['start']['lat'];
-                        $service_db->from_lng = $service_token['data']['request']['start']['lng'];
-                        $service_db->from_zone = $zones_data['start']['data']['zone']['id'];
+                                $service_db->from_name = $service_token['data']['request']['start']['place'];
+                                $service_db->from_lat = $service_token['data']['request']['start']['lat'];
+                                $service_db->from_lng = $service_token['data']['request']['start']['lng'];
+                                $service_db->from_zone = $zones_data['start']['data']['zone']['id'];
 
-                        $service_db->to_name = $service_token['data']['request']['end']['place'];
-                        $service_db->to_lat = $service_token['data']['request']['end']['lat'];
-                        $service_db->to_lng = $service_token['data']['request']['end']['lng'];
-                        $service_db->to_zone = $zones_data['end']['data']['zone']['id'];
+                                $service_db->to_name = $service_token['data']['request']['end']['place'];
+                                $service_db->to_lat = $service_token['data']['request']['end']['lat'];
+                                $service_db->to_lng = $service_token['data']['request']['end']['lng'];
+                                $service_db->to_zone = $zones_data['end']['data']['zone']['id'];
 
-                        $service_db->distance_time = ((isset($distance_data['time_seconds']))? $distance_data['time_seconds'] :  0);
-                        $service_db->distance_km = ((isset($distance_data['distance']))? $distance_data['distance'] : '');
-                        $service_db->status = 'PENDING';
-                        $service_db->pickup = $service_token['data']['request']['start']['pickup'];
-                        $service_db->flight_number = $this->request['flight_number'];
-                        $service_db->flight_data = '';
-                        $service_db->passengers = $service_token['data']['request']['passengers'];
-                        $service_db->save();
-                    endif;
+                                $service_db->distance_time = ((isset($distance_data['time_seconds']))? $distance_data['time_seconds'] :  0);
+                                $service_db->distance_km = ((isset($distance_data['distance']))? $distance_data['distance'] : '');
+                                $service_db->status = 'PENDING';
+                                $service_db->pickup = $service_token['data']['request']['start']['pickup'];
+                                $service_db->flight_number = $this->request['flight_number'];
+                                $service_db->flight_data = '';
+                                $service_db->passengers = ( $service_token['data']['request']['passengers'] / $quantity);
+                                $service_db->save();
+                            endif;
 
-                    //Si es una reserva de tipo redondo, se ejecuta el siguiente bloque de código.
-                    if(in_array($service_token['data']['request']['type'], ['round-trip']) ):
-                        $service_db = new ReservationsServices;
-                        $service_db->reservation_id = $rez_db->id;
-                        $service_db->destination_service_id = $service_token['data']['item']['id'];
+                            //Si es una reserva de tipo redondo, se ejecuta el siguiente bloque de código.
+                            if(in_array($service_token['data']['request']['type'], ['round-trip']) ):
+                                $service_db = new ReservationsServices;
+                                $service_db->reservation_item_id = $rez_item_db->id;
+                                $service_db->destination_service_id = $service_token['data']['item']['id'];
 
-                        $service_db->from_name = $service_token['data']['request']['end']['place'];
-                        $service_db->from_lat = $service_token['data']['request']['end']['lat'];
-                        $service_db->from_lng = $service_token['data']['request']['end']['lng'];
-                        $service_db->from_zone = $zones_data['end']['data']['zone']['id'];
+                                $service_db->from_name = $service_token['data']['request']['end']['place'];
+                                $service_db->from_lat = $service_token['data']['request']['end']['lat'];
+                                $service_db->from_lng = $service_token['data']['request']['end']['lng'];
+                                $service_db->from_zone = $zones_data['end']['data']['zone']['id'];
 
-                        $service_db->to_name = $service_token['data']['request']['start']['place'];
-                        $service_db->to_lat = $service_token['data']['request']['start']['lat'];
-                        $service_db->to_lng = $service_token['data']['request']['start']['lng'];
-                        $service_db->to_zone = $zones_data['start']['data']['zone']['id'];                        
+                                $service_db->to_name = $service_token['data']['request']['start']['place'];
+                                $service_db->to_lat = $service_token['data']['request']['start']['lat'];
+                                $service_db->to_lng = $service_token['data']['request']['start']['lng'];
+                                $service_db->to_zone = $zones_data['start']['data']['zone']['id'];                        
 
-                        $service_db->distance_time = ((isset($distance_data['time_seconds']))? $distance_data['time_seconds'] :  0);
-                        $service_db->distance_km = ((isset($distance_data['distance']))? $distance_data['distance'] : '');
-                        $service_db->status = 'PENDING';
-                        $service_db->pickup = $service_token['data']['request']['end']['pickup'];
-                        $service_db->flight_number = '';
-                        $service_db->flight_data = '';
-                        $service_db->passengers = $service_token['data']['request']['passengers'];
-                        $service_db->save();
-                    endif;                
+                                $service_db->distance_time = ((isset($distance_data['time_seconds']))? $distance_data['time_seconds'] :  0);
+                                $service_db->distance_km = ((isset($distance_data['distance']))? $distance_data['distance'] : '');
+                                $service_db->status = 'PENDING';
+                                $service_db->pickup = $service_token['data']['request']['end']['pickup'];
+                                $service_db->flight_number = '';
+                                $service_db->flight_data = '';
+                                $service_db->passengers = ( $service_token['data']['request']['passengers'] / $quantity);
+                                $service_db->save();
+                            endif;
+
+                        endif;
+
+                    $counter++;
+                    }
+                                   
                     
                     $label = $service_token['data']['item']['name'].' | '.(($service_token['data']['request']['type'] == "one-way")?'One Way':'Round Trip');
                     if($service_token['data']['request']['language'] == "en"):
@@ -140,19 +150,24 @@ class CreationRepository{
                     $sales_db->total = $service_token['data']['item']['price'];
                     $sales_db->call_center_agent_id = ((isset($this->request['call_center_agent']))? $this->request['call_center_agent'] : 0);
                     $sales_db->sale_type_id = 1;
+                    $sales_db->reservation_id = $rez_db->id;
                     $sales_db->save();
+
+                    $follow_up_db = new ReservationsFollowUp;
+                    $follow_up_db->name = 'Cliente';
+                    $follow_up_db->text = $this->request['special_request'];
+                    $follow_up_db->type = 'CLIENT';
+                    $follow_up_db->reservation_id = $rez_db->id;
+                    $follow_up_db->save();
 
                 endif;
                 
                 DB::commit();
+                
+                $data['status'] = true;
+                $data['data'] = 'Data de la reservación';
+                return $data;
 
-                die("Fin");
-
-                //$counter++; 
-            //}
-
-            die("FIN...");
-            
         } catch (\Exception $e) {
             DB::rollback();
             $data['code'] = "database";

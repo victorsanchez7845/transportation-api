@@ -18,7 +18,10 @@ return new class extends Migration
             $table->decimal('exchange_rate', 10, 2);
             $table->enum('payment_method', ['CASH', 'PAYPAL', 'STRIPE'])->default('CASH');
             $table->text('object')->nullable();
+            $table->unsignedBigInteger('reservation_id');            
             $table->timestamps();
+            
+            $table->foreign('reservation_id')->references('id')->on('reservations');
         });
     }
 
