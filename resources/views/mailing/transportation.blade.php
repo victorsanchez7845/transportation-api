@@ -1,10 +1,19 @@
+@php
+    use App\Traits\FunctionsTrait;
+    $lang = app()->getLocale();
+
+    $creation_date = FunctionsTrait::getPrettyDate($data['config']['creation_date'], $lang);
+    echo "<pre>";
+    print_r($data['items']);
+    die();
+@endphp
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{$lang}}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title></title>
+    <title>Bookings</title>
     <style>
         body{
             margin: 0;
@@ -118,9 +127,13 @@
                             <tbody>
                                 <tr>
                                     <td>
-                                        <h1>Hola</h1>
-                                        <p class="name">Omar Trujillo</p>
-                                        <p>Muchas gracias por reservar con Taxi RIviera Maya, Su servicio sera operado por Caribbean Sea Travel la cuál es nuestra empresa de transporte en Cancún y la Riviera Maya.</p>
+                                        <h1>{{ __('mailing/client.hello') }}</h1>
+                                        <p class="name">{{ $data['client']['first_name'] }}</p>
+                                        @if($lang == "en")
+                                            <p>Thank you very much for booking with us, your service will be operated by Caribbean Transfers which is our official tourist transportation company in Cancun and the Riviera Maya.</p>
+                                        @else
+                                            <p>Muchas gracias por reservar con nosotros, Su servicio sera operado por Caribbean Transfers la cuál es nuestra empresa de transporte turístico oficial en Cancún y la Riviera Maya.</p>
+                                        @endif
                                     </td>
                                 </tr>
                             </tbody>
@@ -129,9 +142,24 @@
                 </tr>
                 <tr>
                     <td class="white_content">
-                        <p class="gray_color" style="margin-bottom:15px;">En el presente correo se muestra a detalle la información de su reservación realizada el día lunes 20 de marzo de 2023, en el cual le pedimos que si no es correcta ponganse en contacto con nosotros para hacer las modificaciones correspondientes.</p>
-                        <p style="margin-bottom:15px;"><strong>POR FAVOR, PRESENTE ESTE RECIBO IMPRESO O DIGITAL (CELULAR ) AL REPRESENTANTE DE CARIBBEAN SEA TRAVEL, PARA ABORDAR SU UNIDAD.</strong></p>
+                        <p class="gray_color" style="margin-bottom:15px;">
+                            @if($lang == "en")
+                                This email shows in detail the information of your reservation made on {{ $creation_date }}, in which we ask that if it is not correct please contact us to make the corresponding modifications.
+                            @else
+                                En el presente correo se muestra a detalle la información de su reservación realizada el día {{ $creation_date }}, en el cual le pedimos que si no es correcta ponganse en contacto con nosotros para hacer las modificaciones correspondientes.
+                            @endif
+                        </p>
+                        <p style="margin-bottom:15px;">
+                            <strong>
+                                @if($lang == "en")
+                                    PLEASE PRESENT THIS PRINTED OR DIGITAL (CELL PHONE) RECEIPT TO THE CARIBBEAN SEA TRAVEL REPRESENTATIVE TO BOARD YOUR UNIT.
+                                @else
+                                    POR FAVOR, PRESENTE ESTE RECIBO IMPRESO O DIGITAL (CELULAR) AL REPRESENTANTE DE CARIBBEAN TRANSFERS, PARA ABORDAR SU UNIDAD.
+                                @endif
+                            </strong>
+                        </p>
                         <div style="background-color:#DDE9FA; padding: 15px;">
+                            
                             <table style="width:100%;">
                                 <tbody>
                                     <tr>
@@ -143,19 +171,19 @@
                                     <tr>
                                         <td>
                                             <p class="label">Nombre</p>
-                                            <p>Omar Trujillo</p>
+                                            <p>{{$data['client']['first_name']}} {{$data['client']['last_name']}}</p>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td>
                                             <p class="label">Teléfono</p>
-                                            <p>9981710512</p>
+                                            <p>{{$data['client']['phone']}}</p>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td>
                                             <p class="label">E-mail</p>
-                                            <p>omar.trujillo.91@gmail.com</p>
+                                            <p>{{$data['client']['email']}}</p>
                                         </td>
                                     </tr>
                                     <tr>
@@ -212,6 +240,7 @@
                                     </tr>
                                 </tbody>
                             </table>
+
                         </div>
 
                         <div>

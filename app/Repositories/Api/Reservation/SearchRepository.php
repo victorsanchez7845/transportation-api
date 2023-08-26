@@ -39,6 +39,7 @@ class SearchRepository{
                 "language" => $rez->language,
                 "rate_group" => $rez->rate_group,
                 "is_cancelled" => $rez->is_cancelled,
+                "creation_date" => $rez->created_at,
                 "site" => $rez->site_name,
             ],
             "client" => [
