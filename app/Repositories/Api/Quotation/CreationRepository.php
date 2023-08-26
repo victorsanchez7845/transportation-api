@@ -41,8 +41,8 @@ class CreationRepository{
             DB::beginTransaction();           
             
             $bearer_token = TokenTrait::get( $this->bearer );
-            $service_token = TokenTrait::get( $this->request['service_token'] );                       
-            
+            $service_token = TokenTrait::get( $this->request['service_token'] );
+
             $site = $this->getSite($this->request['site_id']);
             if(!isset($site[0]->id)):
                 $data['code'] = "site";
@@ -94,6 +94,7 @@ class CreationRepository{
                             if(in_array($service_token['data']['request']['type'], ['one-way', 'round-trip']) ):
                                 $service_db = new ReservationsServices;
                                 $service_db->reservation_item_id = $rez_item_db->id;
+                                $service_db->destination_id = $zones_data['start']['data']['destination']['id'];
                                 $service_db->destination_service_id = $service_token['data']['item']['id'];
 
                                 $service_db->from_name = $service_token['data']['request']['start']['place'];
@@ -120,6 +121,7 @@ class CreationRepository{
                             if(in_array($service_token['data']['request']['type'], ['round-trip']) ):
                                 $service_db = new ReservationsServices;
                                 $service_db->reservation_item_id = $rez_item_db->id;
+                                $service_db->destination_id = $zones_data['start']['data']['destination']['id'];
                                 $service_db->destination_service_id = $service_token['data']['item']['id'];
 
                                 $service_db->from_name = $service_token['data']['request']['end']['place'];

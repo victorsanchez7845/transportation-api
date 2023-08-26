@@ -166,7 +166,7 @@
                                             <tr>
                                                 <td><p style="font-weight:bold; font-size: 18pt;">{{$key}}</p></td>
                                                 <td rowspan="4" style="text-align:right;">
-                                                    <img src="https://ik.imagekit.io/zqiqdytbq/transportation-api/mailing/qr.png">
+                                                    {!! QrCode::size(200)->generate($key) !!}
                                                 </td>
                                             </tr>
                                             <tr>
@@ -240,7 +240,7 @@
                                                             
                                                                 @php
                                                                     $itemCount++;
-                                                                    if($itemCount == 1):
+                                                                    if(sizeof($value) > 1 && $itemCount == 1):
                                                                         echo '<tr><td colspan="2"><hr></td></tr>';
                                                                     endif;
                                                                 @endphp
