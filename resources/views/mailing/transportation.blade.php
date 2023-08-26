@@ -3,9 +3,9 @@
     $lang = app()->getLocale();
 
     $creation_date = FunctionsTrait::getPrettyDate($data['config']['creation_date'], $lang);
-    echo "<pre>";
-    print_r($data['items']);
-    die();
+    // echo "<pre>";
+    // print_r($data);
+    // die();
 @endphp
 <!DOCTYPE html>
 <html lang="{{$lang}}">
@@ -158,90 +158,102 @@
                                 @endif
                             </strong>
                         </p>
-                        <div style="background-color:#DDE9FA; padding: 15px;">
-                            
-                            <table style="width:100%;">
-                                <tbody>
-                                    <tr>
-                                        <td><p style="font-weight:bold; font-size: 18pt;">xL198eFLG</p></td>
-                                        <td rowspan="4" style="text-align:right;">
-                                            <img src="https://ik.imagekit.io/zqiqdytbq/transportation-api/mailing/qr.png">
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <p class="label">Nombre</p>
-                                            <p>{{$data['client']['first_name']}} {{$data['client']['last_name']}}</p>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <p class="label">Teléfono</p>
-                                            <p>{{$data['client']['phone']}}</p>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <p class="label">E-mail</p>
-                                            <p>{{$data['client']['email']}}</p>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td colspan="2"><hr></td>
-                                    </tr>
-                                    <tr>
-                                        <td colspan="2">
-                                            <table class="destinations_table">
-                                                <tbody>
-                                                    <tr>
-                                                        <td>
-                                                            <p class="label">Desde</p>
-                                                            <p>Aeropuerto de Cancún</p>
-                                                        </td>
-                                                        <td>
-                                                            <p class="label">Hacia</p>
-                                                            <p>Hotel Alux Cancun</p>
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>
-                                                            <p class="label">Pickup</p>
-                                                            <p>2023-11-01 11:00</p>
-                                                        </td>
-                                                        <td>
-                                                            <p class="label">Número de vuelo</p>
-                                                            <p>IF-767</p>
-                                                        </td>
-                                                    </tr>
-                                                    <tr><td colspan="2"><hr></td></tr>
-                                                    <tr>
-                                                        <td>
-                                                            <p class="label">Desde</p>
-                                                            <p>Alux Cancun</p>
-                                                        </td>
-                                                        <td>
-                                                            <p class="label">Hacia</p>
-                                                            <p>Aeropuerto de Cancún</p>
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>
-                                                            <p class="label">Pickup</p>
-                                                            <p>2023-11-03 15:00</p>
-                                                        </td>
-                                                        <td>
-                                                            <p class="label">Número de vuelo</p>
-                                                            <p>N/A</p>
-                                                        </td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-
-                        </div>
+                        @if(sizeof($data['items']) >= 1)
+                            @foreach ($data['items'] as $key => $value)     
+                                <div style="background-color:#DDE9FA;padding: 15px;margin-bottom:15px;">
+                                    <table style="width:100%;">
+                                        <tbody>
+                                            <tr>
+                                                <td><p style="font-weight:bold; font-size: 18pt;">{{$key}}</p></td>
+                                                <td rowspan="4" style="text-align:right;">
+                                                    <img src="https://ik.imagekit.io/zqiqdytbq/transportation-api/mailing/qr.png">
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <p class="label">Nombre</p>
+                                                    <p>{{$data['client']['first_name']}} {{$data['client']['last_name']}}</p>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <p class="label">Teléfono</p>
+                                                    <p>{{$data['client']['phone']}}</p>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <p class="label">E-mail</p>
+                                                    <p>{{$data['client']['email']}}</p>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="2" style="padding-top:10px;"><hr></td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="2">
+                                                    <table class="destinations_table">
+                                                        <tbody>
+                                                            @php
+                                                                $itemCount = 0;
+                                                            @endphp
+                                                            @foreach($value as $keyItem => $valueItem)
+                                                            @php
+                                                                // echo "<pre>";
+                                                                // print_r($valueItem);
+                                                                // die();
+                                                            @endphp
+                                                            <tr>
+                                                                <td>
+                                                                    <p class="label">Desde</p>
+                                                                    <p>{{ $valueItem['from']['name'] }}</p>
+                                                                </td>
+                                                                <td>
+                                                                    <p class="label">Hacia</p>
+                                                                    <p>{{ $valueItem['to']['name'] }}</p>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>
+                                                                    <p class="label">Pickup</p>
+                                                                    <p>{{ $valueItem['pickup'] }}</p>
+                                                                </td>
+                                                                <td>
+                                                                    <p class="label">Passengers</p>
+                                                                    <p>{{ $valueItem['passengers'] }}</p>
+                                                                </td>
+                                                            </tr>
+                                                            
+                                                            <tr>
+                                                                <td>                                                                    
+                                                                    <p class="label">Tipo de servicio</p>
+                                                                    <p>{{ $valueItem['service_type_name'] }}</p>                                                                    
+                                                                </td>
+                                                                @if(!empty(trim($valueItem['flight_number'])))
+                                                                <td>                                                                    
+                                                                    <p class="label">Número de vuelo</p>
+                                                                    <p>{{ $valueItem['flight_number'] }}</p>                                                                    
+                                                                </td>
+                                                                @endif
+                                                            </tr>
+                                                           
+                                                            
+                                                                @php
+                                                                    $itemCount++;
+                                                                    if($itemCount == 1):
+                                                                        echo '<tr><td colspan="2"><hr></td></tr>';
+                                                                    endif;
+                                                                @endphp
+                                                            @endforeach
+                                                        </tbody>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>                                
+                                </div>
+                            @endforeach
+                        @endif
 
                         <div>
                             <p style="margin: 15px 0px 5px 0px;"><strong>Indicaciones</strong></p>

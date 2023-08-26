@@ -105,6 +105,13 @@ class SearchRepository{
                 "service_type_name" => $value->service_name,
                 "service_type_image" => $value->image_url,
                 "service_status" => $value->status,
+                "passengers" => $value->passengers,
+                "pickup" => $value->pickup,
+                "flight_number" => $value->flight_number,
+                "time" => [
+                    "time" => $value->distance_time,
+                    "distance" => $value->distance_km,
+                ],
                 "from" => [
                     "id" => $value->from_zone,
                     "destination" => $value->zone_name_init,
