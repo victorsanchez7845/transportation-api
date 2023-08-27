@@ -74,6 +74,7 @@ class CreationRepository{
                 $rez_db->is_cancelled = 0;
                 $rez_db->is_commissionable = $is_commissionable;    
                 $rez_db->site_id = $this->request['site_id'];
+                $rez_db->destination_id = $zones_data['start']['data']['destination']['id'];
                 if($rez_db->save()):
                     
                     //Con este loop agregamos otro código de reservación en caso de que sobrepase el limite de la unidad (ASUR así lo pide).
@@ -94,7 +95,6 @@ class CreationRepository{
                             if(in_array($service_token['data']['request']['type'], ['one-way', 'round-trip']) ):
                                 $service_db = new ReservationsServices;
                                 $service_db->reservation_item_id = $rez_item_db->id;
-                                $service_db->destination_id = $zones_data['start']['data']['destination']['id'];
                                 $service_db->destination_service_id = $service_token['data']['item']['id'];
 
                                 $service_db->from_name = $service_token['data']['request']['start']['place'];
@@ -121,7 +121,6 @@ class CreationRepository{
                             if(in_array($service_token['data']['request']['type'], ['round-trip']) ):
                                 $service_db = new ReservationsServices;
                                 $service_db->reservation_item_id = $rez_item_db->id;
-                                $service_db->destination_id = $zones_data['start']['data']['destination']['id'];
                                 $service_db->destination_service_id = $service_token['data']['item']['id'];
 
                                 $service_db->from_name = $service_token['data']['request']['end']['place'];

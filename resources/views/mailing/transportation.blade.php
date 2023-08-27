@@ -110,6 +110,10 @@
             margin-bottom: 8px;
             line-height: 1.5;
         }
+        .important_information hr{
+            margin-top: 15px;
+            margin-bottom: 15px;
+        }
     </style>
 </head>
 <body>
@@ -171,13 +175,13 @@
                                             </tr>
                                             <tr>
                                                 <td>
-                                                    <p class="label">Nombre</p>
+                                                    <p class="label">{{ __('mailing/client.name') }}</p>
                                                     <p>{{$data['client']['first_name']}} {{$data['client']['last_name']}}</p>
                                                 </td>
                                             </tr>
                                             <tr>
                                                 <td>
-                                                    <p class="label">Teléfono</p>
+                                                    <p class="label">{{ __('mailing/client.phone') }}</p>
                                                     <p>{{$data['client']['phone']}}</p>
                                                 </td>
                                             </tr>
@@ -198,40 +202,35 @@
                                                                 $itemCount = 0;
                                                             @endphp
                                                             @foreach($value as $keyItem => $valueItem)
-                                                            @php
-                                                                // echo "<pre>";
-                                                                // print_r($valueItem);
-                                                                // die();
-                                                            @endphp
                                                             <tr>
                                                                 <td>
-                                                                    <p class="label">Desde</p>
+                                                                    <p class="label">{{ __('mailing/client.from') }}</p>
                                                                     <p>{{ $valueItem['from']['name'] }}</p>
                                                                 </td>
                                                                 <td>
-                                                                    <p class="label">Hacia</p>
+                                                                    <p class="label">{{ __('mailing/client.to') }}</p>
                                                                     <p>{{ $valueItem['to']['name'] }}</p>
                                                                 </td>
                                                             </tr>
                                                             <tr>
                                                                 <td>
-                                                                    <p class="label">Pickup</p>
+                                                                    <p class="label">{{ __('mailing/client.pickup') }}</p>
                                                                     <p>{{ $valueItem['pickup'] }}</p>
                                                                 </td>
                                                                 <td>
-                                                                    <p class="label">Passengers</p>
+                                                                    <p class="label">{{ __('mailing/client.passengers') }}</p>
                                                                     <p>{{ $valueItem['passengers'] }}</p>
                                                                 </td>
                                                             </tr>
                                                             
                                                             <tr>
                                                                 <td>                                                                    
-                                                                    <p class="label">Tipo de servicio</p>
+                                                                    <p class="label">{{ __('mailing/client.service_type') }}</p>
                                                                     <p>{{ $valueItem['service_type_name'] }}</p>                                                                    
                                                                 </td>
                                                                 @if(!empty(trim($valueItem['flight_number'])))
                                                                 <td>                                                                    
-                                                                    <p class="label">Número de vuelo</p>
+                                                                    <p class="label">{{ __('mailing/client.flight_number') }}</p>
                                                                     <p>{{ $valueItem['flight_number'] }}</p>                                                                    
                                                                 </td>
                                                                 @endif
@@ -256,16 +255,26 @@
                         @endif
 
                         <div>
-                            <p style="margin: 15px 0px 5px 0px;"><strong>Indicaciones</strong></p>
-                            <p style="margin-bottom: 8px;">En este correo electrónico encontrarás un resumen de la información de tu reservación, es importante que puedas validar que la información es correcta, y en caso de algún cambio en la información de tu vuelo, dudas o aclaraciones contáctanos para poder atenderte de la mejor manera posible.</p>
-                            <p>Si estás en el Aeropuerto o en tu Hotel y no nos ves, <span class="orange">llámanos al +52 (998) 294 2389</span> o envíanos un WhatsApp al mismo número.</p>
+                            <p style="margin: 15px 0px 5px 0px;"><strong>{{ __('mailing/client.indications') }}</strong></p>
+                            @if($lang == "en")
+                                <p style="margin-bottom: 8px;">In this email you will find a summary of your reservation information, it is important that you can validate that the information is correct, and in case of any change in the information of your flight, doubts or clarifications contact us so we can assist you in the best possible way.</p>
+                                <p>If you are at the airport or at your hotel and do not see us, <span class="orange">call us at +52 (998) 294 2389</span> or send us a WhatsApp to the same number.</p>
+                            @else
+                                <p style="margin-bottom: 8px;">En este correo electrónico encontrarás un resumen de la información de tu reservación, es importante que puedas validar que la información es correcta, y en caso de algún cambio en la información de tu vuelo, dudas o aclaraciones contáctanos para poder atenderte de la mejor manera posible.</p>
+                                <p>Si estás en el Aeropuerto o en tu Hotel y no nos ves, <span class="orange">llámanos al +52 (998) 294 2389</span> o envíanos un WhatsApp al mismo número.</p>
+                            @endif                            
                         </div>
                     </td>                    
                 </tr>
                 <tr>
                     <td class="white_content" style="border-top: 1px solid #CCD5D8; text-align:center;">
-                        <p style="width: 70%; margin: 0 auto;">Más información de cómo encontranos aquí. Términos y condiciones de cancelación</p>
-                        <h4 style="margin-bottom: 0px;">¡Gracias por tu reservación!</h4>
+                        @if($lang == "en")
+                            <p style="width: 70%; margin: 0 auto;">More information on how to find us here. Cancellation terms and conditions</p>
+                            <h4 style="margin-bottom: 0px;"></h4>
+                        @else
+                            <p style="width: 70%; margin: 0 auto;">Más información de cómo encontranos aquí. Términos y condiciones de cancelación</p>
+                            <h4 style="margin-bottom: 0px;">¡Gracias por tu reservación!</h4>
+                        @endif
                     </td>
                 </tr>
                 <tr>
@@ -275,32 +284,32 @@
                 </tr>
                 <tr>
                     <td class="white_content important_information">
-                        <p><strong>Indicaciones importantes</strong></p>
-
-                        <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Est at asperiores voluptatibus dicta sunt? Laboriosam explicabo exercitationem ut doloribus odio blanditiis, molestias minima esse nesciunt iste ipsa mollitia iusto error!</p>
-                        <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Est at asperiores voluptatibus dicta sunt? Laboriosam explicabo exercitationem ut doloribus odio blanditiis, molestias minima esse nesciunt iste ipsa mollitia iusto error!</p>
-                        <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Est at asperiores voluptatibus dicta sunt? Laboriosam explicabo exercitationem ut doloribus odio blanditiis, molestias minima esse nesciunt iste ipsa mollitia iusto error!</p>
-                        <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Est at asperiores voluptatibus dicta sunt? Laboriosam explicabo exercitationem ut doloribus odio blanditiis, molestias minima esse nesciunt iste ipsa mollitia iusto error!</p>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="white_content important_information" style="border-top: 1px solid #CCD5D8;">
-                        <p><strong>A su salida</strong></p>
-
-                        <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Est at asperiores voluptatibus dicta sunt? Laboriosam explicabo exercitationem ut doloribus odio blanditiis, molestias minima esse nesciunt iste ipsa mollitia iusto error!</p>
-                        <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Est at asperiores voluptatibus dicta sunt? Laboriosam explicabo exercitationem ut doloribus odio blanditiis, molestias minima esse nesciunt iste ipsa mollitia iusto error!</p>
-                        <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Est at asperiores voluptatibus dicta sunt? Laboriosam explicabo exercitationem ut doloribus odio blanditiis, molestias minima esse nesciunt iste ipsa mollitia iusto error!</p>
-                        <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Est at asperiores voluptatibus dicta sunt? Laboriosam explicabo exercitationem ut doloribus odio blanditiis, molestias minima esse nesciunt iste ipsa mollitia iusto error!</p>
+                        @if( $mail->isNotEmpty() )
+                            @foreach($mail as $key => $value)
+                                @php
+                                    print_r($value->text);
+                                @endphp
+                            @endforeach
+                        @endif                                                
                     </td>
                 </tr>
                 <tr>
                     <td class="white_content" style="text-align:center;">
-                        <p>Les deseamos que pasen unos dias gratamente inolvidables.</p>
-                        <h4>Políticas</h4>
-                        <h5>Politicas Para Cancelacion</h5> 
-                        <p class="gray_color">Unicamente se podra cancelar el servicio 24 hrs antes de su servicio sea llegada o salida.</p>
-                        <h5>Horario de Servicio</h5> 
-                        <p class="gray_color">En caso de cambio de hora de servicio se podra efectuar si se comunica 12 hrs antes de la hora acordada ya que se tiene que reprogramar su servicio. Contáctanos las 24 hrs al numero +52 9982942389 o al correo sales@taxirivieramaya.com</p>
+                        @if($lang == "en")
+                            <p>We wish you a pleasant and unforgettable stay.</p>
+                            <h4>Policies</h4>
+                            <h5>Cancellation Policy</h5> 
+                            <p class="gray_color">Cancellations can only be made 24 hours prior to arrival or departure.</p>
+                            <h5>Service Hours</h5> 
+                            <p class="gray_color">In case of change of time of service can be made if you contact us 12 hours before the agreed time because you have to reschedule your service. Contact us 24 hours a day at +52 9982942389 or email sales@taxirivieramaya.com</p>
+                        @else
+                            <p>Les deseamos que pasen unos dias gratamente inolvidables.</p>
+                            <h4>Políticas</h4>
+                            <h5>Politicas Para Cancelacion</h5> 
+                            <p class="gray_color">Unicamente se podra cancelar el servicio 24 hrs antes de su servicio sea llegada o salida.</p>
+                            <h5>Horario de Servicio</h5> 
+                            <p class="gray_color">En caso de cambio de hora de servicio se podra efectuar si se comunica 12 hrs antes de la hora acordada ya que se tiene que reprogramar su servicio. Contáctanos las 24 hrs al numero +52 9982942389 o al correo sales@taxirivieramaya.com</p>
+                        @endif
                     </td>
                 </tr>
                 <tr>
@@ -309,7 +318,7 @@
                             <a href="#"><img src="https://ik.imagekit.io/zqiqdytbq/transportation-api/mailing/social/facebook.png?updatedAt=1692978703979" style="margin-right: 15px;"></a>
                             <a href="#"><img src="https://ik.imagekit.io/zqiqdytbq/transportation-api/mailing/social/instagram.png?updatedAt=1692978703965"></a>
                         </div>
-                        <p style="font-size: 11pt; color: #6A829E;">Caribbean Sea Travel | All RIghts Reserved</p>
+                        <p style="font-size: 11pt; color: #6A829E;">Caribbean Sea Travel | {{ __('mailing/client.rights_reserved') }}</p>
                     </td>
                 </tr>
             </tbody>

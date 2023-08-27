@@ -24,8 +24,11 @@ return new class extends Migration
             $table->tinyInteger('is_commissionable')->default(1);            
 
             $table->unsignedBigInteger('site_id');
+            $table->unsignedBigInteger('destination_id');
+            
             $table->foreign('site_id')->references('id')->on('sites');
-
+            $table->foreign('destination_id')->references('id')->on('destinations')->onDelete('cascade');
+            
             $table->timestamps();
         });
     }

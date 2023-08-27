@@ -41,6 +41,7 @@ class SearchRepository{
                 "is_cancelled" => $rez->is_cancelled,
                 "creation_date" => $rez->created_at,
                 "site" => $rez->site_name,
+                "destination_id" => $rez->destination_id,
             ],
             "client" => [
                 'first_name' => $rez->client_first_name,
@@ -59,7 +60,7 @@ class SearchRepository{
 
     public function check(){
 
-        $rez = DB::select('SELECT res.id as reservation_id, item.code, res.created_at, res.client_first_name, res.client_last_name, res.client_email, res.client_phone, res.currency, res.language, res.rate_group, res.is_cancelled, site.name as site_name
+        $rez = DB::select('SELECT res.id as reservation_id, item.code, res.destination_id, res.created_at, res.client_first_name, res.client_last_name, res.client_email, res.client_phone, res.currency, res.language, res.rate_group, res.is_cancelled, site.name as site_name
                             FROM reservations_items as item 
                                 INNER JOIN reservations as res ON res.id = item.reservation_id
                                 INNER JOIN sites as site ON site.id = res.site_id

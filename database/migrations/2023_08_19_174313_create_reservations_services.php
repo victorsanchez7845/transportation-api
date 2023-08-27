@@ -14,8 +14,7 @@ return new class extends Migration
         Schema::create('reservations_services', function (Blueprint $table) {
             $table->id();
             
-            $table->unsignedBigInteger('reservation_item_id');
-            $table->unsignedBigInteger('destination_id');
+            $table->unsignedBigInteger('reservation_item_id');            
             $table->unsignedBigInteger('destination_service_id');
 
             $table->string('from_name');
@@ -37,8 +36,7 @@ return new class extends Migration
             $table->string('flight_number')->nullable();
             $table->text('flight_data')->nullable();
             $table->integer('passengers');
-
-            $table->foreign('destination_id')->references('id')->on('destinations')->onDelete('cascade');
+                        
             $table->foreign('destination_service_id')->references('id')->on('destination_services')->onDelete('cascade');
             $table->foreign('reservation_item_id')->references('id')->on('reservations_items')->onDelete('cascade');
             $table->timestamps();

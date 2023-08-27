@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use App\Repositories\Api\Reservation\SearchRepository;
 use Illuminate\Support\Facades\App;
+use App\Models\DestinationMail;
 
 class ReservationController extends Controller
 {
@@ -40,9 +41,11 @@ class ReservationController extends Controller
             ], 404);
         }
 
-        App::setLocale($request->language);       
+        App::setLocale($request->language);        
+        
+        $mail = DestinationMail::where('destination_id', $data['config']['destination_id'])->get();
 
-        return view('mailing.transportation', ['data' => $data]);
+        return view('mailing.transportation', ['data' => $data, 'mail' => $mail]);
     }
 
     public function send(Request $request){
