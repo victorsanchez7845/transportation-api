@@ -68,6 +68,7 @@ The Laravel framework is open-sourced software licensed under the [MIT license](
 ## Inicializar el proyecto
 ejecutar el proyecto en Docker: ./vendor/bin/sail up
 
+
 ## Crear un controlador
 php artisan make:controller UserController
 

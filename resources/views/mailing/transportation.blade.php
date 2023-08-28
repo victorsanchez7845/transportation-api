@@ -1,11 +1,20 @@
 @php
     use App\Traits\FunctionsTrait;
     $lang = app()->getLocale();
-
     $creation_date = FunctionsTrait::getPrettyDate($data['config']['creation_date'], $lang);
-    // echo "<pre>";
-    // print_r($data);
-    // die();
+    
+    $reservation_status_label = $data['status'];
+    switch ($lang) {
+        case 'es':
+                if($reservation_status_label == "CONFIRMED"):
+                    $reservation_status_label = "CONFIRMADO";
+                else:
+                    $reservation_status_label = "PENDIENTE";
+                endif;
+            break;        
+        default:                
+            break;
+    }
 @endphp
 <!DOCTYPE html>
 <html lang="{{$lang}}">
@@ -19,7 +28,7 @@
             margin: 0;
             padding: 0;
             font-family: Arial, sans-serif;
-            background-color: #CCD5D8;
+            background-color: #FFFFFF;
         }
         p{
             font-size: 11pt;
@@ -41,47 +50,46 @@
             width: 100%;
             border-collapse: collapse;
             margin-top: 20px;
+            box-shadow: 0px 0px 32px 0px rgba(145, 161, 180, 0.25);
+            border-radius: 15px;
         }
         .header{
-            background-color:white; 
-            padding: 25px;
             text-align: center;
         }
-        td.orange_content{
-            background-color: #FD9941;
-            background-image: url('https://ik.imagekit.io/zqiqdytbq/transportation-api/mailing/banner.png?updatedAt=1692914906714');
+        div.orange_content{
+            border-radius: 15px 15px 0px 0px;
+            background-color: {{$data['site']['color']}};
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
-            height: 400px;
         }
-        td.orange_content table{
+        div.orange_content table{
             width: 100%;
-            height: 400px;
         }
-        td.orange_content table td{
+        div.orange_content table td{
             text-align:left; 
-            vertical-align: bottom; 
+            vertical-align: top; 
             padding: 25px;
         }
-        td.orange_content table td h1{
+        div.orange_content table td h1{
             font-size: 22pt;
             margin: 0px;
             color: white;
             margin-bottom: 8px;
         }
-        td.orange_content table td p{
+        div.orange_content table td p{
             font-size: 11pt;
             color: white;
             margin: 0px;
         }
-        td.orange_content table td p.name{
+        div.orange_content table td p.name{
             font-size: 16pt;
             font-weight: bold;
             color: white;
             margin: 0px;
             margin-bottom: 15px;
         }
+
         td.white_content{
             background-color: white;
             padding: 25px;
@@ -114,34 +122,62 @@
             margin-top: 15px;
             margin-bottom: 15px;
         }
+        span.payment{
+            background-color: #191970;
+            color: white;
+            padding: 15px 15px;
+            border-radius: 8px;
+            display: inline-block;
+            font-weight: bold;
+        }
+        span.payment.type-CONFIRMED{
+            background-color: #198f51;            
+        }
     </style>
 </head>
 <body>
     <div class="container">
+        <div class="header">
+            <img src="{{ $data['site']['logo'] }}">
+        </div>
         <table class="table_init">
-            <thead>
-                <tr>
-                    <th class="header"><img src="https://ik.imagekit.io/zqiqdytbq/transportation-api/mailing/logo.png"></th>
-                </tr>                
-            </thead>
             <tbody>                
                 <tr>
-                    <td class="orange_content">
-                        <table>
-                            <tbody>
-                                <tr>
-                                    <td>
-                                        <h1>{{ __('mailing/client.hello') }}</h1>
-                                        <p class="name">{{ $data['client']['first_name'] }}</p>
-                                        @if($lang == "en")
-                                            <p>Thank you very much for booking with us, your service will be operated by Caribbean Transfers which is our official tourist transportation company in Cancun and the Riviera Maya.</p>
-                                        @else
-                                            <p>Muchas gracias por reservar con nosotros, Su servicio sera operado por Caribbean Transfers la cuál es nuestra empresa de transporte turístico oficial en Cancún y la Riviera Maya.</p>
-                                        @endif
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                    <td>
+                        <div class="orange_content">
+                            <table>
+                                <tbody>
+                                    <tr>
+                                        <td style="text-align:center;">
+                                            <img src="https://ik.imagekit.io/zqiqdytbq/transportation-api/mailing/top-vehicle.png?updatedAt=1693244044317">
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding-top:0px;">
+                                            <table>
+                                                <tbody>
+                                                    <tr>
+                                                        <td style="padding:0px;">
+                                                            <h1>{{ __('mailing/client.hello') }}</h1>
+                                                            <p class="name">{{ $data['client']['first_name'] }}</p>
+                                                        </td>
+                                                        <td style="text-align:right;padding:0px;">
+                                                            <h4 style="margin:0px;color:white;margin-bottom:8px;">{{ __('mailing/client.reservation_status') }}</h4>
+                                                            <span class="payment type-{{$data['status']}}">{{ $reservation_status_label }}</span>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                            @if($lang == "en")
+                                                <p>Thank you very much for booking with us, your service will be operated by Caribbean Transfers which is our official tourist transportation company in Cancun and the Riviera Maya.</p>
+                                            @else
+                                                <p>Muchas gracias por reservar con nosotros, Su servicio sera operado por Caribbean Transfers la cuál es nuestra empresa de transporte turístico oficial en Cancún y la Riviera Maya.</p>
+                                            @endif
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </td>                    
                 </tr>
                 <tr>
@@ -162,6 +198,7 @@
                                 @endif
                             </strong>
                         </p>
+                        <h2>Total: {{ number_format($data['sales']['total'],2) }} {{ $data['config']['currency'] }}</h2>
                         @if(sizeof($data['items']) >= 1)
                             @foreach ($data['items'] as $key => $value)     
                                 <div style="background-color:#DDE9FA;padding: 15px;margin-bottom:15px;">
@@ -270,10 +307,10 @@
                     <td class="white_content" style="border-top: 1px solid #CCD5D8; text-align:center;">
                         @if($lang == "en")
                             <p style="width: 70%; margin: 0 auto;">More information on how to find us here. Cancellation terms and conditions</p>
-                            <h4 style="margin-bottom: 0px;"></h4>
+                            <h3 style="margin-bottom: 0px; color: #191970;">Thank you for your reservation!</h3>
                         @else
                             <p style="width: 70%; margin: 0 auto;">Más información de cómo encontranos aquí. Términos y condiciones de cancelación</p>
-                            <h4 style="margin-bottom: 0px;">¡Gracias por tu reservación!</h4>
+                            <h4 style="margin-bottom: 0px; color: #191970;">¡Gracias por tu reservación!</h4>
                         @endif
                     </td>
                 </tr>
@@ -318,7 +355,7 @@
                             <a href="#"><img src="https://ik.imagekit.io/zqiqdytbq/transportation-api/mailing/social/facebook.png?updatedAt=1692978703979" style="margin-right: 15px;"></a>
                             <a href="#"><img src="https://ik.imagekit.io/zqiqdytbq/transportation-api/mailing/social/instagram.png?updatedAt=1692978703965"></a>
                         </div>
-                        <p style="font-size: 11pt; color: #6A829E;">Caribbean Sea Travel | {{ __('mailing/client.rights_reserved') }}</p>
+                        <p style="font-size: 11pt; color: #6A829E;">Caribbean Transfers | {{ __('mailing/client.rights_reserved') }}</p>
                     </td>
                 </tr>
             </tbody>

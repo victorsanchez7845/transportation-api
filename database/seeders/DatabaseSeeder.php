@@ -16,12 +16,16 @@ class DatabaseSeeder extends Seeder
         //API
         DB::table('sites')->insert([
             'name' => "caribbean-transfers.com",
+            'logo' => "https://ik.imagekit.io/zqiqdytbq/transportation-api/mailing/logo.png",
+            'color' => "#CE8506",
             'is_commissionable' => 0,
             'created_at' => now(),
             'updated_at' => now(),
         ]);
         DB::table('sites')->insert([
             'name' => "[CS] caribbean-transfers.com",
+            'logo' => "https://ik.imagekit.io/zqiqdytbq/transportation-api/mailing/logo.png",
+            'color' => "#CE8506",
             'is_commissionable' => 1,
             'created_at' => now(),
             'updated_at' => now(),

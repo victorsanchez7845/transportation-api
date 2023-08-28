@@ -46,10 +46,6 @@ class ReservationController extends Controller
         $mail = DestinationMail::where('destination_id', $data['config']['destination_id'])->get();
 
         return view('mailing.transportation', ['data' => $data, 'mail' => $mail]);
-    }
-
-    public function send(Request $request){
-        //Enviar el correo
-    }
+    }   
 
 }

@@ -14,6 +14,8 @@ return new class extends Migration
         Schema::create('sites', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->string('logo');
+            $table->string('color', 40);
             $table->tinyInteger('is_commissionable')->default(1);
             $table->timestamps();
         });
