@@ -50,7 +50,6 @@
             width: 100%;
             border-collapse: collapse;
             margin-top: 20px;
-            box-shadow: 0px 0px 32px 0px rgba(145, 161, 180, 0.25);
             border-radius: 15px;
         }
         .header{
