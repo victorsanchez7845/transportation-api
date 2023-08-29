@@ -35,6 +35,7 @@ class SearchRepository{
         $data = [
             "status" => $status,
             "config" => [
+                "id" => $rez->reservation_id,
                 "currency" => $rez->currency,
                 "language" => $rez->language,
                 "rate_group" => $rez->rate_group,
@@ -46,7 +47,9 @@ class SearchRepository{
                 "id" => $rez->site_id,
                 "name" => $rez->site_name,
                 "logo" => $rez->logo,
-                "color" => $rez->color
+                "color" => $rez->color,
+                "email" => $rez->email,
+                "send_email" => $rez->send_email
             ],
             "client" => [
                 'first_name' => $rez->client_first_name,
@@ -65,7 +68,7 @@ class SearchRepository{
 
     public function check(){
 
-        $rez = DB::select('SELECT res.id as reservation_id, item.code, res.destination_id, res.created_at, res.client_first_name, res.client_last_name, res.client_email, res.client_phone, res.currency, res.language, res.rate_group, res.is_cancelled, site.id as site_id, site.name as site_name, site.logo, site.color
+        $rez = DB::select('SELECT res.id as reservation_id, item.code, res.destination_id, res.created_at, res.client_first_name, res.client_last_name, res.client_email, res.client_phone, res.currency, res.language, res.rate_group, res.is_cancelled, site.id as site_id, site.name as site_name, site.logo, site.color, site.transactional_email as email, site.transactional_email_send as send_email
                             FROM reservations_items as item 
                                 INNER JOIN reservations as res ON res.id = item.reservation_id
                                 INNER JOIN sites as site ON site.id = res.site_id

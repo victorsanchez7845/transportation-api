@@ -1,8 +1,5 @@
-
 <?php
-
 namespace App\Traits;
-use DateTime;
 
 trait MailjetTrait
 {
@@ -45,14 +42,21 @@ trait MailjetTrait
             CURLOPT_POSTFIELDS => json_encode($data),
             CURLOPT_HTTPHEADER => array(
                 'Content-Type: application/json',
-                'Authorization: Basic TUpfQVBJS0VZX1BVQkxJQzokTUpfQVBJS0VZX1BSSVZBVEU='
+                'Authorization: Basic '.base64_encode(config('services.mailjet.key').":".config('services.mailjet.secret'))
             ),
         ));
         
         $response = curl_exec($curl);
-        
         curl_close($curl);
-        
-        echo $response;
+        echo "<pre>";
+        print_r($response);
+        die();
+
+        $response = json_decode($response, true);
+        echo "<pre>";
+        print_r($response);
+        die();        
+        //API KEY; 510f04d80f39f4f03886e3b1bef79c98
+        //SECRET KEY: 01ff138880081fa0e637875a54410fae
     }
 }

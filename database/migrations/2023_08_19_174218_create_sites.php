@@ -16,6 +16,8 @@ return new class extends Migration
             $table->string('name');
             $table->string('logo');
             $table->string('color', 40);
+            $table->string('transactional_email');
+            $table->tinyInteger('transactional_email_send')->default(1);
             $table->tinyInteger('is_commissionable')->default(1);
             $table->timestamps();
         });

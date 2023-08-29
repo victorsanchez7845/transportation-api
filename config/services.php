@@ -35,5 +35,9 @@ return [
     ],
     'flights' => [
         'key' => env('FLIGHT_TRACKING'),
+    ],
+    'mailjet' => [
+        'key' => env('MAILJET_KEY'),
+        'secret' => env('MAILJET_SECRET'),
     ]
 ];

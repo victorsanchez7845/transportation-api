@@ -28,7 +28,8 @@
             margin: 0;
             padding: 0;
             font-family: Arial, sans-serif;
-            background-color: #FFFFFF;
+            background-color: #FAF9FF;
+            font-size: 11pt;
         }
         p{
             font-size: 11pt;
