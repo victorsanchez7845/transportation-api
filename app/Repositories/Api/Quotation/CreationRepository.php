@@ -90,6 +90,7 @@ class CreationRepository{
                             $data_rez['code'] = $rez_item_db->code;
                             $data_rez['email'] = $rez_db->client_email;
                             $data_rez['language'] = $service_token['data']['request']['language'];
+                            $data_rez['type'] = 'new';
 
                             //Si es un viaje sencillo y viaje redondo, se ejecuta el siguiente bloque de código.
                             if(in_array($service_token['data']['request']['type'], ['one-way', 'round-trip']) ):
@@ -184,6 +185,9 @@ class CreationRepository{
                 
                 DB::commit();
                 
+                //Enviar correo de reservación                
+                $email = @file_get_contents(config('app.url')."/api/v1/reservation/send?" . http_build_query($data_rez));                
+
                 $data['status'] = true;
                 $data['data'] = $data_rez;
 
