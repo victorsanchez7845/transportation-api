@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Validator;
 use App\Repositories\Api\Reservation\SearchRepository;
 use App\Traits\TokenTrait;
 use App\Traits\MailjetTrait;
-
+use App\Models\ReservationsFollowUp;
 
 class SearchController extends Controller
 {
@@ -77,7 +77,7 @@ class SearchController extends Controller
         if($data['site']['email'] == 0):
             return response()->json([
                 'error' => [
-                    'code' => 'mailing',
+                    'code' => 'mailing_disabled',
                     'message' => 'Mailing disabled'
                 ]
             ], 404);
@@ -121,8 +121,6 @@ class SearchController extends Controller
             }
         endif;
 
-        //$data['config']['id']
-
         $email_data = array(
             "Messages" => array(
                 array(
@@ -144,9 +142,30 @@ class SearchController extends Controller
         );
 
         $email_response = MailjetTrait::send($email_data);
-        echo "<pre>";
-        print_r($email_response);
-        die();
+        if(isset($email_response['Messages'][0]['Status']) && $email_response['Messages'][0]['Status'] == "success"):
+            $follow_up_db = new ReservationsFollowUp;
+            $follow_up_db->name = 'Sistema';
+            $follow_up_db->text = 'E-mail enviado ('.$request['type'].')';
+            $follow_up_db->type = 'INTERN';
+            $follow_up_db->reservation_id = $data['config']['id'];
+            $follow_up_db->save();
+
+            return response()->json(['status' => "success"], 200);
+        else:
+            $follow_up_db = new ReservationsFollowUp;
+            $follow_up_db->name = 'Sistema';
+            $follow_up_db->text = 'No fue posible enviar el e-mail del cliente, por favor contactar a Desarrollo';
+            $follow_up_db->type = 'INTERN';
+            $follow_up_db->reservation_id = $data['config']['id'];
+            $follow_up_db->save();
+            
+            return response()->json([
+                'error' => [
+                    'code' => 'mailing_system',
+                    'message' => 'The mailing platform has a problem, please report to development'
+                ]
+            ], 404);
+        endif;
     }
 
 
@@ -176,7 +195,14 @@ class SearchController extends Controller
         $response = curl_exec($ch);
     
         if (curl_errno($ch)) {
-            echo "Error en la solicitud cURL: " . curl_error($ch);
+            $data['status'] = false;
+            $data['data'] = [
+                'error' => [
+                    'code' => 'curl_error',
+                    'message' => 'Error en la solicitud cURL: '.curl_error($ch)
+                ]
+            ];
+            return $data;
         }
         curl_close($ch);
         

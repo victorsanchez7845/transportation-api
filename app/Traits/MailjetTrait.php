@@ -48,15 +48,6 @@ trait MailjetTrait
         
         $response = curl_exec($curl);
         curl_close($curl);
-        echo "<pre>";
-        print_r($response);
-        die();
-
-        $response = json_decode($response, true);
-        echo "<pre>";
-        print_r($response);
-        die();        
-        //API KEY; 510f04d80f39f4f03886e3b1bef79c98
-        //SECRET KEY: 01ff138880081fa0e637875a54410fae
+        return json_decode($response, true);
     }
 }
