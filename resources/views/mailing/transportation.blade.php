@@ -135,7 +135,7 @@
         }
     </style>
 </head>
-<body style="background-color: red;">
+<body style="background-color: #CCD5D8;">
     <div class="container">
         <div class="header">
             <img src="{{ $data['site']['logo'] }}">
