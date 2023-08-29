@@ -158,7 +158,7 @@
                                                     <tr>
                                                         <td style="padding:0px;">
                                                             <h1>{{ __('mailing/client.hello') }}</h1>
-                                                            <p class="name">{{ $data['client']['first_name'] }}</p>
+                                                            <p class="name">{{$data['client']['first_name']}} {{$data['client']['last_name']}}</p>
                                                         </td>
                                                         <td style="text-align:right;padding:0px;">
                                                             <h4 style="margin:0px;color:white;margin-bottom:8px;">{{ __('mailing/client.reservation_status') }}</h4>
