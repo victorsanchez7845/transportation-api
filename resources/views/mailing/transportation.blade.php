@@ -27,8 +27,7 @@
         body{
             margin: 0;
             padding: 0;
-            font-family: Arial, sans-serif;
-            background-color: #FAF9FF;
+            font-family: Arial, sans-serif;            
             font-size: 11pt;
         }
         p{
@@ -136,7 +135,7 @@
         }
     </style>
 </head>
-<body>
+<body style="background-color: red;">
     <div class="container">
         <div class="header">
             <img src="{{ $data['site']['logo'] }}">
