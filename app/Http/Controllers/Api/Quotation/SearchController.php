@@ -79,16 +79,16 @@ class SearchController extends Controller
                     "init" => [
                         "name" => $request['start']['place'],
                         "geo" => [
-                            "lat" => (float) $request['start']['lat'],
-                            "lng" => (float) $request['start']['lng'],
+                            "lat" => $request['start']['lat'],
+                            "lng" => $request['start']['lng'],
                         ],
                         "time" => $request['start']['pickup'],
                     ],
                     "end" => [
                         "name" => $request['end']['place'],
                         "geo" => [
-                            "lat" => (float) $request['end']['lat'],
-                            "lng" => (float) $request['end']['lng'],
+                            "lat" => $request['end']['lat'],
+                            "lng" => $request['end']['lng'],
                         ],
                         "time" => date("Y-m-d H:i", strtotime($request['start']['pickup']) + $geospacial['time_seconds'])
                     ]
@@ -97,16 +97,16 @@ class SearchController extends Controller
                     "init" => [                        
                         "name" => $request['end']['place'],
                         "geo" => [
-                            "lat" => (float) $request['end']['lat'],
-                            "lng" => (float) $request['end']['lng'],
+                            "lat" => $request['end']['lat'],
+                            "lng" => $request['end']['lng'],
                         ],
                         "time" => ((isset( $request['end']['pickup'] ))? $request['end']['pickup'] : NULL),
                     ],
                     "end" => [
                         "name" => $request['start']['place'],
                         "geo" => [
-                            "lat" => (float) $request['start']['lat'],
-                            "lng" => (float) $request['start']['lng'],
+                            "lat" => $request['start']['lat'],
+                            "lng" => $request['start']['lng'],
                         ],
                         "time" => ((isset( $request['end']['pickup'] ))? date("Y-m-d H:i", strtotime($request['end']['pickup']) + $geospacial['time_seconds']) : NULL)                        
                     ]
