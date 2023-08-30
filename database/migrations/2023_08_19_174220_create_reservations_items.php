@@ -13,11 +13,11 @@ return new class extends Migration
     {
         Schema::create('reservations_items', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('reservation_id');
+            $table->unsignedBigInteger('reservation_id')->nullable();
             $table->string('code')->unique();
-            $table->timestamps();
-
-            $table->foreign('reservation_id')->references('id')->on('reservations');
+            $table->timestamps();            
+            $table->index('reservation_id');
+            //$table->foreign('reservation_id')->references('id')->on('reservations');
         });
     }
 

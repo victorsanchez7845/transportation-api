@@ -13,9 +13,10 @@ return new class extends Migration
     {
         Schema::create('api_intent', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('api_id');
+            $table->unsignedBigInteger('api_id')->nullable();
             $table->timestamps();
-            $table->foreign('api_id')->references('id')->on('api')->onDelete('cascade');
+            $table->index('api_id');
+            //$table->foreign('api_id')->references('id')->on('api')->onDelete('cascade');
         });
     }
 

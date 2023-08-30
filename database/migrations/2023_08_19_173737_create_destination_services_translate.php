@@ -15,9 +15,10 @@ return new class extends Migration
             $table->id();
             $table->string('lang');
             $table->string('translation');
-            $table->unsignedBigInteger('destination_services_id');
+            $table->unsignedBigInteger('destination_services_id')->nullable();
             $table->timestamps();
-            $table->foreign('destination_services_id')->references('id')->on('destination_services')->onDelete('cascade');
+            $table->index('destination_services_id');
+            //$table->foreign('destination_services_id')->references('id')->on('destination_services')->onDelete('cascade');
         });
     }
 

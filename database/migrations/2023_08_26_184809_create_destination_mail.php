@@ -15,9 +15,10 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->text('text')->nullable();
-            $table->unsignedBigInteger('destination_id');
+            $table->unsignedBigInteger('destination_id')->nullable();
             $table->timestamps();
-            $table->foreign('destination_id')->references('id')->on('destinations')->onDelete('cascade');
+            $table->index('destination_id');
+            //$table->foreign('destination_id')->references('id')->on('destinations')->onDelete('cascade');
         });
     }
 

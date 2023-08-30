@@ -14,11 +14,12 @@ return new class extends Migration
         Schema::create('zones', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->unsignedBigInteger('destination_id');
+            $table->unsignedBigInteger('destination_id')->nullable();
             $table->string('name');
             $table->tinyInteger('is_primary')->default(0);
             $table->tinyInteger('status')->default(0);
-            $table->foreign('destination_id')->references('id')->on('destinations');
+            $table->index('destination_id');
+            //$table->foreign('destination_id')->references('id')->on('destinations');
         });
     }
 

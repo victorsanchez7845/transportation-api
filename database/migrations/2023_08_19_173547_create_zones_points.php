@@ -14,10 +14,11 @@ return new class extends Migration
         Schema::create('zones_points', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->unsignedBigInteger('zone_id');
+            $table->unsignedBigInteger('zone_id')->nullable();
             $table->string('latitude');
             $table->string('longitude');
-            $table->foreign('zone_id')->references('id')->on('zones')->onDelete('cascade');
+            $table->index('zone_id'); 
+            //$table->foreign('zone_id')->references('id')->on('zones')->onDelete('cascade');
         });
     }
 

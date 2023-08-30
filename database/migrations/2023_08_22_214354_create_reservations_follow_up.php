@@ -19,7 +19,8 @@ return new class extends Migration
             $table->enum('type', ['CLIENT', 'INTERN', 'ALL', 'HISTORY'])->default('INTERN');
             $table->timestamps();
 
-            $table->foreign('reservation_id')->references('id')->on('reservations');
+            $table->index('reservation_id');
+            //$table->foreign('reservation_id')->references('id')->on('reservations');
         });
     }
 

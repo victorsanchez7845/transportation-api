@@ -84,6 +84,7 @@ php artisan make:migration create_destinations
 ## Ejecutar Migraciones
 php artisan migrate
 php artisan migrate:refresh
+hp artisan migrate:reset
 
 ## Seeders
 Update README.md

@@ -17,12 +17,13 @@ return new class extends Migration
             $table->tinyInteger('passengers')->default(3);
             $table->tinyInteger('luggage')->default(1);
             $table->tinyInteger('order')->default(10);
-            $table->unsignedBigInteger('destination_id');
+            $table->unsignedBigInteger('destination_id')->nullable();
             $table->tinyInteger('status')->default(0);
             $table->string('image_url');
             $table->enum('price_type', ['vehicle', 'passenger', 'shared'])->default('vehicle');
             $table->timestamps();
-            $table->foreign('destination_id')->references('id')->on('destinations')->onDelete('cascade');
+            $table->index('destination_id'); 
+            //$table->foreign('destination_id')->references('id')->on('destinations')->onDelete('cascade');
         });
     }
 

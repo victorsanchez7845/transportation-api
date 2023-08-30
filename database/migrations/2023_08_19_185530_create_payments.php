@@ -19,10 +19,11 @@ return new class extends Migration
             $table->tinyInteger('request_payment')->default(0);
             $table->enum('payment_method', ['CASH', 'PAYPAL', 'STRIPE'])->default('CASH');
             $table->text('object')->nullable();
-            $table->unsignedBigInteger('reservation_id');
+            $table->unsignedBigInteger('reservation_id')->nullable();
             $table->timestamps();
             
-            $table->foreign('reservation_id')->references('id')->on('reservations');
+            $table->index('reservation_id');
+            //$table->foreign('reservation_id')->references('id')->on('reservations');
         });
     }
 

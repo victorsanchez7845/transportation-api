@@ -13,10 +13,10 @@ return new class extends Migration
     {
         Schema::create('rates', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('rate_group_id');
-            $table->unsignedBigInteger('destination_service_id');
-            $table->unsignedBigInteger('destination_id');
-            $table->unsignedBigInteger('zone_id');            
+            $table->unsignedBigInteger('rate_group_id')->nullable();
+            $table->unsignedBigInteger('destination_service_id')->nullable();
+            $table->unsignedBigInteger('destination_id')->nullable();
+            $table->unsignedBigInteger('zone_id')->nullable();       
             $table->decimal('one_way', 10, 2);
             $table->decimal('round_trip', 10, 2);
             $table->decimal('ow_12', 10, 2);
@@ -26,8 +26,12 @@ return new class extends Migration
             $table->decimal('up_8_ow', 10, 2);
             $table->decimal('up_8_rt', 10, 2);
             $table->timestamps();
-            $table->foreign('destination_service_id')->references('id')->on('destination_services')->onDelete('cascade');
-            $table->foreign('rate_group_id')->references('id')->on('rates_groups');
+            $table->index('rate_group_id');
+            $table->index('destination_service_id');
+            $table->index('destination_id');
+            $table->index('zone_id');
+            //$table->foreign('destination_service_id')->references('id')->on('destination_services')->onDelete('cascade');
+            //$table->foreign('rate_group_id')->references('id')->on('rates_groups');
         });
     }
 
