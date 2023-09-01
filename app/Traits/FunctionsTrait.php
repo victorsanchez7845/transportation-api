@@ -29,7 +29,7 @@ trait FunctionsTrait
         endif;
     }
 
-    public function sendEmail($baseUrl = '', $data = []){        
+    public static function sendEmail($baseUrl = '', $data = []){        
         $url = $baseUrl . '?' . http_build_query($data);        
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
