@@ -186,7 +186,7 @@ class CreationRepository{
                 DB::commit();
                 
                 //Enviar correo de reservación                
-                $email = @file_get_contents(config('app.url')."/api/v1/reservation/send?" . http_build_query($data_rez));                
+                //$email = @file_get_contents(config('app.url')."/api/v1/reservation/send?" . http_build_query($data_rez));                
 
                 $data['status'] = true;
                 $data['data'] = $data_rez;
