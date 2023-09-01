@@ -28,4 +28,16 @@ trait FunctionsTrait
             return "$day_name $day de $month_name de $year";
         endif;
     }
+
+    public function sendEmail($baseUrl = '', $data = []){        
+        $url = $baseUrl . '?' . http_build_query($data);        
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        // Realizar la solicitud de manera asincrónica (no esperar la respuesta)
+        curl_setopt($ch, CURLOPT_TIMEOUT_MS, 1); // Tiempo de espera muy corto (1 milisegundo)        
+        curl_exec($ch);
+        curl_close($ch);
+        return true;
+    }
 }

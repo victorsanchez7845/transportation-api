@@ -3,6 +3,7 @@
 namespace App\Repositories\Api\Quotation;
 use App\Traits\CodeTrait;
 use App\Traits\TokenTrait;
+use App\Traits\FunctionsTrait;
 use App\Models\Reservations;
 use App\Models\ReservationsItems;
 use App\Models\ReservationsServices;
@@ -12,7 +13,7 @@ use App\Models\ReservationsFollowUp;
 use Illuminate\Support\Facades\DB;
 
 class CreationRepository{
-    use CodeTrait, TokenTrait;
+    use CodeTrait, TokenTrait, FunctionsTrait;
     private $bearer = '';
     private $request = [];
 
@@ -185,8 +186,8 @@ class CreationRepository{
                 
                 DB::commit();
                 
-                //Enviar correo de reservación                
-                //$email = @file_get_contents(config('app.url')."/api/v1/reservation/send?" . http_build_query($data_rez));                
+                //Enviar correo de reservación
+                FunctionsTrait::sendEmail(config('app.url')."/api/v1/reservation/send", $data_rez);        
 
                 $data['status'] = true;
                 $data['data'] = $data_rez;
