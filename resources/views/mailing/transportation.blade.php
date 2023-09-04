@@ -206,7 +206,7 @@
                                             <tr>
                                                 <td><p style="font-weight:bold; font-size: 18pt;">{{$key}}</p></td>
                                                 <td rowspan="4" style="text-align:right;">
-                                                    <img src="https://api.caribbean-transfers.com/api/v1/reservation/qr?code={{$key}}" >
+                                                    <img src="{{config('app.url')}}/api/v1/reservation/qr?code={{$key}}" width="250">
                                                 </td>
                                             </tr>
                                             <tr>
