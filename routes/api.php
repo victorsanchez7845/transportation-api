@@ -44,6 +44,7 @@ Route::middleware([Auth::class])->group(function () {
         //Reservation
         Route::post('/reservation/get', [SearchReservation::class,'index'])->withoutMiddleware([Auth::class]);
         Route::get('/reservation/send', [SearchReservation::class,'send'])->withoutMiddleware([Auth::class]);
+        Route::get('/reservation/qr', [SearchReservation::class,'makeQr'])->withoutMiddleware([Auth::class]);
     });
     
 });
