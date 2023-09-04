@@ -206,7 +206,7 @@
                                             <tr>
                                                 <td><p style="font-weight:bold; font-size: 18pt;">{{$key}}</p></td>
                                                 <td rowspan="4" style="text-align:right;">
-                                                    <img src="{!! FunctionsTrait::QrCode($key) !!}" >
+                                                    <img src="/api/v1/reservation/qr?code={{$key}}" >
                                                 </td>
                                             </tr>
                                             <tr>
