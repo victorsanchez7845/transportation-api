@@ -206,10 +206,7 @@
                                             <tr>
                                                 <td><p style="font-weight:bold; font-size: 18pt;">{{$key}}</p></td>
                                                 <td rowspan="4" style="text-align:right;">
-                                                    @php
-                                                        $QR = @file_get_contents("https://chart.googleapis.com/chart?chs=200&cht=qr&chl=".$key);                                                    
-                                                    @endphp
-                                                    <img src="data:image/png;base64,{{ base64_encode($QR) }}" >
+                                                    <img src="{!! FunctionsTrait::QrCode($key) !!}" >
                                                 </td>
                                             </tr>
                                             <tr>

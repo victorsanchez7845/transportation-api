@@ -9,6 +9,8 @@ use App\Repositories\Api\Reservation\SearchRepository;
 use App\Traits\TokenTrait;
 use App\Traits\MailjetTrait;
 use App\Models\ReservationsFollowUp;
+use Endroid\QrCode\QrCode;
+use Endroid\QrCode\Writer\PngWriter;
 
 class SearchController extends Controller
 {
@@ -168,7 +170,28 @@ class SearchController extends Controller
         endif;
     }
 
+    public function makeQr(Request $request){
+        // Realizar validaciones
+        $validator = Validator::make($request->all(), [
+            'code' => 'max:20',
+        ]);
 
+        if ($validator->fails()) {
+            return response()->json([
+                'error' => [
+                    'code' => 'required_params',
+                    'message' =>  $validator->errors()->all() 
+                ]
+            ], 404);
+        }
+
+        $qr = QrCode::create($request->code);
+        $writer = new PngWriter();
+        $result = $writer->write($qr);
+        header("Content-Type: " . $result->getMimeType());
+        echo $result->getString();
+        exit;
+    }
    
 
     public function getTemplate(Request $request){

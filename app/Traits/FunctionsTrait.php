@@ -2,6 +2,8 @@
 
 namespace App\Traits;
 use DateTime;
+use Endroid\QrCode\QrCode;
+use Endroid\QrCode\Writer\PngWriter;
 
 trait FunctionsTrait
 {
@@ -39,5 +41,13 @@ trait FunctionsTrait
         curl_exec($ch);
         curl_close($ch);
         return true;
+    }
+
+    public static function QrCode($code){
+        $qr = QrCode::create($code);
+        $qr->setSize(200);
+        $writer = new PngWriter();
+        $result = $writer->write($qr);
+        echo $result->getDataUri();
     }
 }
