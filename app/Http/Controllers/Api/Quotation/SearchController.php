@@ -37,6 +37,7 @@ class SearchController extends Controller
             'passengers' => 'required|integer|min:1|max:35',
             'currency' => 'required|in:USD,MXN',
             'rate_group' => 'required|max:10',
+            'service' => 'integer',
         ]);
 
         if ($validator->fails()) {

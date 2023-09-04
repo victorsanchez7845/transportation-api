@@ -35,7 +35,7 @@ trait FunctionsTrait
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         // Realizar la solicitud de manera asincrónica (no esperar la respuesta)
-        curl_setopt($ch, CURLOPT_TIMEOUT_MS, 1); // Tiempo de espera muy corto (1 milisegundo)        
+        curl_setopt($ch, CURLOPT_TIMEOUT_MS, 600); // Tiempo de espera muy corto (1 milisegundo)        
         curl_exec($ch);
         curl_close($ch);
         return true;
