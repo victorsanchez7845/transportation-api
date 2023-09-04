@@ -11,6 +11,7 @@ use App\Traits\MailjetTrait;
 use App\Models\ReservationsFollowUp;
 use Endroid\QrCode\QrCode;
 use Endroid\QrCode\Writer\PngWriter;
+use Illuminate\Support\Facades\DB;
 
 class SearchController extends Controller
 {
@@ -85,8 +86,9 @@ class SearchController extends Controller
             ], 404);
         endif;
         
+        $provider = $this->getProvider($data['config']['destination_id']);
         $template = $this->getTemplate($request);
-
+        
         if($template['status'] == false):
             return response()->json($template['data'], 404);
         endif;
@@ -121,6 +123,17 @@ class SearchController extends Controller
                     $subject = '🎟 Reservación | '.$data['site']['name'];
                     break;
             }
+        endif;    
+
+        $provider_email = [];
+        if(isset( $provider->id ) && !empty($provider->transactional_emails)):
+            $emails = explode(",", trim($provider->transactional_emails));
+            foreach($emails as $key => $value):
+                $provider_email[] = array(
+                    "Email" => trim($value),
+                    "Name" => $provider->name,
+                );
+            endforeach;
         endif;
 
         $email_data = array(
@@ -136,6 +149,7 @@ class SearchController extends Controller
                             "Name" => $data['client']['first_name'],
                         )
                     ),
+                    "Bcc" => $provider_email,
                     "Subject" => $subject,
                     "TextPart" => "Dear client",
                     "HTMLPart" => $template['data']
@@ -143,7 +157,12 @@ class SearchController extends Controller
             )
         );
 
-        $email_response = MailjetTrait::send($email_data);
+        if(config('app.env') == "production"):
+            $email_response = MailjetTrait::send($email_data);
+        else:
+            $email_response['Messages'][0]['Status'] = 'success';
+        endif;
+        
         if(isset($email_response['Messages'][0]['Status']) && $email_response['Messages'][0]['Status'] == "success"):
             $follow_up_db = new ReservationsFollowUp;
             $follow_up_db->name = 'Sistema';
@@ -242,6 +261,16 @@ class SearchController extends Controller
             return $data;     
         }
 
+    }
+
+    public function getProvider($id){
+
+        $data = DB::select('SELECT id, name, transactional_phone, transactional_emails, is_default FROM providers WHERE destination_id = :id AND is_default = 1', [ 'id' => $id ]);
+        if(isset( $data[0] )):
+            return $data[0];
+        else:
+            return [];
+        endif;
     }
 
 }

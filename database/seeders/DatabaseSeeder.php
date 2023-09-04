@@ -51,6 +51,15 @@ class DatabaseSeeder extends Seeder
             'created_at' => now(),
             'updated_at' => now(),
         ]);
+        DB::table('providers')->insert([
+            'name' => 'Cancun Provider',
+            'transactional_phone' => '(998) 171-0512',
+            'transactional_emails' => 'development@caribbean-transfers.com, otrujillo.dev@gmail.com',
+            'is_default' => 1,
+            'destination_id' => 1,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
 
         #Zonas
         DB::table('zones')->insert([

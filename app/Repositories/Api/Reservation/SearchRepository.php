@@ -68,10 +68,12 @@ class SearchRepository{
 
     public function check(){
 
-        $rez = DB::select('SELECT res.id as reservation_id, item.code, res.destination_id, res.created_at, res.client_first_name, res.client_last_name, res.client_email, res.client_phone, res.currency, res.language, res.rate_group, res.is_cancelled, site.id as site_id, site.name as site_name, site.logo, site.color, site.transactional_email as email, site.transactional_email_send as send_email
+        $rez = DB::select('SELECT res.id as reservation_id, item.code, res.destination_id, res.created_at, res.client_first_name, res.client_last_name, res.client_email, res.client_phone, res.currency, res.language, res.rate_group, res.is_cancelled, site.id as site_id, site.name as site_name, site.logo, site.color, site.transactional_email as email, site.transactional_email_send as send_email, prov.name as provider_name, prov.transactional_phone as provider_transactional_phone, prov.transactional_emails as provider_transactional_email
                             FROM reservations_items as item 
                                 INNER JOIN reservations as res ON res.id = item.reservation_id
                                 INNER JOIN sites as site ON site.id = res.site_id
+                                INNER JOIN destinations as dest ON dest.id = res.destination_id
+                                LEFT JOIN providers as prov ON prov.id = dest.id
                             WHERE item.code = :code AND res.client_email = :email', 
                         [
                             'code' => $this->request['code'],
