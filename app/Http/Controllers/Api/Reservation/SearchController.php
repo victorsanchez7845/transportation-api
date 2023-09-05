@@ -55,6 +55,7 @@ class SearchController extends Controller
             'email' => 'required|email|max:75',
             'language' => 'required|in:en,es',
             'type' => 'required|in:new,update,cancel',
+            'provider' => 'in:1',
         ]);
 
         if ($validator->fails()) {
@@ -123,10 +124,10 @@ class SearchController extends Controller
                     $subject = '🎟 Reservación | '.$data['site']['name'];
                     break;
             }
-        endif;    
+        endif;
 
         $provider_email = [];
-        if(isset( $provider->id ) && !empty($provider->transactional_emails)):
+        if(isset( $provider->id ) && !empty($provider->transactional_emails) && isset($request->provider)):
             $emails = explode(",", trim($provider->transactional_emails));
             foreach($emails as $key => $value):
                 $provider_email[] = array(
@@ -156,7 +157,7 @@ class SearchController extends Controller
                 )
             )
         );
-
+    
         if(config('app.env') == "production"):
             $email_response = MailjetTrait::send($email_data);
         else:

@@ -92,6 +92,7 @@ class CreationRepository{
                             $data_rez['email'] = $rez_db->client_email;
                             $data_rez['language'] = $service_token['data']['request']['language'];
                             $data_rez['type'] = 'new';
+                            $data_rez['provider'] = '1';
 
                             //Si es un viaje sencillo y viaje redondo, se ejecuta el siguiente bloque de código.
                             if(in_array($service_token['data']['request']['type'], ['one-way', 'round-trip']) ):
