@@ -169,7 +169,7 @@ class CreationRepository{
                         $payments_db = new Payments;
                         $payments_db->description = (($service_token['data']['request']['language'] == "en")?'Pay at arrival':'Pago a la llegada');
                         $payments_db->total = $service_token['data']['item']['price'];
-                        $payments_db->exchange_rate = 0;
+                        $payments_db->exchange_rate = 1;
                         $payments_db->request_payment = 1;
                         $payments_db->payment_method = "CASH";
                         $payments_db->reservation_id = $rez_db->id;
