@@ -9,9 +9,11 @@ use Illuminate\Validation\Rule;
 use App\Repositories\Api\Reservation\SearchRepository;
 use Illuminate\Support\Facades\App;
 use App\Models\DestinationMail;
+use App\Traits\FunctionsTrait;
 
 class ReservationController extends Controller
 {
+    use FunctionsTrait;
 
     public function view(Request $request, SearchRepository $search){
          
@@ -44,8 +46,9 @@ class ReservationController extends Controller
         App::setLocale($request->language);        
         
         $mail = DestinationMail::where('destination_id', $data['config']['destination_id'])->get();
+        $creation_date = $this->getPrettyDate($data['config']['creation_date'], $request->language);
 
-        return view('mailing.transportation', ['data' => $data, 'mail' => $mail]);
+        return view('mailing.transportation', ['data' => $data, 'mail' => $mail, 'creation_date' => $creation_date]);
     }   
 
 }

@@ -39,5 +39,12 @@ return [
     'mailjet' => [
         'key' => env('MAILJET_KEY'),
         'secret' => env('MAILJET_SECRET'),
-    ]
+    ],
+    'jwt' => [
+        'key' => env('JWT_TOKEN'),
+    ],
+    'airbrake' => [
+        'id' => env('AIRBRAKE_ID'),
+        'key' => env('AIRBRAKE_KEY'),
+    ],
 ];

@@ -1,8 +1,5 @@
-@php
-    use App\Traits\FunctionsTrait;
-    $lang = app()->getLocale();
-    $creation_date = FunctionsTrait::getPrettyDate($data['config']['creation_date'], $lang);
-    
+@php    
+    $lang = app()->getLocale();    
     $reservation_status_label = $data['status'];
     switch ($lang) {
         case 'es':

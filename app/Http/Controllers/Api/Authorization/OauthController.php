@@ -63,7 +63,7 @@ class OauthController extends Controller
         );
 
         $data = [
-            "token" => TokenTrait::set($item, (24 * 7) ), //7 días de expiración del token
+            "token" => $this->set($item, (24 * 7) ), //7 días de expiración del token
             "token_type" => "Bearer",
             "expires_in" => ( 3600 * (24 * 7) )
         ];
