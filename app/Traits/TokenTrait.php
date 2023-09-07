@@ -7,7 +7,6 @@ use UnexpectedValueException;
 
 trait TokenTrait
 {
-    private static $key = '1234567890';
     /**
      * $data = []
      * $time = quantity in Hours
@@ -21,12 +20,12 @@ trait TokenTrait
             'data' => $data
         );
 
-        return JWT::encode($payload, self::$key, 'HS256');
+        return JWT::encode($payload, config('services.jwt.key'), 'HS256');
     }
 
     public static function get($jwt = []){
         try{
-            $decoded = JWT::decode($jwt, new Key(self::$key, 'HS256'));
+            $decoded = JWT::decode($jwt, new Key(config('services.jwt.key'), 'HS256'));
             return json_decode(json_encode($decoded), true);            
         }catch(\Exception $e){            
             return false;

@@ -110,7 +110,7 @@ class RatesRepository{
                     "vehicles" => $vehicles
                 ]
             ];
-            $token_data['item']['token'] = TokenTrait::set($token_data, 3);
+            $token_data['item']['token'] = $this->set($token_data, 3);
             $items[] = $token_data['item'];
 
         endforeach;
@@ -205,7 +205,7 @@ class RatesRepository{
                     "vehicles" => $vehicles
                 ]
             ];
-            $token_data['item']['token'] = TokenTrait::set($token_data, 3);
+            $token_data['item']['token'] = $this->set($token_data, 3);
             $items[] = $token_data['item'];
 
         endforeach;

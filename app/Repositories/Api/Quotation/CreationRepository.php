@@ -23,7 +23,7 @@ class CreationRepository{
     }
 
     public function checkServiceToken($request = []){
-        $token = TokenTrait::get( $this->request['service_token'] );
+        $token = $this->get( $this->request['service_token'] );
         if($token == false){
             return false;
         }else{
@@ -41,8 +41,8 @@ class CreationRepository{
 
             DB::beginTransaction();           
             
-            $bearer_token = TokenTrait::get( $this->bearer );
-            $service_token = TokenTrait::get( $this->request['service_token'] );
+            $bearer_token = $this->get( $this->bearer );
+            $service_token = $this->get( $this->request['service_token'] );
 
             $site = $this->getSite($this->request['site_id']);
             if(!isset($site[0]->id)):
@@ -85,7 +85,7 @@ class CreationRepository{
                         //Insertamos los códigos de reservación, esto se aplico porque un cliente puede tener multiples reservaciones en caso de que haya superado el limite de capacidad dela uto.
                         $rez_item_db = new ReservationsItems;
                         $rez_item_db->reservation_id = $rez_db->id;
-                        $rez_item_db->code = CodeTrait::generateCode();
+                        $rez_item_db->code = $this->generateCode();
                         if($rez_item_db->save()):
                             
                             $data_rez['code'] = $rez_item_db->code;
@@ -188,7 +188,7 @@ class CreationRepository{
                 DB::commit();
                 
                 //Enviar correo de reservación
-                FunctionsTrait::sendEmail(config('app.url')."/api/v1/reservation/send", $data_rez);        
+                $this->sendEmail(config('app.url')."/api/v1/reservation/send", $data_rez);        
 
                 $data['status'] = true;
                 $data['data'] = $data_rez;

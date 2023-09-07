@@ -9,6 +9,7 @@ use App\Traits\TokenTrait;
 
 class Auth
 {
+    use TokenTrait;
     /**
      * Handle an incoming request.
      *
@@ -26,7 +27,9 @@ class Auth
             ], Response::HTTP_UNAUTHORIZED);
         }
 
-        $token = TokenTrait::get( $bearerToken );
+        $token = $this->get($bearerToken);
+        
+        //$token = TokenTrait::get( $bearerToken );
         if($token == false){
             return response()->json([
                 'error' => [
