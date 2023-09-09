@@ -159,7 +159,7 @@ class SearchController extends Controller
         );
     
         if(config('app.env') == "production"):
-            $email_response = MailjetTrait::send($email_data);
+            $email_response = $this->sendMailjet($email_data);
         else:
             $email_response['Messages'][0]['Status'] = 'success';
         endif;

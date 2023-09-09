@@ -26,7 +26,7 @@ trait MailjetTrait
     *  );
     
      */
-    public static function send( $data = [] ){
+    public static function sendMailjet( $data = [] ){
         
         $curl = curl_init();
     
