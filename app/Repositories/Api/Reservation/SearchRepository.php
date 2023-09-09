@@ -26,7 +26,7 @@ class SearchRepository{
 
         $sales = $this->getSales( $rez->reservation_id );        
         $payments = $this->getPayments( $rez->reservation_id );
-        
+       
         $status = "PENDING";
         if($payments['total'] >= $sales['total']):
             $status = "CONFIRMED";
@@ -89,36 +89,35 @@ class SearchRepository{
 
     public function getItems($id){
         $items = DB::select('SELECT item.code, IFNULL(serv_type_translate.translation, serv_type.name) AS service_name, serv_type.image_url,
-            serv.from_name, serv.from_lat, serv.from_lng, serv.from_zone, serv.to_name, serv.to_lat, serv.to_lng, serv.to_zone, serv.distance_time, serv.distance_km, serv.status, serv.pickup, serv.flight_number, serv.passengers,
-            zoneInit.name as zone_name_init, zoneEnd.name as zone_name_end
-            FROM reservations_items as item
-            INNER JOIN reservations_services as serv ON serv.reservation_item_id = item.id
-            INNER JOIN destination_services as serv_type ON serv_type.id = serv.destination_service_id
-            LEFT JOIN destination_services_translate as serv_type_translate ON serv_type_translate.destination_services_id = serv_type.id AND serv_type_translate.lang = :lang
-            INNER JOIN zones as zoneInit ON zoneInit.id = serv.from_zone
-            INNER JOIN zones as zoneEnd ON zoneEnd.id = serv.to_zone
-            WHERE item.reservation_id = :id
-            ORDER BY item.id ASC, serv.pickup ASC', 
+        item.from_name, item.from_lat, item.from_lng, item.from_zone, item.to_name, item.to_lat, item.to_lng, item.to_zone, item.distance_time, 
+        item.distance_km, item.op_one_status, item.op_one_pickup, item.flight_number, item.passengers, item.op_two_status, item.op_two_pickup, item.is_round_trip,
+        zoneInit.name as zone_name_init, zoneEnd.name as zone_name_end
+        FROM reservations_items as item            
+        INNER JOIN destination_services as serv_type ON serv_type.id = item.destination_service_id
+        LEFT JOIN destination_services_translate as serv_type_translate ON serv_type_translate.destination_services_id = serv_type.id AND serv_type_translate.lang = :lang
+        INNER JOIN zones as zoneInit ON zoneInit.id = item.from_zone
+        INNER JOIN zones as zoneEnd ON zoneEnd.id = item.to_zone
+        WHERE item.reservation_id = :id', 
                         [
                             'id' => $id,
                             'lang' => $this->request['language']
                         ]);
-        if(sizeof($items) <= 0) return [];
         
+        if(sizeof($items) <= 0) return [];
+
         $data = [];
         foreach($items as $key => $value):
-            if( !isset($data[ $value->code ]) ):
-                $data[ $value->code ] = [];
-            endif;
 
-            $data[ $value->code ][] = [
+            $data[ $value->code ] = [
                 "code" => $value->code,
                 "service_type_name" => $value->service_name,
                 "service_type_image" => $value->image_url,
                 "service_status" => $value->status,
                 "passengers" => $value->passengers,
-                "pickup" => $value->pickup,
+                "pickup" => $value->op_one_pickup,
                 "flight_number" => $value->flight_number,
+                "is_round_trip" => $value->is_round_trip,
+                "departure_pickup" => ((!empty($value->op_two_pickup))? $value->op_two_pickup : NULL),
                 "time" => [
                     "time" => $value->distance_time,
                     "distance" => $value->distance_km,
@@ -139,6 +138,7 @@ class SearchRepository{
                 ]
             ];
         endforeach;
+
         return $data;
     }
 
@@ -191,7 +191,7 @@ class SearchRepository{
             "items" => []
         ];
         
-        $payments = DB::select('SELECT description, total, exchange_rate, payment_method, request_payment
+        $payments = DB::select('SELECT description, total, exchange_rate, payment_method
                     FROM payments
                 WHERE reservation_id = :id', 
                         [
@@ -202,7 +202,7 @@ class SearchRepository{
         endif;
 
         $sum = array_reduce($payments, function($carry, $item) {
-            return $carry + $item->total;
+            return $carry + ($item->total * $item->exchange_rate);
         }, 0);
 
         $data['total'] = $sum;
