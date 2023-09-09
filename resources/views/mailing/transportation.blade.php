@@ -202,8 +202,14 @@
                                         <tbody>
                                             <tr>
                                                 <td><p style="font-weight:bold; font-size: 18pt;">{{$key}}</p></td>
-                                                <td rowspan="4" style="text-align:right;">
+                                                <td rowspan="5" style="text-align:right;">
                                                     <img src="{{config('app.url')}}/api/v1/reservation/qr?code={{$key}}" width="250">
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <p class="label">{{ __('mailing/client.type') }}</p>
+                                                    <p>{{ (($value['is_round_trip'] == 0)? __('mailing/client.one_way') : __('mailing/client.round_trip') ) }}</p>
                                                 </td>
                                             </tr>
                                             <tr>
@@ -234,49 +240,41 @@
                                                             @php
                                                                 $itemCount = 0;
                                                             @endphp
-                                                            @foreach($value as $keyItem => $valueItem)
                                                             <tr>
                                                                 <td>
                                                                     <p class="label">{{ __('mailing/client.from') }}</p>
-                                                                    <p>{{ $valueItem['from']['name'] }}</p>
+                                                                    <p>{{ $value['from']['name'] }}</p>
                                                                 </td>
                                                                 <td>
                                                                     <p class="label">{{ __('mailing/client.to') }}</p>
-                                                                    <p>{{ $valueItem['to']['name'] }}</p>
+                                                                    <p>{{ $value['to']['name'] }}</p>
                                                                 </td>
                                                             </tr>
                                                             <tr>
                                                                 <td>
                                                                     <p class="label">{{ __('mailing/client.pickup') }}</p>
-                                                                    <p>{{ $valueItem['pickup'] }}</p>
+                                                                    <p>{{ $value['pickup'] }}</p>
+                                                                    <p class="label" style="margin-top:8px;">{{ __('mailing/client.departure_pickup') }}</p>
+                                                                    <p>{{ $value['departure_pickup'] }}</p>
                                                                 </td>
-                                                                <td>
+                                                                <td style="vertical-align: baseline;">
                                                                     <p class="label">{{ __('mailing/client.passengers') }}</p>
-                                                                    <p>{{ $valueItem['passengers'] }}</p>
+                                                                    <p>{{ $value['passengers'] }}</p>
                                                                 </td>
                                                             </tr>
                                                             
                                                             <tr>
                                                                 <td>                                                                    
                                                                     <p class="label">{{ __('mailing/client.service_type') }}</p>
-                                                                    <p>{{ $valueItem['service_type_name'] }}</p>                                                                    
+                                                                    <p>{{ $value['service_type_name'] }}</p>                                                                    
                                                                 </td>
-                                                                @if(!empty(trim($valueItem['flight_number'])))
+                                                                @if(!empty(trim($value['flight_number'])))
                                                                 <td>                                                                    
                                                                     <p class="label">{{ __('mailing/client.flight_number') }}</p>
-                                                                    <p>{{ $valueItem['flight_number'] }}</p>                                                                    
+                                                                    <p>{{ $value['flight_number'] }}</p>                                                                    
                                                                 </td>
                                                                 @endif
                                                             </tr>
-                                                           
-                                                            
-                                                                @php
-                                                                    $itemCount++;
-                                                                    if(sizeof($value) > 1 && $itemCount == 1):
-                                                                        echo '<tr><td colspan="2"><hr></td></tr>';
-                                                                    endif;
-                                                                @endphp
-                                                            @endforeach
                                                         </tbody>
                                                     </table>
                                                 </td>

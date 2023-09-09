@@ -76,6 +76,10 @@ class CreationRepository{
                 $rez_db->is_commissionable = $is_commissionable;    
                 $rez_db->site_id = $this->request['site_id'];
                 $rez_db->destination_id = $zones_data['start']['data']['destination']['id'];
+                if($pay_at_arrival):
+                    $rez_db->pay_at_arrival = 1;
+                endif;
+
                 if($rez_db->save()):
                     
                     //Con este loop agregamos otro código de reservación en caso de que sobrepase el limite de la unidad (ASUR así lo pide).
@@ -86,6 +90,41 @@ class CreationRepository{
                         $rez_item_db = new ReservationsItems;
                         $rez_item_db->reservation_id = $rez_db->id;
                         $rez_item_db->code = $this->generateCode();
+
+                        $rez_item_db->destination_service_id = $service_token['data']['item']['id'];
+
+                        $rez_item_db->from_name = $service_token['data']['request']['start']['place'];
+                        $rez_item_db->from_lat = $service_token['data']['request']['start']['lat'];
+                        $rez_item_db->from_lng = $service_token['data']['request']['start']['lng'];
+                        $rez_item_db->from_zone = $zones_data['start']['data']['zone']['id'];
+
+                        $rez_item_db->to_name = $service_token['data']['request']['end']['place'];
+                        $rez_item_db->to_lat = $service_token['data']['request']['end']['lat'];
+                        $rez_item_db->to_lng = $service_token['data']['request']['end']['lng'];
+                        $rez_item_db->to_zone = $zones_data['end']['data']['zone']['id'];
+
+                        $rez_item_db->distance_time = ((isset($distance_data['time_seconds']))? $distance_data['time_seconds'] :  0);
+                        $rez_item_db->distance_km = ((isset($distance_data['distance']))? $distance_data['distance'] : '');
+                        
+                        $rez_item_db->is_round_trip = 0;
+                        if(in_array($service_token['data']['request']['type'], ['round-trip']) ):
+                            $rez_item_db->is_round_trip = 1;
+                        endif;
+                        
+                        $rez_item_db->flight_number = $this->request['flight_number'];
+                        $rez_item_db->flight_data = '';
+                        $rez_item_db->passengers = ( $service_token['data']['request']['passengers'] / $quantity);
+
+
+                        $rez_item_db->op_one_status = 'PENDING';                        
+                        $rez_item_db->op_one_pickup = $service_token['data']['request']['start']['pickup'];
+                        
+                        
+                        if(in_array($service_token['data']['request']['type'], ['round-trip']) ):
+                            $rez_item_db->op_two_status = 'PENDING';
+                            $rez_item_db->op_two_pickup = $service_token['data']['request']['end']['pickup'];
+                        endif;
+                        
                         if($rez_item_db->save()):
                             
                             $data_rez['code'] = $rez_item_db->code;
@@ -93,7 +132,8 @@ class CreationRepository{
                             $data_rez['language'] = $service_token['data']['request']['language'];
                             $data_rez['type'] = 'new';
                             $data_rez['provider'] = '1';
-
+                           
+                            /*
                             //Si es un viaje sencillo y viaje redondo, se ejecuta el siguiente bloque de código.
                             if(in_array($service_token['data']['request']['type'], ['one-way', 'round-trip']) ):
                                 $service_db = new ReservationsServices;
@@ -144,7 +184,7 @@ class CreationRepository{
                                 $service_db->flight_data = '';
                                 $service_db->passengers = ( $service_token['data']['request']['passengers'] / $quantity);
                                 $service_db->save();
-                            endif;
+                            endif;*/
 
                         endif;
 
@@ -165,17 +205,6 @@ class CreationRepository{
                     $sales_db->reservation_id = $rez_db->id;
                     $sales_db->save();
 
-                    if($pay_at_arrival):
-                        $payments_db = new Payments;
-                        $payments_db->description = (($service_token['data']['request']['language'] == "en")?'Pay at arrival':'Pago a la llegada');
-                        $payments_db->total = $service_token['data']['item']['price'];
-                        $payments_db->exchange_rate = 1;
-                        $payments_db->request_payment = 1;
-                        $payments_db->payment_method = "CASH";
-                        $payments_db->reservation_id = $rez_db->id;
-                        $payments_db->save();
-                    endif;
-
                     $follow_up_db = new ReservationsFollowUp;
                     $follow_up_db->name = 'Cliente';
                     $follow_up_db->text = $this->request['special_request'];
@@ -186,6 +215,8 @@ class CreationRepository{
                 endif;
                 
                 DB::commit();
+                
+                die("FIN");
                 
                 //Enviar correo de reservación
                 $this->sendEmail(config('app.url')."/api/v1/reservation/send", $data_rez);        
