@@ -216,8 +216,6 @@ class CreationRepository{
                 
                 DB::commit();
                 
-                die("FIN");
-                
                 //Enviar correo de reservación
                 $this->sendEmail(config('app.url')."/api/v1/reservation/send", $data_rez);        
 
