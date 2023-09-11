@@ -47,4 +47,8 @@ return [
         'id' => env('AIRBRAKE_ID'),
         'key' => env('AIRBRAKE_KEY'),
     ],
+    'stripe' => [
+        'key' => env('STRIPE_KEY'),
+        'webhook_secret' => env('STRIPE_WEBHOOK_SECRET'),
+    ],
 ];

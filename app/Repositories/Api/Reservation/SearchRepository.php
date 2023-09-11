@@ -31,6 +31,12 @@ class SearchRepository{
         if($payments['total'] >= $sales['total']):
             $status = "CONFIRMED";
         endif;
+        
+        if($rez->pay_at_arrival == 1):
+            $status = "CONFIRMED";
+        endif;
+
+        $exchange_rate = $this->getExchange($rez->currency, "MXN", $sales['total']);
 
         $data = [
             "status" => $status,
@@ -60,6 +66,10 @@ class SearchRepository{
             "items" => $this->getItems( $rez->reservation_id ),
             "sales" => $sales,
             "payments" => $payments,
+            "conversion" => [
+                "total" => $exchange_rate,
+                "currency" => "MXN"
+            ],
             "history" => $this->getHistory( $rez->reservation_id ),
         ];
         
@@ -68,7 +78,7 @@ class SearchRepository{
 
     public function check(){
 
-        $rez = DB::select('SELECT res.id as reservation_id, item.code, res.destination_id, res.created_at, res.client_first_name, res.client_last_name, res.client_email, res.client_phone, res.currency, res.language, res.rate_group, res.is_cancelled, site.id as site_id, site.name as site_name, site.logo, site.color, site.transactional_email as email, site.transactional_email_send as send_email, prov.name as provider_name, prov.transactional_phone as provider_transactional_phone, prov.transactional_emails as provider_transactional_email
+        $rez = DB::select('SELECT res.id as reservation_id, res.pay_at_arrival, item.code, res.destination_id, res.created_at, res.client_first_name, res.client_last_name, res.client_email, res.client_phone, res.currency, res.language, res.rate_group, res.is_cancelled, site.id as site_id, site.name as site_name, site.logo, site.color, site.transactional_email as email, site.transactional_email_send as send_email, prov.name as provider_name, prov.transactional_phone as provider_transactional_phone, prov.transactional_emails as provider_transactional_email
                             FROM reservations_items as item 
                                 INNER JOIN reservations as res ON res.id = item.reservation_id
                                 INNER JOIN sites as site ON site.id = res.site_id
@@ -208,5 +218,22 @@ class SearchRepository{
         $data['total'] = $sum;
         $data['items'] = $payments;
         return $data;
+    }
+
+    public function getExchange($origin, $destination = "MXN", $total = 0){        
+        $items = DB::select('SELECT operation, exchange_rate
+                                FROM payments_exchange_rate
+                            WHERE origin = :origin AND destination = :destination
+                            LIMIT 1', 
+                        [
+                            'origin' => $origin,
+                            'destination' => $destination
+                        ]);
+
+        if($items[0]->operation == "multiplication"):
+            return number_format( ( $items[0]->exchange_rate * $total ) , 2, '.', '');            
+        else:
+            return number_format( ( $total / $items[0]->exchange_rate ) , 2, '.', '');       
+        endif;
     }
 }
