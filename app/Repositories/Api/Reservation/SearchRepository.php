@@ -34,9 +34,7 @@ class SearchRepository{
         
         if($rez->pay_at_arrival == 1):
             $status = "CONFIRMED";
-        endif;
-
-        $exchange_rate = $this->getExchange($rez->currency, "MXN", $sales['total']);
+        endif;        
 
         $data = [
             "status" => $status,
@@ -66,10 +64,6 @@ class SearchRepository{
             "items" => $this->getItems( $rez->reservation_id ),
             "sales" => $sales,
             "payments" => $payments,
-            "conversion" => [
-                "total" => $exchange_rate,
-                "currency" => "MXN"
-            ],
             "history" => $this->getHistory( $rez->reservation_id ),
         ];
         
@@ -220,20 +214,5 @@ class SearchRepository{
         return $data;
     }
 
-    public function getExchange($origin, $destination = "MXN", $total = 0){        
-        $items = DB::select('SELECT operation, exchange_rate
-                                FROM payments_exchange_rate
-                            WHERE origin = :origin AND destination = :destination
-                            LIMIT 1', 
-                        [
-                            'origin' => $origin,
-                            'destination' => $destination
-                        ]);
-
-        if($items[0]->operation == "multiplication"):
-            return number_format( ( $items[0]->exchange_rate * $total ) , 2, '.', '');            
-        else:
-            return number_format( ( $total / $items[0]->exchange_rate ) , 2, '.', '');       
-        endif;
-    }
+   
 }

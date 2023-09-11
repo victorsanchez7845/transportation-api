@@ -10,6 +10,7 @@ use App\Http\Controllers\Api\Quotation\CreationController;
 use App\Http\Controllers\Api\Flights\SearchController as FlightSearch;
 use App\Http\Controllers\Api\Mailing\ReservationController as MailingReservation;
 use App\Http\Controllers\Api\Reservation\SearchController as SearchReservation;
+use App\Http\Controllers\Api\Payments\HandlerController;
 use App\Http\Controllers\Api\Webhook\VerifyController;
 use App\Http\Middleware\Auth;
 
@@ -48,7 +49,11 @@ Route::middleware([Auth::class])->group(function () {
         Route::get('/reservation/qr', [SearchReservation::class,'makeqr'])->withoutMiddleware([Auth::class]);
 
         //Payments
+        Route::get('/reservation/payment/handler', [HandlerController::class,'index'])->withoutMiddleware([Auth::class]);
+
+        //Payments IPN
         Route::post('/ipn/stripe', [VerifyController::class,'stripe'])->withoutMiddleware([Auth::class]);
+        
     });
     
 });

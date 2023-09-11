@@ -51,4 +51,7 @@ return [
         'key' => env('STRIPE_KEY'),
         'webhook_secret' => env('STRIPE_WEBHOOK_SECRET'),
     ],
+    'paypal' => [
+        'merchant' => env('PAYPAL_MERCHANT_ID'),
+    ],
 ];
