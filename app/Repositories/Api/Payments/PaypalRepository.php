@@ -11,7 +11,7 @@ class PaypalRepository{
             "status" => false,            
         ];
 
-        $this->data = $request->all();        
+        $this->data = $request->all(); 
    
         $rez = DB::select("SELECT rez.id, rez.currency, site.payment_domain,
                             ROUND( COALESCE(SUM( s.total_sales ), 0), 2) as total_sales,
@@ -70,12 +70,15 @@ class PaypalRepository{
 
             // Construye la URL de PayPal
             $paypalURL = 'https://www.paypal.com/cgi-bin/webscr?cmd=_xclick';
+            //$paypalURL = 'https://www.sandbox.paypal.com/cgi-bin/webscr?cmd=_xclick';
             $paypalURL .= '&business=' . urlencode($merchantId);
             $paypalURL .= '&currency_code=' . urlencode($currency);
             $paypalURL .= '&amount=' . urlencode($total);
             $paypalURL .= '&item_name=' . urlencode($description); 
             $paypalURL .= '&return=' . urlencode($successUrl);
             $paypalURL .= '&cancel_return=' . urlencode($returnUrl);
+            $paypalURL .= '&notify_url=' . urlencode('https://api.caribbean-transfers.com/api/v1/ipn/paypal');
+            $paypalURL .= '&invoice='.$rez[0]->id;
 
             $response['status'] = true;
             $response['data'] = ['url' => $paypalURL];

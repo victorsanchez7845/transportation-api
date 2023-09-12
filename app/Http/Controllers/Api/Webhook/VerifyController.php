@@ -14,33 +14,8 @@ class VerifyController extends Controller
     
     public function stripe(Request $request, PaymentRepository $paymentRepository){
 
-        //$payload = @file_get_contents('php://input');
-        //$charge = json_decode($payload);
-        //$paymentIntent = $charge->object;                
-
-        // The library needs to be configured with your account's secret key.
-        // Ensure the key is kept out of any version control system you might be using.
-        //$stripe = new \Stripe\StripeClient(config('services.stripe.key'));
-
-        // This is your Stripe CLI webhook secret for testing your endpoint locally.
-        //$endpoint_secret = config('services.stripe.webhook_secret');
-
-        //$sig_header = $_SERVER['HTTP_STRIPE_SIGNATURE'];
-        
         $payload = @file_get_contents('php://input');
         $event = json_decode($payload);
-
-        /*try {
-            $event = \Stripe\Webhook::constructEvent(
-                $payload, $sig_header, $endpoint_secret
-            );
-        } catch(\UnexpectedValueException $e) {
-            http_response_code(400);
-            exit();
-        } catch(\Stripe\Exception\SignatureVerificationException $e) {
-            http_response_code(400);
-            exit();
-        }*/
 
         // Handle the event
         switch ($event->type) {
@@ -91,5 +66,53 @@ class VerifyController extends Controller
 
         http_response_code(200);
         //$stripe->index($request);
+    }
+
+    public function paypal(Request $request, PaymentRepository $paymentRepository){
+        
+        $payload = @file_get_contents('php://input');
+        $event = array();
+        parse_str($payload, $event);                
+
+        if(isset( $event['payment_status'] ) && $event['payment_status'] == "Completed"):
+            $check = $paymentRepository->checkReservation( $event['invoice'] );
+            if($check == false):
+                http_response_code(400);
+                exit();
+            endif;
+
+            $exchange = $paymentRepository->getExchange(strtoupper($event['mc_currency']), $check->currency);       
+            $data = [
+                'id' => $event['invoice'],
+                'total' => $event['mc_gross'],
+                'currency' => $event['mc_currency'],
+                'exchange_rate' => $exchange->exchange_rate,
+                'operation' => $exchange->operation,
+                'method' => 'PAYPAL',
+                'description' => 'PayPal',
+                'object' => json_encode($event),
+                'reference' => $event['txn_id'],
+            ];
+
+            //Guardamos el pago en la base de datos
+            $response = $paymentRepository->savePayment($data);
+            if( $response ):
+                //Envío de correo al cliente...
+                $email = [];
+                $email['code'] = $check->code;
+                $email['email'] = $check->client_email;
+                $email['language'] = $check->language;
+                $email['type'] = 'update';        
+                $this->sendEmail(config('app.url')."/api/v1/reservation/send", $email);  
+
+                http_response_code(200);
+                exit();
+            else:
+                http_response_code(400);
+                exit();
+            endif;
+
+        endif;
+        http_response_code(200);
     }
 }
