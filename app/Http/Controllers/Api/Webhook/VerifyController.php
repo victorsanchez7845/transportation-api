@@ -14,8 +14,8 @@ class VerifyController extends Controller
     
     public function stripe(Request $request, PaymentRepository $paymentRepository){
 
-        $payload = @file_get_contents('php://input');
-        $charge = json_decode($payload);
+        //$payload = @file_get_contents('php://input');
+        //$charge = json_decode($payload);
         //$paymentIntent = $charge->object;                
 
         // The library needs to be configured with your account's secret key.
@@ -26,22 +26,20 @@ class VerifyController extends Controller
         $endpoint_secret = config('services.stripe.webhook_secret');
 
         $payload = @file_get_contents('php://input');
-        $sig_header = $_SERVER['HTTP_STRIPE_SIGNATURE'];
-        $event = null;
+        //$sig_header = $_SERVER['HTTP_STRIPE_SIGNATURE'];
+        $event = json_decode($payload);
 
-        try {
+        /*try {
             $event = \Stripe\Webhook::constructEvent(
                 $payload, $sig_header, $endpoint_secret
             );
         } catch(\UnexpectedValueException $e) {
-            // Invalid payload
             http_response_code(400);
             exit();
         } catch(\Stripe\Exception\SignatureVerificationException $e) {
-            // Invalid signature
             http_response_code(400);
             exit();
-        }
+        }*/
 
         // Handle the event
         switch ($event->type) {
@@ -54,16 +52,18 @@ class VerifyController extends Controller
                     http_response_code(400);
                     exit();
                 endif;
-
+                
+                $exchange = $paymentRepository->getExchange("MXN", $check->currency);       
                 $data = [
-                'id' => $paymentIntent->metadata->reservation_id,
-                'total' => ($paymentIntent->amount / 100),
-                'currency' => "MXN",
-                'exchange_rate' => 1,
-                'method' => 'CARD',
-                'description' => 'Stripe',
-                'object' => json_encode($paymentIntent),
-                'reference' => $paymentIntent->id
+                    'id' => $paymentIntent->metadata->reservation_id,
+                    'total' => ($paymentIntent->amount / 100),
+                    'currency' => "MXN",
+                    'exchange_rate' => $exchange->exchange_rate,
+                    'operation' => $exchange->operation,
+                    'method' => 'CARD',
+                    'description' => 'Stripe',
+                    'object' => json_encode($paymentIntent),
+                    'reference' => $paymentIntent->id
                 ];
             
                 //Guardamos el pago en la base de datos
@@ -78,16 +78,12 @@ class VerifyController extends Controller
                     $this->sendEmail(config('app.url')."/api/v1/reservation/send", $email);  
 
                     http_response_code(200);
-                    $stripe->index($request);
+                    //$stripe->index($request);
                     exit();
                 else:
                     http_response_code(400);
                     exit();
                 endif;
-
-                echo "<pre>";
-                print_r($paymentIntent);
-                die();
             default:
                 echo 'Received unknown event type ' . $event->type;
         }
