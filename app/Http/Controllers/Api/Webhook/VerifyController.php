@@ -20,13 +20,14 @@ class VerifyController extends Controller
 
         // The library needs to be configured with your account's secret key.
         // Ensure the key is kept out of any version control system you might be using.
-        $stripe = new \Stripe\StripeClient(config('services.stripe.key'));
+        //$stripe = new \Stripe\StripeClient(config('services.stripe.key'));
 
         // This is your Stripe CLI webhook secret for testing your endpoint locally.
-        $endpoint_secret = config('services.stripe.webhook_secret');
+        //$endpoint_secret = config('services.stripe.webhook_secret');
 
-        $payload = @file_get_contents('php://input');
         //$sig_header = $_SERVER['HTTP_STRIPE_SIGNATURE'];
+        
+        $payload = @file_get_contents('php://input');
         $event = json_decode($payload);
 
         /*try {
@@ -89,6 +90,6 @@ class VerifyController extends Controller
         }
 
         http_response_code(200);
-        $stripe->index($request);
+        //$stripe->index($request);
     }
 }
