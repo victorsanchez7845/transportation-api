@@ -53,6 +53,7 @@ Route::middleware([Auth::class])->group(function () {
 
         //Payments IPN
         Route::post('/ipn/stripe', [VerifyController::class,'stripe'])->withoutMiddleware([Auth::class]);
+        Route::post('/ipn/paypal', [VerifyController::class,'paypal'])->withoutMiddleware([Auth::class]);
         
     });
     
