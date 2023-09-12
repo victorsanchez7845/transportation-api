@@ -167,7 +167,7 @@ class SearchRepository{
             return $carry + $item->total;
         }, 0);
 
-        $data['total'] = $sum;
+        $data['total'] = number_format($sum, 2, ".", "");
         $data['items'] = $sales;
         return $data;
     }
@@ -195,7 +195,7 @@ class SearchRepository{
             "items" => []
         ];
         
-        $payments = DB::select('SELECT description, total, exchange_rate, payment_method
+        $payments = DB::select('SELECT description, total, exchange_rate, currency, operation, payment_method
                     FROM payments
                 WHERE reservation_id = :id', 
                         [
@@ -206,10 +206,15 @@ class SearchRepository{
         endif;
 
         $sum = array_reduce($payments, function($carry, $item) {
-            return $carry + ($item->total * $item->exchange_rate);
+            if( $item->operation == "division"):
+                return $carry + ($item->total / $item->exchange_rate);
+            endif;
+            if( $item->operation == "multiplication"):
+                return $carry + ($item->total * $item->exchange_rate);
+            endif;
         }, 0);
 
-        $data['total'] = $sum;
+        $data['total'] = number_format($sum, 2, ".", "");
         $data['items'] = $payments;
         return $data;
     }

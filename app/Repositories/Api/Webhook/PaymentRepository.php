@@ -11,7 +11,7 @@ class PaymentRepository{
     private $request = [];
 
     public function checkReservation($id){
-                    $rez = DB::select('SELECT rez.id, rez.client_email, rez.language, it.code
+                    $rez = DB::select('SELECT rez.id, rez.client_email, rez.language, it.code, rez.currency
                                             FROM reservations as rez
                                         INNER JOIN reservations_items as it ON it.reservation_id = rez.id
                                          WHERE rez.id = :code
@@ -31,6 +31,7 @@ class PaymentRepository{
         $sales_db->description = $data['description'];
         $sales_db->total = $data['total'];
         $sales_db->exchange_rate = $data['exchange_rate'];
+        $sales_db->operation = $data['operation'];
         $sales_db->payment_method = $data['method'];
         $sales_db->currency = $data['currency'];
         $sales_db->object = $data['object'];
@@ -49,5 +50,18 @@ class PaymentRepository{
             return false;
         }
     }
+
+    public function getExchange($origin, $destination = "MXN"){        
+        $items = DB::select('SELECT operation, exchange_rate
+                                FROM payments_exchange_rate
+                            WHERE origin = :origin AND destination = :destination
+                            LIMIT 1', 
+                        [
+                            'origin' => $origin,
+                            'destination' => $destination
+                        ]);
+
+        return $items[0];
+    }    
 
 }
