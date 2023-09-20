@@ -15,7 +15,7 @@ class SearchRepository{
         $zones = $this->getZones();
         if($zones == false) return false;
 
-        $availability = $this->checkAvailability($zones);        
+        $availability = $this->checkAvailability($zones);
         if($availability == false) return false;
 
         //Seteamos la zona horaría del destino...

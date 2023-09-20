@@ -17,14 +17,14 @@ class RatesRepository{
         $this->data = $availability;
         $this->request = $request->all();
         $this->setExchangeRate();
-        
-        if( $this->data['start']['data']['zone']['is_primary'] == 1 || $this->data['end']['data']['zone']['is_primary'] == 1):
+        return $this->getTransferRates();
+
+        //if( $this->data['start']['data']['zone']['is_primary'] == 1 || $this->data['end']['data']['zone']['is_primary'] == 0):
             //Es un servicio que tiene que ver con la zona principal ( Aeropuerto->Destino | Destino->Aeropuerto )....
-            return $this->getGeneralRates();
-        else:
-            //Es un servicio que tiene que ver con transfers ( Destino->Destino | Destino->Destino )....
-            return $this->getTransferRates();
-        endif;
+            //return $this->getGeneralRates();
+        //else:
+            //Es un servicio que tiene que ver con transfers ( Destino->Destino | Destino->Destino )....            
+        //endif;
     }
 
     public function getGeneralRates(){
@@ -124,9 +124,9 @@ class RatesRepository{
     public function getTransferRates(){
 
         //Validamos si el punto de recogida y dejada están en la misma zona... si es así, se da el precio de la misma zona.
-        if($this->data['start']['data']['zone']['id'] == $this->data['end']['data']['zone']['id']):
-            return $this->getGeneralRates();
-        endif;
+        //if($this->data['start']['data']['zone']['id'] == $this->data['end']['data']['zone']['id']):
+            //return $this->getGeneralRates();
+        //endif;
 
         $rates = DB::select('SELECT rate.*, dest.name as destination_name, dest.status as destination_status, IFNULL(dest_trans.translation, serv.name) AS service_name, 
                                 serv.passengers, serv.luggage, serv.price_type, serv.image_url, serv.id as service_id,
@@ -137,7 +137,8 @@ class RatesRepository{
                             INNER JOIN zones as zoneB ON zoneB.id = rate.zone_two
                             INNER JOIN destination_services as serv ON serv.id = rate.destination_service_id
                             LEFT JOIN destination_services_translate as dest_trans ON dest_trans.destination_services_id = serv.id AND dest_trans.lang = :lang
-                            WHERE dest.status = 1 AND zoneA.status = 1 AND zoneB.status = 1 AND serv.status = 1 AND rate.rate_group_id = :rate_group AND ( (rate.zone_one = :zoneOne OR rate.zone_two = :zoneTwo) OR (rate.zone_one = :zoneThree OR rate.zone_two = :zoneFour) )
+                            INNER JOIN rates_groups as rg ON rg.id = rate.rate_group_id
+                            WHERE dest.status = 1 AND zoneA.status = 1 AND zoneB.status = 1 AND serv.status = 1 AND rg.code = :rate_group AND ( (rate.zone_one = :zoneOne OR rate.zone_two = :zoneTwo) OR (rate.zone_one = :zoneThree OR rate.zone_two = :zoneFour) )
                             ORDER BY serv.order ASC', 
                                     [
                                         'lang' => $this->request['language'],
@@ -147,6 +148,7 @@ class RatesRepository{
                                         'zoneThree' => $this->data['end']['data']['zone']['id'],
                                         'zoneFour' => $this->data['start']['data']['zone']['id'],
                                     ]);
+
         if(!$rates){
             return false;
         }
