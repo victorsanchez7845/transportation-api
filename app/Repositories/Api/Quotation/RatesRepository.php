@@ -138,7 +138,8 @@ class RatesRepository{
                             INNER JOIN destination_services as serv ON serv.id = rate.destination_service_id
                             LEFT JOIN destination_services_translate as dest_trans ON dest_trans.destination_services_id = serv.id AND dest_trans.lang = :lang
                             INNER JOIN rates_groups as rg ON rg.id = rate.rate_group_id
-                            WHERE dest.status = 1 AND zoneA.status = 1 AND zoneB.status = 1 AND serv.status = 1 AND rg.code = :rate_group AND ( (rate.zone_one = :zoneOne OR rate.zone_two = :zoneTwo) OR (rate.zone_one = :zoneThree OR rate.zone_two = :zoneFour) )
+                            WHERE dest.status = 1 AND zoneA.status = 1 AND zoneB.status = 1 AND serv.status = 1 AND rg.code = :rate_group 
+                            AND ( (rate.zone_one = :zoneOne AND rate.zone_two = :zoneTwo) OR (rate.zone_one = :zoneThree AND rate.zone_two = :zoneFour) )
                             ORDER BY serv.order ASC', 
                                     [
                                         'lang' => $this->request['language'],
