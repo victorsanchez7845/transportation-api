@@ -32,7 +32,7 @@ class CreationRepository{
     }
 
     public function create($distance, $search){
-
+  
         $data = [
             'status' => false
         ];
@@ -196,10 +196,15 @@ class CreationRepository{
                         $label = $service_token['data']['item']['name'].' | '.(($service_token['data']['request']['type'] == "one-way")?'Viaje Sencillo':'Viaje Redondo');
                     endif;
 
+                    $total = $service_token['data']['item']['price'];
+                    if( isset( $this->request['data']['callcenter']['total'] ) ):
+                        $total = $this->request['data']['callcenter']['total'];
+                    endif;
+
                     $sales_db = new Sales;
                     $sales_db->description = $label;
                     $sales_db->quantity = 1;
-                    $sales_db->total = $service_token['data']['item']['price'];
+                    $sales_db->total = $total;
                     $sales_db->call_center_agent_id = ((isset($this->request['call_center_agent']))? $this->request['call_center_agent'] : 0);
                     $sales_db->sale_type_id = 1;
                     $sales_db->reservation_id = $rez_db->id;
