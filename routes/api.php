@@ -12,6 +12,7 @@ use App\Http\Controllers\Api\Mailing\ReservationController as MailingReservation
 use App\Http\Controllers\Api\Reservation\SearchController as SearchReservation;
 use App\Http\Controllers\Api\Payments\HandlerController;
 use App\Http\Controllers\Api\Webhook\VerifyController;
+use App\Http\Controllers\Api\Contact\ContactController;
 use App\Http\Middleware\Auth;
 
 /*
@@ -54,6 +55,9 @@ Route::middleware([Auth::class])->group(function () {
         //Payments IPN
         Route::post('/ipn/stripe', [VerifyController::class,'stripe'])->withoutMiddleware([Auth::class]);
         Route::post('/ipn/paypal', [VerifyController::class,'paypal'])->withoutMiddleware([Auth::class]);
+
+        //Contact form
+        Route::post('/contact', [ContactController::class,'index'])->withoutMiddleware([Auth::class]);
         
     });
     
