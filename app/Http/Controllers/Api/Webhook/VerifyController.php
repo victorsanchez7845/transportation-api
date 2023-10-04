@@ -50,7 +50,7 @@ class VerifyController extends Controller
                     $email['code'] = $check->code;
                     $email['email'] = $check->client_email;
                     $email['language'] = $check->language;
-                    $email['type'] = 'update';        
+                    $email['type'] = 'confirmed';        
                     $this->sendEmail(config('app.url')."/api/v1/reservation/send", $email);  
 
                     http_response_code(200);

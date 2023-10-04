@@ -102,6 +102,9 @@ class SearchController extends Controller
                 case 'update':
                     $subject = '🎟 Your reservation data updated | '.$data['site']['name'];
                     break;
+                case 'confirmed':
+                        $subject = '🎟 Your reservation has been confirmed | '.$data['site']['name'];
+                        break;
                 case 'cancel':
                     $subject = '🎟 Reservation cancelled | '.$data['site']['name'];
                     break;
@@ -117,6 +120,9 @@ class SearchController extends Controller
                 case 'update':
                     $subject = '🎟 Datos de reservación actualizados | '.$data['site']['name'];
                     break;
+                case 'confirmed':
+                        $subject = '🎟 Tu reservación ha sido confirmada | '.$data['site']['name'];
+                        break;
                 case 'cancel':
                     $subject = '🎟 Reservación cancelada | '.$data['site']['name'];
                     break;
