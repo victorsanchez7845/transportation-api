@@ -106,9 +106,13 @@
         table.destinations_table td{
             width: 50%;
             padding-bottom: 10px;
+        }  
+        a.pink{
+            color: #FF3366;
+            text-decoration: none;
         }
-        .orange{
-            color: #FF7903;
+        td.important_information:empty{
+            padding: 0px !important;
         }
         .important_information p{
             margin-bottom: 8px;
@@ -134,7 +138,7 @@
 <body style="background-color: #f7fafb;">
     <div class="container">
         <div class="header">
-            <img src="{{ $data['site']['logo'] }}">
+            <img src="{{ $data['site']['logo'] }}" style="max-width:400px;">
         </div>
         <table class="table_init">
             <tbody>                
@@ -201,7 +205,10 @@
                                     <table style="width:100%;">
                                         <tbody>
                                             <tr>
-                                                <td><p style="font-weight:bold; font-size: 18pt;">{{$key}}</p></td>
+                                                <td>
+                                                    <p class="label">{{ __('mailing/client.booking_id') }}</p>
+                                                    <p style="font-size: 14pt;">{{$key}}</p>
+                                                </td>
                                                 <td rowspan="5" style="text-align:right;">
                                                     <img src="{{config('app.url')}}/api/v1/reservation/qr?code={{$key}}" width="250">
                                                 </td>
@@ -241,11 +248,11 @@
                                                                 $itemCount = 0;
                                                             @endphp
                                                             <tr>
-                                                                <td>
+                                                                <td style="vertical-align:baseline;">
                                                                     <p class="label">{{ __('mailing/client.from') }}</p>
                                                                     <p>{{ $value['from']['name'] }}</p>
                                                                 </td>
-                                                                <td>
+                                                                <td style="vertical-align:baseline;">
                                                                     <p class="label">{{ __('mailing/client.to') }}</p>
                                                                     <p>{{ $value['to']['name'] }}</p>
                                                                 </td>
@@ -254,8 +261,10 @@
                                                                 <td>
                                                                     <p class="label">{{ __('mailing/client.pickup') }}</p>
                                                                     <p>{{ $value['pickup'] }}</p>
-                                                                    <p class="label" style="margin-top:8px;">{{ __('mailing/client.departure_pickup') }}</p>
-                                                                    <p>{{ $value['departure_pickup'] }}</p>
+                                                                    @if(!empty(trim($value['departure_pickup'])))
+                                                                        <p class="label" style="margin-top:8px;">{{ __('mailing/client.departure_pickup') }}</p>
+                                                                        <p>{{ $value['departure_pickup'] }}</p>
+                                                                    @endif
                                                                 </td>
                                                                 <td style="vertical-align: baseline;">
                                                                     <p class="label">{{ __('mailing/client.passengers') }}</p>
@@ -286,13 +295,13 @@
                         @endif
 
                         <div>
-                            <p style="margin: 15px 0px 5px 0px;"><strong>{{ __('mailing/client.indications') }}</strong></p>
+                            <p style="margin: 15px 0px 5px 0px; font-size:14pt;"><strong>{{ __('mailing/client.indications') }}</strong></p>
                             @if($lang == "en")
                                 <p style="margin-bottom: 8px;">In this email you will find a summary of your reservation information, it is important that you can validate that the information is correct, and in case of any change in the information of your flight, doubts or clarifications contact us so we can assist you in the best possible way.</p>
-                                <p>If you are at the airport or at your hotel and do not see us, <span class="orange">call us at +52 (998) 294 2389</span> or send us a WhatsApp to the same number.</p>
+                                <p>If you are at the airport or at your hotel and do not see us, call us at <a class="pink" href="tel:+529983870157">+52 (998) 387 0157</a> or send us a WhatsApp to <a class="pink" href="https://api.whatsapp.com/send?phone=529987374906&text=Hello!">+52 (998) 737 4906</a>.</p>
                             @else
                                 <p style="margin-bottom: 8px;">En este correo electrónico encontrarás un resumen de la información de tu reservación, es importante que puedas validar que la información es correcta, y en caso de algún cambio en la información de tu vuelo, dudas o aclaraciones contáctanos para poder atenderte de la mejor manera posible.</p>
-                                <p>Si estás en el Aeropuerto o en tu Hotel y no nos ves, <span class="orange">llámanos al +52 (998) 294 2389</span> o envíanos un WhatsApp al mismo número.</p>
+                                <p>Si estás en el Aeropuerto o en tu Hotel y no nos ves, llámanos al <a class="pink" href="tel:+529983870157">+52 (998) 387 0157</a> o envíanos un WhatsApp al <a class="pink" href="https://api.whatsapp.com/send?phone=529987374906&text=%C2%A1Hola!">+52 (998) 737 4906</a>.</p>
                             @endif                            
                         </div>
                     </td>                    
@@ -310,7 +319,9 @@
                 </tr>
                 <tr>
                     <td>
-                        <img src="https://ik.imagekit.io/zqiqdytbq/transportation-api/mailing/banner/banner.png" style="width:600px;">
+                        <a href="https://www.tripadvisor.com/Attraction_Review-g150807-d25085358-Reviews-Caribbean_Transfers-Cancun_Yucatan_Peninsula.html" target="_blank">
+                            <img src="https://ik.imagekit.io/zqiqdytbq/transportation-api/mailing/banner/banner.png" style="width:600px;">
+                        </a>
                     </td>
                 </tr>
                 <tr>
@@ -332,24 +343,24 @@
                             <h5>Cancellation Policy</h5> 
                             <p class="gray_color">Cancellations can only be made 24 hours prior to arrival or departure.</p>
                             <h5>Service Hours</h5> 
-                            <p class="gray_color">In case of change of time of service can be made if you contact us 12 hours before the agreed time because you have to reschedule your service. Contact us 24 hours a day at +52 9982942389 or email sales@taxirivieramaya.com</p>
+                            <p class="gray_color">In case of change of time of service can be made if you contact us 12 hours before the agreed time because you have to reschedule your service. Contact us from 7AM to 11PM from Monday to Sunday at <a class="pink" href="tel:+529983870157">+52 (998) 387 0157</a> or email <a class="pink" href="mailto:bookings@caribbean-transfers.com">bookings@caribbean-transfers.com</a></p>
                         @else
                             <p>Les deseamos que pasen unos dias gratamente inolvidables.</p>
                             <h4>Políticas</h4>
                             <h5>Politicas Para Cancelacion</h5> 
                             <p class="gray_color">Unicamente se podra cancelar el servicio 24 hrs antes de su servicio sea llegada o salida.</p>
                             <h5>Horario de Servicio</h5> 
-                            <p class="gray_color">En caso de cambio de hora de servicio se podra efectuar si se comunica 12 hrs antes de la hora acordada ya que se tiene que reprogramar su servicio. Contáctanos las 24 hrs al numero +52 9982942389 o al correo sales@taxirivieramaya.com</p>
+                            <p class="gray_color">En caso de cambio de hora de servicio se podra efectuar si se comunica 12 hrs antes de la hora acordada ya que se tiene que reprogramar su servicio. Contáctanos de 7AM a 11PM de Lunes a Domingo al numero <a class="pink" href="tel:+529983870157">+52 (998) 387 0157</a> o al correo <a class="pink" href="mailto:bookings@caribbean-transfers.com">bookings@caribbean-transfers.com</a></p>
                         @endif
                     </td>
                 </tr>
                 <tr>
                     <td style="padding: 15px; text-align:center;">
                         <div>
-                            <a href="#"><img src="https://ik.imagekit.io/zqiqdytbq/transportation-api/mailing/social/facebook.png?updatedAt=1692978703979" style="margin-right: 15px;"></a>
-                            <a href="#"><img src="https://ik.imagekit.io/zqiqdytbq/transportation-api/mailing/social/instagram.png?updatedAt=1692978703965"></a>
+                            <a href="https://www.facebook.com/caribbeantransferscun" target="_blank"><img src="https://ik.imagekit.io/zqiqdytbq/transportation-api/mailing/social/facebook.png?updatedAt=1692978703979" style="margin-right: 15px;"></a>
+                            <!--<a href="#" target="_blank"><img src="https://ik.imagekit.io/zqiqdytbq/transportation-api/mailing/social/instagram.png?updatedAt=1692978703965"></a>-->
                         </div>
-                        <p style="font-size: 11pt; color: #6A829E;">Caribbean Transfers | {{ __('mailing/client.rights_reserved') }}</p>
+                        <p style="font-size: 11pt; color: #6A829E;">&copy; Caribbean Transfers | {{ __('mailing/client.rights_reserved') }}</p>
                     </td>
                 </tr>
             </tbody>
