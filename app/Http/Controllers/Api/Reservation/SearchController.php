@@ -94,7 +94,7 @@ class SearchController extends Controller
             return response()->json($template['data'], 404);
         endif;
 
-        if($request['type'] == "en"):
+        if($request['language'] == "en"):
             switch ($request['type']) {
                 case 'new':
                     $subject = '🎟 Thank you for booking with us | '.$data['site']['name'];
