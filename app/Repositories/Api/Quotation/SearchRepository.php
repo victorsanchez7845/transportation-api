@@ -21,23 +21,25 @@ class SearchRepository{
         //Seteamos la zona horaría del destino...
         date_default_timezone_set($availability['start']['data']['destination']['time_zone']);
         
-        //Sumamos a la fecha y hora actual, la cantidad de horas de CUT_OFF, para saber si nos dará tiempo pasar por el cliente...
-        $time = date('Y-m-d H:i', strtotime(date("Y-m-d H:i")) + ( $availability['start']['data']['destination']['cut_off']  * 3600) );
-        if($this->data['start']['pickup'] < $time){            
-            return false;
-        }
-
-        //Si es round-trip, validamos que no sea menor a la fecha de pickup y también validamos que esté dentro del CUT_OFF
-        if($this->data['type'] == "round-trip"){
-            if($this->data['end']['pickup'] <= $this->data['start']['pickup']){
-                return false;
-            }
+        if(!isset( $this->data['lastminute'] )):
+            //Sumamos a la fecha y hora actual, la cantidad de horas de CUT_OFF, para saber si nos dará tiempo pasar por el cliente...
             $time = date('Y-m-d H:i', strtotime(date("Y-m-d H:i")) + ( $availability['start']['data']['destination']['cut_off']  * 3600) );
-            if($this->data['end']['pickup'] < $time){            
+            if($this->data['start']['pickup'] < $time){            
                 return false;
             }
-        }
 
+            //Si es round-trip, validamos que no sea menor a la fecha de pickup y también validamos que esté dentro del CUT_OFF
+            if($this->data['type'] == "round-trip"){
+                if($this->data['end']['pickup'] <= $this->data['start']['pickup']){
+                    return false;
+                }
+                $time = date('Y-m-d H:i', strtotime(date("Y-m-d H:i")) + ( $availability['start']['data']['destination']['cut_off']  * 3600) );
+                if($this->data['end']['pickup'] < $time){            
+                    return false;
+                }
+            }
+        endif;
+        
         return $availability;
         
     }
