@@ -64,6 +64,11 @@ class CreationRepository{
             $zones_data = $search->findDestinations( new \Illuminate\Http\Request($service_token['data']['request']) ); //Identificamos a que zona pertenecen los puntos..
             $quantity = $service_token['data']['item']['vehicles']; //Cantidad de reservaciones a crear
             $data_rez = [];
+
+            $reference = '';
+            if( isset( $this->request['data']['callcenter']['reference'] ) ):
+                $reference = $this->request['data']['callcenter']['reference'];
+            endif;
                            
                 $rez_db = new Reservations;                
                 $rez_db->client_first_name = $this->request['first_name'];
@@ -76,6 +81,7 @@ class CreationRepository{
                 $rez_db->is_commissionable = $is_commissionable;    
                 $rez_db->site_id = $this->request['site_id'];
                 $rez_db->destination_id = $zones_data['start']['data']['destination']['id'];
+                $rez_db->reference = $reference;
                 if($pay_at_arrival):
                     $rez_db->pay_at_arrival = 1;
                 endif;
