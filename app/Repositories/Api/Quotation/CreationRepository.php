@@ -216,12 +216,14 @@ class CreationRepository{
                     $sales_db->reservation_id = $rez_db->id;
                     $sales_db->save();
 
-                    $follow_up_db = new ReservationsFollowUp;
-                    $follow_up_db->name = 'Cliente';
-                    $follow_up_db->text = $this->request['special_request'];
-                    $follow_up_db->type = 'CLIENT';
-                    $follow_up_db->reservation_id = $rez_db->id;
-                    $follow_up_db->save();
+                    if(isset( $this->request['special_request'] )):
+                        $follow_up_db = new ReservationsFollowUp;
+                        $follow_up_db->name = 'Cliente';
+                        $follow_up_db->text = $this->request['special_request'];
+                        $follow_up_db->type = 'CLIENT';
+                        $follow_up_db->reservation_id = $rez_db->id;
+                        $follow_up_db->save();
+                    endif;
 
                 endif;
                 

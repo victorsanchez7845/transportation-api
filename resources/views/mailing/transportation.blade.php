@@ -261,7 +261,7 @@
                                                                 <td>
                                                                     <p class="label">{{ __('mailing/client.pickup') }}</p>
                                                                     <p>{{ $value['pickup'] }}</p>
-                                                                    @if(!empty(trim($value['departure_pickup'])))
+                                                                    @if(!empty($value['departure_pickup']))
                                                                         <p class="label" style="margin-top:8px;">{{ __('mailing/client.departure_pickup') }}</p>
                                                                         <p>{{ $value['departure_pickup'] }}</p>
                                                                     @endif
@@ -277,7 +277,7 @@
                                                                     <p class="label">{{ __('mailing/client.service_type') }}</p>
                                                                     <p>{{ $value['service_type_name'] }}</p>                                                                    
                                                                 </td>
-                                                                @if(!empty(trim($value['flight_number'])))
+                                                                @if(!empty($value['flight_number']))
                                                                 <td>                                                                    
                                                                     <p class="label">{{ __('mailing/client.flight_number') }}</p>
                                                                     <p>{{ $value['flight_number'] }}</p>                                                                    

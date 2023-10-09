@@ -22,6 +22,11 @@ class VerifyController extends Controller
             case 'charge.succeeded':
                 $paymentIntent = $event->data->object;
 
+                if(!isset( $paymentIntent->metadata->reservation_id )):
+                    http_response_code(400);
+                    exit();
+                endif;
+
                 //Verificar que exista la reservación
                 $check = $paymentRepository->checkReservation($paymentIntent->metadata->reservation_id);
                 if($check == false):

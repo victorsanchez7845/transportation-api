@@ -116,7 +116,7 @@ class SearchRepository{
                 "code" => $value->code,
                 "service_type_name" => $value->service_name,
                 "service_type_image" => $value->image_url,
-                "service_status" => $value->status,
+                //"service_status" => $value->status,
                 "passengers" => $value->passengers,
                 "pickup" => $value->op_one_pickup,
                 "flight_number" => $value->flight_number,
