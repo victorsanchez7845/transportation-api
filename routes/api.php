@@ -40,6 +40,7 @@ Route::middleware([Auth::class])->group(function () {
 
         //Nota: En producción habilitar el pago, para habilitar el HTTPS y la busqueda por fecha...
         Route::post('/flights/search', [FlightSearch::class,'index']);
+        Route::post('/flights/searchByDate', [FlightSearch::class,'searchDate']);
 
         //Mailing
         Route::get('/mailing/reservation/view', [MailingReservation::class,'view'])->withoutMiddleware([Auth::class]);

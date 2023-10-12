@@ -40,13 +40,104 @@ class SearchRepository{
         ];
     }
 
-    public function send(){
-        $queryString = http_build_query([
+    public function getFlightsByDate($request){
+        
+        $this->request = $request->all();
+        $items = [            
+            "arr_iata" => $this->request['iata_code'],
+            'flight_date' => $this->request['date'],
+        ];
+
+        $data = $this->send($items);
+        if( !isset(  $data['pagination']['total'] ) ||  $data['pagination']['total'] <= 0):
+            return [];
+        endif;
+        
+        //Con este código buscamos los demás datos de las aerolíneas que están paginadas...
+        if( $data['pagination']['total'] > 100 ):
+            $new_data = $this->fetchNextData($data['pagination']);
+            $data['data'] = array_merge($data['data'], $new_data);
+        endif;        
+
+        return $this->filterData($data['data']);        
+    }
+
+    public function filterData($data){
+        $items = [];
+
+        foreach( $data as $key => $value ):
+            if( !isset(  $items[ $value['departure']['airport'] ][ $value['airline']['name'] ] ) ):
+                $items[ $value['departure']['airport'] ][ $value['airline']['name'] ] = [];
+            endif;
+
+            $arrival_original_date = new \DateTime( $value['arrival']['scheduled'] );
+            $departure_original_date = new \DateTime( $value['departure']['scheduled'] );
+
+            $items[ $value['departure']['airport'] ][ $value['airline']['name'] ][] = [
+                "flightNumber" => $value['flight']['iata'],
+                "terminal" => $value['arrival']['terminal'],
+                "airlineCode" => $value['airline']['iata'],
+                "flightArrivalTime" => $arrival_original_date->format('H:i'),
+                "originIata" => $value['departure']['iata'],
+                "arrivalAirport" => $value['arrival']['airport'],
+                "airlineName" => $value['airline']['name'],
+                "flightDepartureDateTime" => $value['departure']['scheduled'],
+                "flightArrivalDateTime" => $value['arrival']['scheduled'],
+                "airports" => [
+                    "arrival" => [
+                        "name" => $value['arrival']['airport'],
+                        "iata" => $value['arrival']['iata'],
+                        "time" => $arrival_original_date->format('H:i'),
+                        "timeZoneRegionName" => $value['arrival']['timezone']
+                    ],
+                    "departure" => [
+                        "name" => $value['departure']['airport'],
+                        "iata" => $value['departure']['iata'],
+                        "time" => $departure_original_date->format('H:i'),
+                        "timeZoneRegionName" => $value['departure']['timezone']
+                    ]
+                ]
+            ];
+
+        endforeach;
+
+        return $items;
+    }
+
+    function fetchNextData($pagination) {
+        $data = array();
+
+        $items = [            
+            "arr_iata" => $this->request['iata_code'],
+            'flight_date' => $this->request['date'],          
+        ];
+        
+        while ($pagination['offset'] + $pagination['limit'] < $pagination['total']) {            
+            // Calcular los valores para la siguiente solicitud.
+            $pagination['offset'] += $pagination['limit'];
+            $remaining = $pagination['total'] - $pagination['offset'];
+            $nextLimit = ($remaining > $pagination['limit']) ? $pagination['limit'] : $remaining;
+            
+            $item_new = $items;
+            $item_new['limit'] = $nextLimit;
+            $item_new['offset'] = $pagination['offset'];
+            
+            $new_data = $this->send( $item_new );
+            if(isset( $new_data['data'] )):
+                $data = array_merge($data, $new_data['data']);            
+            endif;
+        }
+
+        return $data;
+    }
+
+    
+    public function send( $items = []  ){
+        $initial = [
             'access_key' => config('services.flights.key'),
-            'limit' => 1,
-            //'flight_date' => $this->request['date'], //¡IMPORTANTE! Habilitar cuando vayamos a salir a producción
-            'flight_iata' => $this->request['flight_number'],
-          ]);
+        ];
+        $data = array_merge($initial, $items);
+        $queryString = http_build_query( $data );
           
         $ch = curl_init(sprintf('%s?%s', 'http://api.aviationstack.com/v1/flights', $queryString));
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);          

@@ -44,4 +44,24 @@ class SearchController extends Controller
 
         return response()->json($flight, 200);
     }
+
+    public function searchDate(Request $request, SearchRepository $search){
+        $validator = Validator::make($request->all(), [
+            'iata_code' => 'required|max:6',
+            'date' => 'required|date_format:Y-m-d',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'error' => [
+                    'code' => 'required_params',
+                    'message' => $validator->errors()->all() 
+                ]
+            ], 422);
+        }
+
+        $flights = $search->getFlightsByDate($request);
+
+        return response()->json(['all' => $flights], 200);
+    }
 }
