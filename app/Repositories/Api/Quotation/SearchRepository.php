@@ -46,7 +46,7 @@ class SearchRepository{
 
     public function getZones(){
         $items = [];
-        $zones = DB::select('SELECT dest.id as destination_id, dest.cut_off, dest.time_zone, zon.id as zone_id, zon.is_primary, dest.name as destination_name, zon.name as zone_name, zonp.latitude, zonp.longitude
+        $zones = DB::select('SELECT dest.id as destination_id, dest.cut_off, dest.time_zone, zon.id as zone_id, zon.is_primary, zon.iata_code, dest.name as destination_name, zon.name as zone_name, zonp.latitude, zonp.longitude
                             FROM zones as zon 
                                 INNER JOIN zones_points as zonp ON zonp.zone_id = zon.id
                                 INNER JOIN destinations as dest ON dest.id = zon.destination_id
@@ -66,6 +66,7 @@ class SearchRepository{
                             "id" => $value->zone_id,
                             "name" => $value->zone_name,
                             "is_primary" => $value->is_primary,
+                            "iata_code" => $value->iata_code,
                         ],
                         "items" => []
                     ];                    

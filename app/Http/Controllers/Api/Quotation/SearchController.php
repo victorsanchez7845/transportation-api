@@ -115,7 +115,8 @@ class SearchController extends Controller
                 "distance" => $geospacial['distance'],
                 "time" => $geospacial['time'],
                 "config" => [
-                    "flight_required" => (($availability['start']['data']['zone']['is_primary'] == 1)? true : false)
+                    "flight_required" => (($availability['start']['data']['zone']['is_primary'] == 1)? true : false),
+                    "iata_code" => (( isset($availability['start']['data']['zone']['iata_code']) && !empty($availability['start']['data']['zone']['iata_code']) )? $availability['start']['data']['zone']['iata_code'] : NULL)
                 ]
             ],
             "items" => $prices
