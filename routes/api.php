@@ -33,6 +33,7 @@ Route::middleware([Auth::class])->group(function () {
         Route::post('/oauth', [OauthController::class,'index'])->withoutMiddleware([Auth::class]);
 
         //Rutas de cotización
+        Route::post('/autocomplete-affiliates', [AutocompleteController::class,'affiliates'])->withoutMiddleware([Auth::class]);
         Route::post('/autocomplete', [AutocompleteController::class,'index']);
         Route::post('/quote', [SearchController::class,'index']);
         Route::get('/phone', [PhoneController::class,'index']);
