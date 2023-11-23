@@ -209,7 +209,7 @@
                                                     <p class="label">{{ __('mailing/client.booking_id') }}</p>
                                                     <p style="font-size: 14pt;">{{$key}}</p>
                                                 </td>
-                                                <td rowspan="5" style="text-align:right;">
+                                                <td rowspan="6" style="text-align:right;">
                                                     <img src="{{config('app.url')}}/api/v1/reservation/qr?code={{$key}}" width="250">
                                                 </td>
                                             </tr>
@@ -235,6 +235,12 @@
                                                 <td>
                                                     <p class="label">E-mail</p>
                                                     <p>{{$data['client']['email']}}</p>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <p class="label">Website</p>
+                                                    <p>{{$data['site']['name']}}</p>
                                                 </td>
                                             </tr>
                                             <tr>
