@@ -27,7 +27,7 @@ class CreationController extends Controller
             'phone' => 'required',
             'site_id' => 'required|integer',
             'call_center_agent' => 'integer',
-            'flight_number' => 'max:10',
+            'flight_number' => 'max:35',
             'pay_at_arrival' => 'integer|min:0|max:1',
         ]);
 
