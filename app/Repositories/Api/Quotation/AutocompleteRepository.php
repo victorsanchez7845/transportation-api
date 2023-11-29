@@ -28,7 +28,7 @@ class AutocompleteRepository{
     
     public function send($keyword = ''){
         
-        $api_url = "https://maps.googleapis.com/maps/api/place/textsearch/json?query=". urlencode($keyword) . "&key=".config('services.maps.key');
+        $api_url = "https://maps.googleapis.com/maps/api/place/textsearch/json?query=". urlencode($keyword) . "&location=21.0442704,-86.8747223&radius=400&key=".config('services.maps.key');
     
         $curl = curl_init();        
         curl_setopt($curl, CURLOPT_URL, $api_url);
