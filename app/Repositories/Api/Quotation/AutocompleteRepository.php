@@ -1,10 +1,45 @@
 <?php
 
 namespace App\Repositories\Api\Quotation;
+use Illuminate\Support\Facades\DB;
 
 class AutocompleteRepository{
 
+    public function searcDB($request){
+        
+        $term = preg_replace('/[^a-zA-Z0-9_ ]/', '', $request->keyword);
+
+        $data = DB::table('autocomplete')
+            ->select('name', 'address', 'latitude', 'longitude')
+            ->where('name', 'LIKE', '%' . $term . '%')
+            ->get();
+
+        if( sizeof($data) <= 0 ){
+            return false;
+        }        
+
+        $items = [];
+        foreach($data as $key => $value):
+            $items[] = [
+                "name" => $value->name,
+                "address" => $value->address,
+                "geo" => [
+                    "lat" => $value->latitude,
+                    "lng" => $value->longitude
+                ]
+            ];
+        endforeach;
+
+        return $items;
+
+    }
+
     public function search($request){
+
+        $searchDB = $this->searcDB($request);
+        if($searchDB != false):
+            return $searchDB;
+        endif;
 
         $data = $this->send($request->keyword);
         if($data == false){
