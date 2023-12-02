@@ -2,17 +2,26 @@
 
 namespace App\Repositories\Api\Quotation;
 use Illuminate\Support\Facades\DB;
+use App\Models\Autocomplete;
+use App\Models\AutocompleteTranslate;
 
 class AutocompleteRepository{
 
     public function searcDB($request){
-        
+   
         $term = preg_replace('/[^a-zA-Z0-9_ ]/', '', $request->keyword);
 
-        $data = DB::table('autocomplete')
-            ->select('name', 'address', 'latitude', 'longitude')
-            ->where('name', 'LIKE', '%' . $term . '%')
-            ->get();
+        $data = DB::select("
+                    SELECT
+                        aut.id, aut.latitude, aut.longitude,
+                    CASE
+                        WHEN aut.name LIKE '%{$term}%' THEN aut.name
+                        ELSE aut_trans.name
+                    END AS name,
+                        aut.address
+                    FROM autocomplete as aut
+                    LEFT JOIN autocomplete_translate as aut_trans ON aut_trans.autocomplete_id = aut.id
+                    WHERE aut.name LIKE '%{$term}%' OR aut_trans.name LIKE '%{$term}%'");        
 
         if( sizeof($data) <= 0 ){
             return false;
