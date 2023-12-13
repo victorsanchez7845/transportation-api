@@ -70,7 +70,7 @@ class CreationRepository{
                 $reference = $this->request['data']['callcenter']['reference'];
             endif;
 
-            $affiliate_id = '';
+            $affiliate_id = 0;
             if( isset(  $this->request['affiliate_id'] ) ):
                 $affiliate_id = $this->request['affiliate_id'];
             endif;
