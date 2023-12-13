@@ -29,6 +29,7 @@ class CreationController extends Controller
             'call_center_agent' => 'integer',
             'flight_number' => 'max:35',
             'pay_at_arrival' => 'integer|min:0|max:1',
+            'affiliate_id' => 'integer',
         ]);
 
         if ($validator->fails()) {
