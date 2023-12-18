@@ -17,11 +17,31 @@ class SearchRepository{
 
         $availability = $this->checkAvailability($zones);
         if($availability == false) return false;
-
-        //Seteamos la zona horaría del destino...
-        date_default_timezone_set($availability['start']['data']['destination']['time_zone']);
         
+        //Seteamos la zona horaría del destino...
+        date_default_timezone_set($availability['start']['data']['destination']['time_zone']);           
         if(!isset( $this->data['lastminute'] )):
+            
+            $current_date_time = strtotime( date("Y-m-d H:i") );
+            $block_init_night = strtotime( date("Y-m-d")." 20:00" );
+		    $block_end_night  = strtotime( date("Y-m-d")." 20:00" ) + (13 * 60 * 60); //Se suman 13 horas
+            $block_init_night_tomorrow = strtotime( date("Y-m-d", strtotime(date("Y-m-d") . ' +1 day')) ." 20:00" );
+		    $block_end_night_tomorrow  = strtotime( date("Y-m-d", strtotime(date("Y-m-d") . ' +1 day'))." 20:00" ) + (13 * 60 * 60); //Se suman 13 horas
+
+            //Necesitamos validar si la fehca del cliente es para hoy o para mañana, esto lo necesitamos hacer para validar las fechas de atención a clientes
+            if(date("Y-m-d") == date("Y-m-d", strtotime($this->data['start']['pickup'])) ){
+                //Es hoy                
+                if( $current_date_time >= $block_init_night && $current_date_time <= $block_end_night ){                    
+                    return false;
+                }
+            }elseif( date("Y-m-d", strtotime(date("Y-m-d") . ' +1 day')) == date("Y-m-d", strtotime($this->data['start']['pickup'])) ){                
+                //Es mañana                
+                if( $current_date_time >= $block_init_night_tomorrow && $current_date_time <= $block_end_night_tomorrow ){
+                    return false;
+                }                
+            }
+
+
             //Sumamos a la fecha y hora actual, la cantidad de horas de CUT_OFF, para saber si nos dará tiempo pasar por el cliente...
             $time = date('Y-m-d H:i', strtotime(date("Y-m-d H:i")) + ( $availability['start']['data']['destination']['cut_off']  * 3600) );
             if($this->data['start']['pickup'] < $time){            
@@ -46,7 +66,7 @@ class SearchRepository{
 
     public function getZones(){
         $items = [];
-        $zones = DB::select('SELECT dest.id as destination_id, dest.cut_off, dest.time_zone, zon.id as zone_id, zon.is_primary, zon.iata_code, dest.name as destination_name, zon.name as zone_name, zonp.latitude, zonp.longitude
+        $zones = DB::select('SELECT dest.id as destination_id, IFNULL(zon.cut_off, dest.cut_off) AS cut_off, dest.time_zone, zon.id as zone_id, zon.is_primary, zon.iata_code, dest.name as destination_name, zon.name as zone_name, zonp.latitude, zonp.longitude
                             FROM zones as zon 
                                 INNER JOIN zones_points as zonp ON zonp.zone_id = zon.id
                                 INNER JOIN destinations as dest ON dest.id = zon.destination_id
