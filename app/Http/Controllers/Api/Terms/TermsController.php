@@ -32,8 +32,8 @@ class TermsController extends Controller
             "lang" => $request->language,
             "brand" =>  $request->brand,
             "email" => $request->email,
-            "phone_US" => $request->phone_US,
-            "phone_MX" => $request->phone_MX        
+            "phone_US" => $request->phoneUS,
+            "phone_MX" => $request->phoneMX        
         ];
 
         return view('terms-and-conditions.general', [ 'data' => $data ]);
