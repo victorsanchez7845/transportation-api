@@ -13,6 +13,7 @@ use App\Http\Controllers\Api\Reservation\SearchController as SearchReservation;
 use App\Http\Controllers\Api\Payments\HandlerController;
 use App\Http\Controllers\Api\Webhook\VerifyController;
 use App\Http\Controllers\Api\Contact\ContactController;
+use App\Http\Controllers\Api\Terms\TermsController;
 use App\Http\Middleware\Auth;
 
 /*
@@ -60,6 +61,8 @@ Route::middleware([Auth::class])->group(function () {
 
         //Contact form
         Route::post('/contact', [ContactController::class,'index'])->withoutMiddleware([Auth::class]);
+
+        Route::get('/terms-and-conditions', [TermsController::class,'index'])->withoutMiddleware([Auth::class]);
         
     });
     
