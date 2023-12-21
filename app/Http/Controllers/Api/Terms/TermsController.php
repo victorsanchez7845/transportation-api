@@ -8,15 +8,15 @@ use Illuminate\Support\Facades\Validator;
 
 class TermsController extends Controller
 {
-    public function index(Request $request){
+    public function terms(Request $request){
 
         // Realizar validaciones
         $validator = Validator::make($request->all(), [
             'brand' => 'required|max:50',
             'email' => 'required|email|max:75',
             'language' => 'required|in:en,es',
-            'phone_US' => 'required',
-            'phone_MX' => 'required',
+            'phoneUS' => 'required',
+            'phoneMX' => 'required',
         ]);
 
         if ($validator->fails()) {
@@ -36,6 +36,35 @@ class TermsController extends Controller
             "phone_MX" => $request->phone_MX        
         ];
 
-        return view('terms-and-conditions.general', [ 'lang' =>'en', 'data' => $data ]);
+        return view('terms-and-conditions.general', [ 'data' => $data ]);
+    }
+
+    public function privacy(Request $request){
+
+        // Realizar validaciones
+        $validator = Validator::make($request->all(), [
+            'brand' => 'required|max:50',
+            'email' => 'required|email|max:75',
+            'language' => 'required|in:en,es',
+            'phoneUS' => 'required',
+            'phoneMX' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'error' => [
+                    'code' => 'required_params',
+                    'message' =>  $validator->errors()->all() 
+                ]
+            ], 404);
+        }
+
+        $data = [
+            "lang" => $request->language,
+            "brand" =>  $request->brand,
+            "email" => $request->email      
+        ];
+
+        return view('privacy-policy.general', [ 'data' => $data ]);
     }
 }

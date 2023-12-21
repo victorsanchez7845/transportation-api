@@ -1,4 +1,4 @@
-@if($lang == "en")
+@if( $data['lang'] == "en")
     <p>When purchasing any of our services, with any form of payment or type of currency, the client will accept the Terms and Conditions described below and agree that the information recorded in the purchase ticket is correct for the desired service.</p>
     <p>As a result of fulfilling our services for Tourist Transportation in the Riviera Maya (trading as <strong>{{ $data['brand'] }}</strong>), we commit to refunding 100% of the payment for the return service to the client in the event that the service has not been fulfilled on time, in the right place and manner due to our responsibility according to what is established in the purchase ticket.</p>
     <p>To verify the status of your service unit, any questions, comments, cancellations, confirmations, or clarifications about your transportation service, you can contact us from <strong>7:00 AM to 11:00 PM</strong> at <strong>{{ $data['phone_MX'] }}</strong>  from Mexico and <strong>{{ $data['phone_US'] }}</strong> from USA or send an email to <strong><a href="mailto:{{ $data['email'] }}">{{ $data['email'] }}</a></strong></p>
@@ -29,7 +29,7 @@
     <p>The foregoing in accordance with Article 58, second paragraph, of the Federal Consumer Protection Law.</p>
 @endif
 
-@if($lang == "es")
+@if( $data['lang'] == "es")
     <p>Estos son los t&eacute;rminos y condiciones para los servicios de {{ $data['brand'] }} en la Riviera Maya:</p>
     <p>Al comprar cualquiera de nuestros servicios, con cualquier forma de pago o tipo de moneda, el cliente acepta los T&eacute;rminos y Condiciones descritos a continuaci&oacute;n y est&aacute; de acuerdo en que la informaci&oacute;n registrada en el boleto de compra es correcta para el servicio deseado.</p>
     <p>Como resultado de cumplir nuestros servicios de Transporte Tur&iacute;stico en la Riviera Maya (operando como {{ $data['brand'] }}), nos comprometemos a reembolsar el 100% del pago por el servicio de regreso al cliente en caso de que el servicio no se haya cumplido a tiempo, en el lugar y de la manera correcta debido a nuestra responsabilidad seg&uacute;n lo establecido en el boleto de compra.</p>

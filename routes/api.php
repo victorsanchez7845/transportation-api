@@ -62,7 +62,8 @@ Route::middleware([Auth::class])->group(function () {
         //Contact form
         Route::post('/contact', [ContactController::class,'index'])->withoutMiddleware([Auth::class]);
 
-        Route::get('/terms-and-conditions', [TermsController::class,'index'])->withoutMiddleware([Auth::class]);
+        Route::get('/terms-and-conditions', [TermsController::class,'terms'])->withoutMiddleware([Auth::class]);
+        Route::get('/privacy-policy', [TermsController::class,'privacy'])->withoutMiddleware([Auth::class]);
         
     });
     
