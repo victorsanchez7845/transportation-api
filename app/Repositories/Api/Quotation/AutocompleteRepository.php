@@ -32,6 +32,7 @@ class AutocompleteRepository{
             $items[] = [
                 "name" => $value->name,
                 "address" => $value->address,
+                "type" => "DEFAULT",
                 "geo" => [
                     "lat" => $value->latitude,
                     "lng" => $value->longitude
@@ -60,6 +61,7 @@ class AutocompleteRepository{
             $items[] = [
                 "name" => $value['name'],
                 "address" => $value['formatted_address'],
+                "type" => "GCP",
                 "geo" => [
                     "lat" => $value['geometry']['location']['lat'],
                     "lng" => $value['geometry']['location']['lng'],
