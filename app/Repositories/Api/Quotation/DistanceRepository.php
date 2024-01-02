@@ -8,9 +8,11 @@ use Location\Polygon;
 class DistanceRepository{
     private $request = [];
 
-    public function get($request = []){
+    public function get($request = [], $get = true){
         $this->request = $request->all();
-        $geospacial = $this->send();        
+        if( $get == true ):
+            $geospacial = $this->send();
+        endif;
 
         return [
             "distance" => ((isset($geospacial['rows'][0]['elements'][0]['distance']['text']))? $geospacial['rows'][0]['elements'][0]['distance']['text'] : 'N/A' ),

@@ -72,7 +72,7 @@ class SearchController extends Controller
         }
 
         //Obtenemos el tiempo y distancia de diferencia entre el punto A y B
-        $geospacial = $distance->get($request);
+        $geospacial = $distance->get($request, false);
 
         $data = [
             "places" => [
