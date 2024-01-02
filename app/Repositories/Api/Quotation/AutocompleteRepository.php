@@ -21,7 +21,7 @@ class AutocompleteRepository{
                         aut.address
                     FROM autocomplete as aut
                     LEFT JOIN autocomplete_translate as aut_trans ON aut_trans.autocomplete_id = aut.id
-                    WHERE aut.name LIKE '%{$term}%' OR aut_trans.name LIKE '%{$term}%'");        
+                    WHERE aut.name LIKE '%{$term}%' OR aut_trans.name LIKE '%{$term}%' limit 25");        
 
         if( sizeof($data) <= 0 ){
             return false;
