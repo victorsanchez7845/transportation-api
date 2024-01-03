@@ -172,5 +172,42 @@ class SearchRepository{
         return $data;
     }
 
+    public function setAtributes($request){
+        $this->data = $request->all();
+    }
+
+    public function checkHotelZone(){
+        $zones = $this->getZones();
+
+        $validation = [
+            "start" => [
+                "status" => 0,
+                "data" => [],
+            ],
+            "end" => [
+                "status" => 0,
+                "data" => [],
+            ],
+            "geospacial" => []
+        ];
+        
+        foreach($zones as $key => $value):
+
+            $geofence = new Polygon();
+            foreach($value['items'] as $keyI => $valueI):
+                $geofence->addPoint(new Coordinate($valueI['lat'], $valueI['lng']));
+            endforeach;
+            
+            $start = new Coordinate($this->data['start']['lat'], $this->data['start']['lng']);
+            if($geofence->contains($start)){
+                $validation['start']['status'] = 1;
+                $validation['start']['data'] = $value;
+                return $validation;
+            }
+
+        endforeach;
+
+        return false;        
+    }
 
 }

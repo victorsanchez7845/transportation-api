@@ -14,6 +14,7 @@ use App\Http\Controllers\Api\Payments\HandlerController;
 use App\Http\Controllers\Api\Webhook\VerifyController;
 use App\Http\Controllers\Api\Contact\ContactController;
 use App\Http\Controllers\Api\Terms\TermsController;
+use App\Http\Controllers\Api\Hotels\HotelsController;
 use App\Http\Middleware\Auth;
 
 /*
@@ -35,6 +36,8 @@ Route::middleware([Auth::class])->group(function () {
 
         //Rutas de cotización
         Route::post('/autocomplete-affiliates', [AutocompleteController::class,'affiliates'])->withoutMiddleware([Auth::class]);
+        Route::post('/hotels/add', [HotelsController::class,'index'])->withoutMiddleware([Auth::class]);
+
         Route::post('/autocomplete', [AutocompleteController::class,'index']);
         Route::post('/quote', [SearchController::class,'index']);
         Route::get('/phone', [PhoneController::class,'index']);
