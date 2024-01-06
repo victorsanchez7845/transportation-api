@@ -8,6 +8,13 @@ class HotelsRepository{
     private $data = [];
 
     public function save($request, $data){
+
+        $request['name'] = str_replace("'", "", $request['name']);
+        $request['name'] = str_replace("(", "", $request['name']);
+        $request['name'] = str_replace(")", "", $request['name']);
+        $request['name'] = str_replace("`", "", $request['name']);
+        $request['name'] = str_replace("-", "", $request['name']);
+        
         $autocomplete = new Autocomplete();        
         $autocomplete->name = $request['name'];
         $autocomplete->address = $request['address'];
