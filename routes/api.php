@@ -15,6 +15,7 @@ use App\Http\Controllers\Api\Webhook\VerifyController;
 use App\Http\Controllers\Api\Contact\ContactController;
 use App\Http\Controllers\Api\Terms\TermsController;
 use App\Http\Controllers\Api\Hotels\HotelsController;
+use App\Http\Controllers\Api\Hotels\RatesController;
 use App\Http\Middleware\Auth;
 
 /*
@@ -38,6 +39,7 @@ Route::middleware([Auth::class])->group(function () {
         Route::post('/autocomplete-affiliates', [AutocompleteController::class,'affiliates'])->withoutMiddleware([Auth::class]);
         Route::post('/hotels/add', [HotelsController::class,'index'])->withoutMiddleware([Auth::class]);
         Route::get('/hotels', [HotelsController::class,'getHotels'])->withoutMiddleware([Auth::class]);
+        Route::get('/rates', [RatesController::class,'getRates'])->withoutMiddleware([Auth::class]);
 
         Route::post('/autocomplete', [AutocompleteController::class,'index']);
         Route::post('/quote', [SearchController::class,'index']);
