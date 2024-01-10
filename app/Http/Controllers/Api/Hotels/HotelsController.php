@@ -16,7 +16,7 @@ class HotelsController extends Controller
      * @return \Illuminate\Http\Response
      */
 
-     public function index(Request $request, SearchRepository $search, HotelsRepository $hotels){
+    public function index(Request $request, SearchRepository $search, HotelsRepository $hotels){
         $validator = Validator::make($request->all(), [
             'name' => 'required|max:125',
             'address' => 'required|max:250',
@@ -57,5 +57,25 @@ class HotelsController extends Controller
         endif;
 
         return response()->json(['status' => "success"], 200);
+    }
+
+    public function getHotels(Request $request, HotelsRepository $hotels){
+        
+        $validator = Validator::make($request->all(), [
+            'code' => 'max:10|integer',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'error' => [
+                    'code' => 'required_params',
+                    'message' =>  $validator->errors()->all() 
+                ]
+            ], 404);
+        }
+
+        $data = $hotels->get($request);
+        
+        return response()->json($data, 200);
     }
 }

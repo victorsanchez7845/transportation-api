@@ -50,4 +50,18 @@ trait FunctionsTrait
         $result = $writer->write($qr);
         echo $result->getDataUri();
     }
+
+    public static function slug($phrase) {        
+        $slug = iconv('UTF-8', 'ASCII//TRANSLIT', $phrase);
+        
+        $slug = str_replace(' - ', '-', $slug);        
+        $slug = str_replace(' ', '-', $slug);        
+        $slug = str_replace('&', 'and', $slug);
+
+        $slug = preg_replace('/[^a-zA-Z0-9\-_]/', '', $slug);
+        
+        $slug = strtolower($slug);
+
+        return $slug;
+    }
 }
