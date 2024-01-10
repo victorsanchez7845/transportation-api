@@ -35,8 +35,9 @@ class HotelsRepository{
 
         //Inglés
         $rez_en = DB::select("SELECT
-                            au.id, au.name, au.address, au.latitude, au.longitude, au.zone_id
+                            au.id, au.name, au.address, au.latitude, au.longitude, au.zone_id, zon.name as zone_name, zon.distance, zon.time
                         FROM autocomplete AS au
+                        INNER JOIN zones as zon ON zon.id = au.zone_id
                         WHERE au.zone_id = :code
                         ORDER BY au.name ASC",
                         [
@@ -46,15 +47,16 @@ class HotelsRepository{
 
         //Español
         $rez_es = DB::select("SELECT
-                            au.id, aut.name, au.address, au.latitude, au.longitude, au.zone_id
+                            au.id, aut.name, au.address, au.latitude, au.longitude, au.zone_id, zon.name as zone_name, zon.distance, zon.time
                         FROM autocomplete_translate AS aut
                         INNER JOIN autocomplete as au ON au.id = aut.autocomplete_id
+                        INNER JOIN zones as zon ON zon.id = au.zone_id
                         WHERE au.zone_id = :code
                         ORDER BY au.name ASC",
                         [
                             'code' => $request['code']
                         ]);
-        
+
         $rez = array_merge($rez_en, $rez_es);
 
         if( sizeof($rez) <= 0) return [];
@@ -64,7 +66,12 @@ class HotelsRepository{
                 "id" => $value->id,
                 "name" => $value->name,
                 "slug" => FunctionsTrait::slug($value->name),
-                "address" => $value->address,
+                "zone" => [                    
+                    "id" => $value->zone_id,
+                    "name" => $value->zone_name,
+                    "distance" => $value->distance,
+                    "time" => $value->time,
+                ],
                 "geo" => [
                     "zone" => $value->zone_id,
                     "lat" => $value->latitude,
