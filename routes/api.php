@@ -37,6 +37,7 @@ Route::middleware([Auth::class])->group(function () {
         //Rutas de cotización
         Route::post('/autocomplete-affiliates', [AutocompleteController::class,'affiliates'])->withoutMiddleware([Auth::class]);
         Route::post('/hotels/add', [HotelsController::class,'index'])->withoutMiddleware([Auth::class]);
+        Route::get('/hotels', [HotelsController::class,'getHotels'])->withoutMiddleware([Auth::class]);
 
         Route::post('/autocomplete', [AutocompleteController::class,'index']);
         Route::post('/quote', [SearchController::class,'index']);
