@@ -62,7 +62,7 @@ class HotelsController extends Controller
     public function getHotels(Request $request, HotelsRepository $hotels){
         
         $validator = Validator::make($request->all(), [
-            'code' => 'max:10|integer',
+            'code' => 'integer',
         ]);
 
         if ($validator->fails()) {
