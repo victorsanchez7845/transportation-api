@@ -65,6 +65,7 @@ class HotelsRepository{
             $items[] = [
                 "id" => $value->id,
                 "name" => $value->name,
+                "address" => $value->address,
                 "slug" => FunctionsTrait::slug($value->name),
                 "zone" => [                    
                     "id" => $value->zone_id,
