@@ -12,6 +12,10 @@ class RatesRepository{
 
         $exchange = $payment->getExchange("USD", "MXN");
         $zones = [
+            1 => [
+                "name" => "Cancún",
+                "rates" => []
+            ],
             2 => [
                 "name" => "Cancún",
                 "rates" => []
@@ -32,6 +36,10 @@ class RatesRepository{
                 "name" => "Playa del Carmen",
                 "rates" => []
             ],
+            7 => [
+                "name" => "Bonfil",
+                "rates" => []
+            ],
             8 => [
                 "name" => "Puerto Aventuras",
                 "rates" => []
@@ -41,6 +49,10 @@ class RatesRepository{
                 "rates" => []
             ],
             10 => [
+                "name" => "Tulum",
+                "rates" => []
+            ],
+            11 => [
                 "name" => "Tulum",
                 "rates" => []
             ],
@@ -83,7 +95,11 @@ class RatesRepository{
             21 => [
                 "name" => "Playa Mujeres",
                 "rates" => []
-            ]            
+            ],
+            22 => [
+                "name" => "Tulum",
+                "rates" => []
+            ]         
         ];
 
         foreach($zones as $key => $value):
