@@ -22,7 +22,48 @@ class SearchRepository{
         date_default_timezone_set($availability['start']['data']['destination']['time_zone']);           
         if(!isset( $this->data['lastminute'] )):
             
-            $current_date_time = strtotime( date("Y-m-d H:i") );
+            // Obtener la hora actual del servidor
+            $dates = [];
+            $current_hour = date("H");
+
+            $today = date("Y-m-d");
+            $tomorrow =  date("Y-m-d", strtotime( date("Y-m-d") . ' +1 day') );
+
+            $pickup_time = date("Y-m-d", strtotime( $this->data['start']['pickup'] ));
+            $pickup_time_hour = date("H", strtotime( $this->data['start']['pickup'] ));
+                        
+            $dates[$today][] = [ 'start' => 0, 'end' => 9];
+            $dates[$today][] = [ 'start' => 20, 'end' => 23];
+            $dates[$tomorrow][] = [ 'start' => 0, 'end' => 9];
+            $dates[$tomorrow][] = [ 'start' => 20, 'end' => 23];
+    
+
+            if(isset( $dates[ $pickup_time ] )){    
+
+                // Verificar si $hola está dentro de algún rango para la fecha $today
+                $found_one = isset($dates[$today]) && array_reduce(
+                    $dates[$today],
+                    function ($carry, $range) use ($current_hour) {
+                        return $carry || ($current_hour >= $range['start'] && $current_hour <= $range['end']);
+                    },
+                    false
+                );
+
+                $found_two = isset($dates[$today]) && array_reduce(
+                    $dates[$today],
+                    function ($carry, $range) use ($pickup_time_hour) {
+                        return $carry || ($pickup_time_hour >= $range['start'] && $pickup_time_hour <= $range['end']);
+                    },
+                    false
+                );
+
+                if($found_one == true && $found_two):
+                    return false;
+                endif;
+            }                    
+
+
+            /*$current_date_time = strtotime( date("Y-m-d H:i") );
             $block_init_night = strtotime( date("Y-m-d")." 20:00" );
 		    $block_end_night  = strtotime( date("Y-m-d")." 20:00" ) + (13 * 60 * 60); //Se suman 13 horas
             $block_init_night_tomorrow = strtotime( date("Y-m-d", strtotime(date("Y-m-d") . ' +1 day')) ." 20:00" );
@@ -39,7 +80,7 @@ class SearchRepository{
                 if( $current_date_time >= $block_init_night_tomorrow && $current_date_time <= $block_end_night_tomorrow ){
                     return false;
                 }                
-            }
+            }*/
 
 
             //Sumamos a la fecha y hora actual, la cantidad de horas de CUT_OFF, para saber si nos dará tiempo pasar por el cliente...
