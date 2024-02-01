@@ -11,13 +11,14 @@
     <p>For Hotel pickup service, the passenger must wait in the Hotel Lobby with their Check Out completed for the requested transportation at the confirmed time by the carrier.</p>
     <p>For Home Pickup service, the client must confirm the exact address and GPS location of their service. <strong>They will have up to 24 hours before the scheduled Pick Up time to confirm the location, date, and time.</strong> If the service is not confirmed within that time frame, it will be considered a Type C canceled service without any responsibility for "the company".</p>
     <p>If the "Pick Up service to be confirmed" option is selected when purchasing the service, the client will have up to 24 hours before the scheduled Pick Up time to confirm the location, date, and time. If the service is not confirmed within that time frame, it will be considered a Type C canceled service without any responsibility for "the company". </p>
+
     <h2>Cancellation types:</h2>
-    <p> <strong>Type A:</strong> Cancellation with more than 36 hours before the scheduled service according to what is established in the Ticket will not generate any charge.</p>
-    <p><strong>Type B:</strong> Cancellation with 24 to 36 hours before the scheduled service according to what is established in the Ticket will generate a charge of 25% of the contracted service value.</p>
-    <p><strong>Type C:</strong> Cancellation with 12 to 23 hours before the scheduled service according to what is established in the Ticket will generate a charge of 50% of the value of the contracted service.</p>
-    <p><strong>Non-refundable cancellation: </strong>Cancellation with 12 hours or less before the scheduled service according to what is established in the Ticket is non-refundable.</p>
-    <p><strong><u>In case a refund applies, the customer will receive their money in the same form as the payment was made.</u></strong></p>
-    <p>The amount depends on the reason for the complaint and is subject to analysis and authorization by the corresponding personnel or with an Open Credit</p>
+    <p>In situations of cancellation, the alternative of receiving an open-end credit for an indefinite period of time will always be offered.</p>
+    <p>In case of rejection of the open credit; partial or total cancellations will proceed as follows.</p>
+    <p> <strong>Type A:</strong> Cancellation more than 12 hours before the scheduled service as stated in the ticket will generate a charge of 15% of the value of the contracted service.</p>
+    <p><strong>Type B:</strong> Cancellation 12 hours or less prior to scheduled service as stated on the ticket is non-refundable.</p>
+    <p>In case of applying a refund, the customer will receive his money in the same form in which the payment was made or apply an open credit.</p>
+    
     <p>All clarifications, claims or refund requests for purchases made in cash must be requested by phone. The clarification, claim or refund request will be evaluated before being confirmed or rejected and the resolution will be given via email or telephone.</p>
     <p>All clarifications, claims or refund requests for purchases made with payment by card must be requested exclusively through the email <a href="mailto:{{ $data['email'] }}">{{ $data['email'] }}</a> during business hours, Monday to Friday from 9am to 6pm. If sent outside of those hours, the request will be considered on the next business day. The clarification, claim or refund request will be evaluated before being confirmed or rejected and the resolution will be sent by the same means to the email from which it originated.</p>
     <p>In order to request a refund of any form of payment, amount or destination, the customer must present their official identification.</p>
@@ -43,12 +44,14 @@
     <p>Para el servicio de recogida en el hotel, el pasajero debe esperar en el lobby del hotel con su Check Out completado para el transporte solicitado en el horario confirmado por la compa&ntilde;&iacute;a.</p>
     <p>Para el servicio de recogida en casas vacacionales, el cliente debe confirmar la direcci&oacute;n exacta de su servicio. Tendr&aacute;n hasta 24 horas antes de la hora programada de recogida para confirmar la ubicaci&oacute;n, la fecha y la hora. Si el servicio no se confirma dentro de ese plazo, se considerar&aacute; un servicio cancelado de Tipo C sin responsabilidad alguna para "la compa&ntilde;&iacute;a".</p>
     <p>Si se selecciona la opci&oacute;n "Recogida por confirmar" al comprar el servicio, el cliente tendr&aacute; hasta 24 horas antes de la hora programada de recogida para confirmar la ubicaci&oacute;n, la fecha y la hora. Si el servicio no se confirma dentro de ese plazo, se considerar&aacute; un servicio cancelado de Tipo C sin responsabilidad alguna para "la compa&ntilde;&iacute;a".</p>
+    
     <h2><strong>Tipos de cancelaci&oacute;n:</strong></h2>
-    <p><strong>Tipo A</strong>: La cancelaci&oacute;n con m&aacute;s de 36 horas antes del servicio programado seg&uacute;n lo establecido en el boleto no generar&aacute; ning&uacute;n cargo.</p>
-    <p><strong>Tipo B</strong>: La cancelaci&oacute;n con 24 a 36 horas antes del servicio programado seg&uacute;n lo establecido en el boleto generar&aacute; un cargo del 25% del valor del servicio contratado.</p>
-    <p><strong>Tipo C</strong>: La cancelaci&oacute;n con 12 a 23 horas antes del servicio programado seg&uacute;n lo establecido en el boleto generar&aacute; un cargo del 50% del valor del servicio contratado.</p>
-    <p><strong>Cancelaci&oacute;n no reembolsable</strong>: La cancelaci&oacute;n con 12 horas o menos antes del servicio programado seg&uacute;n lo establecido en el boleto no es reembolsable.</p>
-    <p><strong>En caso de aplicar un reembolso, el cliente recibir&aacute; su dinero en la misma forma en que se realiz&oacute; el pago o con un cr&eacute;dito abierto.</strong></p>
+    <p>En situaciones de cancelación, siempre se brindará la alternativa de recibir un crédito abierto por tiempo indefinido.</p>
+    <p>En caso de rechazar el crédito abierto; las cancelaciones parciales o totales procederán de la siguiente manera.</p>
+    <p><strong>Tipo A</strong>: La cancelación con más de 12 horas antes del servicio programado según lo establecido en el boleto generará un cargo del 15% del valor del servicio contratado.</p>
+    <p><strong>Tipo B</strong>: La cancelación con 12 horas o menos antes del servicio programado según lo establecido en el boleto no es reembolsable.</p>    
+    <p>En caso de aplicar un reembolso, el cliente recibirá su dinero en la misma forma en que se realizó el pago o aplicar un crédito abierto.</p>
+
     <p>El monto depende del motivo de la queja y est&aacute; sujeto a an&aacute;lisis y autorizaci&oacute;n por parte del personal correspondiente.</p>
     <p>Todas las aclaraciones, reclamos o solicitudes de reembolso por compras en efectivo deben solicitarse por tel&eacute;fono. La aclaraci&oacute;n, reclamo o solicitud de reembolso se evaluar&aacute; antes de confirmarse o rechazarse, y la resoluci&oacute;n se dar&aacute; por correo electr&oacute;nico o tel&eacute;fono.</p>
     <p>Todas las aclaraciones, reclamos o solicitudes de reembolso por compras con tarjeta de cr&eacute;dito deben solicitarse exclusivamente a trav&eacute;s del correo electr&oacute;nico <a href="mailto:{{ $data['email'] }}">{{ $data['email'] }}</a> en horario de oficina, de lunes a viernes de 9 a.m. a 6 p.m. Si se env&iacute;an fuera de ese horario, la solicitud se considerar&aacute; para el siguiente d&iacute;a h&aacute;bil. La aclaraci&oacute;n, reclamo o solicitud de reembolso se evaluar&aacute; antes de confirmarse o rechazarse, y la resoluci&oacute;n se enviar&aacute; por el mismo medio al correo del que proviene.</p>
