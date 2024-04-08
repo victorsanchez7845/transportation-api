@@ -43,7 +43,7 @@ class ReservationController extends Controller
             ], 404);
         }
 
-        App::setLocale($request->language);        
+        App::setLocale($request->language);
         
         $mail = DestinationMail::where('destination_id', $data['config']['destination_id'])->get();
         $creation_date = $this->getPrettyDate($data['config']['creation_date'], $request->language);
