@@ -16,7 +16,7 @@
     <p>In situations of cancellation, the alternative of receiving an open-end credit for an indefinite period of time will always be offered.</p>
     <p>In case of rejection of the open credit; partial or total cancellations will proceed as follows.</p>
 
-    @if( $data['brand'] == "gotransfers.us" )
+    @if( $data['brand'] == "Go Transfers" )
         <p>You can get a full refund by canceling at least 24 hours before the service.</p>
     @else
         <p> <strong>Type A:</strong> Cancellation more than 12 hours before the scheduled service as stated in the ticket will generate a charge of 15% of the value of the contracted service.</p>
@@ -55,7 +55,7 @@
     <p>En situaciones de cancelación, siempre se brindará la alternativa de recibir un crédito abierto por tiempo indefinido.</p>
     <p>En caso de rechazar el crédito abierto; las cancelaciones parciales o totales procederán de la siguiente manera.</p>
 
-    @if( $data['brand'] == "gotransfers.us" )
+    @if( $data['brand'] == "Go Transfers" )
         <p>Puedes obtener un reembolso ¡completo! cancelando al menos 24 horas antes del servicio</p>
     @else
         <p><strong>Tipo A</strong>: La cancelación con más de 12 horas antes del servicio programado según lo establecido en el boleto generará un cargo del 15% del valor del servicio contratado.</p>
