@@ -52,7 +52,9 @@ class CreationRepository{
             endif;
 
             $pay_at_arrival = false;
+            $accept_messages = false;
             if(isset($this->request['pay_at_arrival'])) $pay_at_arrival = true;
+            if(isset($this->request['accept_messages'])) $accept_messages = true;
 
             $is_commissionable = 1;
             if($site[0]->is_commissionable == 0):
@@ -88,6 +90,7 @@ class CreationRepository{
                 $rez_db->destination_id = $zones_data['start']['data']['destination']['id'];
                 $rez_db->reference = $reference;
                 $rez_db->affiliate_id = $affiliate_id;
+                $rez_db->accept_messages = (( $accept_messages )? 1 : 0 );
                 
                 if($pay_at_arrival):
                     $rez_db->pay_at_arrival = 1;
