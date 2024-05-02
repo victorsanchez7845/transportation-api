@@ -8,12 +8,13 @@ use App\Models\ReservationsItems;
 use App\Models\ReservationsServices;
 use App\Models\Sales;
 use App\Models\ReservationsFollowUp;
+use App\Models\TypesCancellation;
 use Illuminate\Support\Facades\DB;
 
 class SearchRepository{
     private $request = [];
 
-    public function setData($request = []){        
+    public function setData($request = []){
         $this->request = $request->all();
     }
 
@@ -219,5 +220,17 @@ class SearchRepository{
         return $data;
     }
 
-   
+    public function getTypesCancellations($request){
+        $types = DB::select("SELECT * FROM types_cancellations 
+            WHERE status = :status  ORDER BY id ASC", 
+            [
+                'status' => 1
+            ]);
+        
+        if(sizeof($types) <= 0):
+            return [];
+        endif;
+
+        return $types;
+    }
 }

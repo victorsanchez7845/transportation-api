@@ -58,6 +58,9 @@ Route::middleware([Auth::class])->group(function () {
         Route::get('/reservation/send', [SearchReservation::class,'send'])->withoutMiddleware([Auth::class]);
         Route::get('/reservation/qr', [SearchReservation::class,'makeqr'])->withoutMiddleware([Auth::class]);
 
+        //types cancellations
+        Route::get('/types/cancellations/get', [SearchReservation::class,'getTypesCancellations'])->withoutMiddleware([Auth::class]);
+
         //Payments
         Route::get('/reservation/payment/handler', [HandlerController::class,'index'])->withoutMiddleware([Auth::class]);
 

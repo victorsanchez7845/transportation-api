@@ -219,7 +219,6 @@ class SearchController extends Controller
         exit;
     }
    
-
     public function getTemplate(Request $request){
         $data = [
             "status" => false,
@@ -280,4 +279,7 @@ class SearchController extends Controller
         endif;
     }
 
+    public function getTypesCancellations(Request $request, SearchRepository $search){
+        return $search->getTypesCancellations($request);
+    }
 }
