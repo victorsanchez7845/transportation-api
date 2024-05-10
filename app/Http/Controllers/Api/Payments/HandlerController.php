@@ -6,13 +6,14 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Repositories\Api\Payments\StripeRepository;
 use App\Repositories\Api\Payments\PaypalRepository;
+use App\Repositories\Api\Payments\MifelRepository;
 use Illuminate\Support\Facades\Validator;
 
 class HandlerController extends Controller
 {
-    public function index(Request $request, StripeRepository $handlerStripe, PaypalRepository $handlerPaypal){
+    public function index(Request $request, StripeRepository $handlerStripe, PaypalRepository $handlerPaypal, MifelRepository $handlerMifel){
         $validator = Validator::make($request->all(), [
-            'type' => 'required|in:STRIPE,PAYPAL',
+            'type' => 'required|in:STRIPE,PAYPAL,MIFEL',
             'id' => 'integer',
             'language' => 'required|in:en,es',
             'success_url' => 'required',
@@ -33,6 +34,10 @@ class HandlerController extends Controller
         endif;
         if($request->type == "PAYPAL"):
             $items = $handlerPaypal->check($request);
+        endif;
+
+        if($request->type == "MIFEL"):
+            $items = $handlerMifel->check($request);
         endif;
 
         if($items['status'] == false){
