@@ -76,7 +76,8 @@ class MifelRepository{
                 $available_months['table'][] = [
                     'months' => 1,
                     'monthly' => number_format( $total , 2 ),
-                    'total' => number_format( $total, 2 )
+                    'financing' => 0,
+                    'total' => number_format( $total, 2 ),
                 ];
 
             if($data['amount'] >= 300):
@@ -87,6 +88,7 @@ class MifelRepository{
                 $available_months['table'][] = [
                     'months' => 3,
                     'monthly' => number_format( $total / 3, 2 ),
+                    'financing' => number_format( $additional, 2 ),
                     'total' => number_format( $total, 2 )
                 ];
             endif;
@@ -98,6 +100,7 @@ class MifelRepository{
                 $available_months['table'][] = [
                     'months' => 6,
                     'monthly' => number_format( $total / 6, 2 ),
+                    'financing' => number_format( $additional, 2 ),
                     'total' => number_format( $total, 2 )
                 ];
 
@@ -110,6 +113,7 @@ class MifelRepository{
                 $available_months['table'][] = [
                     'months' => 9,
                     'monthly' => number_format( $total / 9, 2 ),
+                    'financing' => number_format( $additional, 2 ),
                     'total' => number_format( $total, 2 )
                 ];
             endif;
@@ -121,6 +125,7 @@ class MifelRepository{
                 $available_months['table'][] = [
                     'months' => 12,
                     'monthly' => number_format( $total / 12, 2 ),
+                    'financing' => number_format( $additional, 2 ),
                     'total' => number_format( $total, 2 )
                 ];
             endif;
