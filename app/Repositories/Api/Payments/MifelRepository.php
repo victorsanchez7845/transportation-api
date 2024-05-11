@@ -53,19 +53,41 @@ class MifelRepository{
             $response['message'] = "No payments to be made";
             return $response;
         endif;
-        
+
         $data = [
             "amount" => $this->getExchange($rez[0]->currency, "MXN", $total),
             "currency" => "MXN",
-            "paymentType" => 'DB'
+            "paymentType" => 'DB',
+            "transactionCategory" => 'EC',
+            "merchantTransactionId" => $rez[0]->id . strtotime(date("Y-m-d H:i:s")),
+            "merchantInvoiceId" => $rez[0]->id . strtotime(date("Y-m-d H:i:s"))
         ];
 
+        $available_months = [];
+        
+        if($rez[0]->currency == "MXN"):
+            if($data['amount'] >= 300):
+                $available_months[] = 3;
+            endif;
+            if($data['amount'] >= 600):
+                $available_months[] = 6;
+            endif;
+            if($data['amount'] >= 900):
+                $available_months[] = 9;
+            endif;
+            if($data['amount'] >= 1200):
+                $available_months[] = 12;
+            endif;
+        endif;        
 
         $items = $this->makeRequest( $data );
-
+        
         if ( preg_match('/^0{3}\.200/', $items['result']['code'] )):
             $response['status'] = true;
-            $response['data'] = ['url' => $items['id']];
+            $response['data'] = [
+                'url' => $items['id'],
+                "promotions" => $available_months
+            ];
             return $response;
         else:
             $response['code'] = "mifel";
