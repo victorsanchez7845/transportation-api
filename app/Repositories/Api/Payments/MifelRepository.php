@@ -63,20 +63,45 @@ class MifelRepository{
             "merchantInvoiceId" => $rez[0]->id . strtotime(date("Y-m-d H:i:s"))
         ];
 
-        $available_months = [];
+        $available_months = [
+            'months' => [],
+            'table' => []
+        ];
         
         if($rez[0]->currency == "MXN"):
+                $available_months['months'][] = 1;
+                $available_months['table'][] = [
+                    'months' => 1,
+                    'total' => number_format($data['amount'],2)
+                ];
+
             if($data['amount'] >= 300):
-                $available_months[] = 3;
+                $available_months['months'][] = 3;
+                $available_months['table'][] = [
+                    'months' => 3,
+                    'total' => number_format($data['amount'] + ($data['amount'] * 0.035),2)
+                ];
             endif;
             if($data['amount'] >= 600):
-                $available_months[] = 6;
+                $available_months['months'][] = 6;
+                $available_months['table'][] = [
+                    'months' => 6,
+                    'total' => number_format($data['amount'] + ($data['amount'] * 0.055),2)
+                ];
             endif;
             if($data['amount'] >= 900):
-                $available_months[] = 9;
+                $available_months['months'][] = 9;
+                $available_months['table'][] = [
+                    'months' => 9,
+                    'total' => number_format($data['amount'] + ($data['amount'] * 0.085),2)
+                ];
             endif;
             if($data['amount'] >= 1200):
-                $available_months[] = 12;
+                $available_months['months'][] = 12;
+                $available_months['table'][] = [
+                    'months' => 12,
+                    'total' => number_format($data['amount'] + ($data['amount'] * 0.115),2)
+                ];
             endif;
         endif;        
 
