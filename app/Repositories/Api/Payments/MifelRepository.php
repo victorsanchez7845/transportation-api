@@ -15,7 +15,7 @@ class MifelRepository{
 
         $this->data = $request->all();        
    
-        $rez = DB::select("SELECT rez.id, rez.currency, site.payment_domain,
+        $rez = DB::select("SELECT rez.id, rez.currency, rez.client_email, rez.client_phone, site.payment_domain,
                             ROUND( COALESCE(SUM( s.total_sales ), 0), 2) as total_sales,
                             ROUND( COALESCE(SUM( p.total_payments ), 0), 2) as total_payments
                             FROM reservations AS rez
@@ -53,14 +53,16 @@ class MifelRepository{
             $response['message'] = "No payments to be made";
             return $response;
         endif;
-
+      
         $data = [
             "amount" => $this->getExchange($rez[0]->currency, "MXN", $total),
             "currency" => "MXN",
             "paymentType" => 'DB',
             "transactionCategory" => 'EC',
             "merchantTransactionId" => $rez[0]->id . strtotime(date("Y-m-d H:i:s")),
-            "merchantInvoiceId" => $rez[0]->id . strtotime(date("Y-m-d H:i:s"))
+            "merchantInvoiceId" => $rez[0]->id . strtotime(date("Y-m-d H:i:s")),
+            "customer.email" => $rez[0]->client_email,
+            "customer.phone" => $rez[0]->client_phone,
         ];
 
         $available_months = [
