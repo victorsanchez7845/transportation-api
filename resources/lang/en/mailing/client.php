@@ -17,5 +17,8 @@ return [
     'one_way' => 'One way',
     'round_trip' => 'Round Trip',
     'type' => 'Type',
-    'booking_id' => 'Booking ID'
+    'booking_id' => 'Booking ID',
+    'payment_status' => 'Payment status',
+    'paid' => 'Paid',
+    'pendiente' => 'Pending',
 ];

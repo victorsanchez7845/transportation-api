@@ -17,5 +17,8 @@ return [
     'one_way' => 'Sencillo',
     'round_trip' => 'Redondo',
     'type' => 'Tipo',
-    'booking_id' => 'Código de reservación'
+    'booking_id' => 'Código de reservación',
+    'payment_status' => 'Estatus de pago',
+    'paid' => 'Pagado',
+    'pendiente' => 'Pendiente',
 ];

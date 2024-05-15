@@ -1,9 +1,15 @@
 @php    
-    $lang = app()->getLocale();    
+    $lang = app()->getLocale();
+    if( $data['config']['is_cancelled'] == 1 ):
+        $data['status'] = "CANCELLED";
+    endif;
+
     $reservation_status_label = $data['status'];
     switch ($lang) {
         case 'es':
-                if($reservation_status_label == "CONFIRMED"):
+                if($reservation_status_label == "CANCELLED"):
+                    $reservation_status_label = "CANCELADO";
+                elseif($reservation_status_label == "CONFIRMED"):
                     $reservation_status_label = "CONFIRMADO";
                 else:
                     $reservation_status_label = "PENDIENTE";
@@ -136,6 +142,10 @@
         span.payment.type-CONFIRMED{
             background-color: #198f51;            
         }
+        span.payment.type-CANCELLED{
+            background-color: #dc3545;
+            color: white;
+        }
     </style>
 </head>
 <body style="background-color: #f7fafb;">
@@ -212,7 +222,7 @@
                                                     <p class="label">{{ __('mailing/client.booking_id') }}</p>
                                                     <p style="font-size: 14pt;">{{$key}}</p>
                                                 </td>
-                                                <td rowspan="6" style="text-align:right;">
+                                                <td rowspan="7" style="text-align:right;">
                                                     <img src="{{config('app.url')}}/api/v1/reservation/qr?code={{$key}}" width="250">
                                                 </td>
                                             </tr>
@@ -244,6 +254,18 @@
                                                 <td>
                                                     <p class="label">Website</p>
                                                     <p>{{$data['site']['name']}}</p>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <p class="label">{{ __('mailing/client.payment_status') }}</p>
+                                                    <p>
+                                                        @if( $data['payments']['total'] >= $data['sales']['total'] )
+                                                            {{ __('mailing/client.paid') }}
+                                                        @else
+                                                            {{ __('mailing/client.pendiente') }}
+                                                        @endif
+                                                    </p>
                                                 </td>
                                             </tr>
                                             <tr>
