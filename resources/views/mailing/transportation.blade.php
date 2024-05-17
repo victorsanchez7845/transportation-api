@@ -205,7 +205,7 @@
                         <p style="margin-bottom:15px;">
                             <strong>
                                 @if($lang == "en")
-                                    PLEASE PRESENT THIS PRINTED OR DIGITAL (CELL PHONE) RECEIPT TO THE CARIBBEAN SEA TRAVEL REPRESENTATIVE TO BOARD YOUR UNIT.
+                                    PLEASE PRESENT THIS PRINTED OR DIGITAL (CELL PHONE) RECEIPT TO THE CARIBBEAN TRANSFERS REPRESENTATIVE TO BOARD YOUR UNIT.
                                 @else
                                     POR FAVOR, PRESENTE ESTE RECIBO IMPRESO O DIGITAL (CELULAR) AL REPRESENTANTE DE CARIBBEAN TRANSFERS, PARA ABORDAR SU UNIDAD.
                                 @endif
