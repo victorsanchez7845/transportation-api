@@ -12,6 +12,20 @@
     <p>For Home Pickup service, the client must confirm the exact address and GPS location of their service. <strong>They will have up to 24 hours before the scheduled Pick Up time to confirm the location, date, and time.</strong> If the service is not confirmed within that time frame, it will be considered a Type C canceled service without any responsibility for "the company".</p>
     <p>If the "Pick Up service to be confirmed" option is selected when purchasing the service, the client will have up to 24 hours before the scheduled Pick Up time to confirm the location, date, and time. If the service is not confirmed within that time frame, it will be considered a Type C canceled service without any responsibility for "the company". </p>
 
+    <p>Cancun Airport:</p>
+    <ul>
+        <li>If the flight arrives between 11 PM and 5 AM cash arrivals must be paid in full.</li>
+        <li>All departures to Cancun Airport must be paid in full.</li>
+    </ul>
+    <p>Tulum Airport:</p>
+    <ul>
+        <li>All arrivals and Departures must be paid in full.</li>
+    </ul>
+    <p>General:</p>
+    <ul>
+        <li>All Hotel-Hotel transfer services must be paid in full.</li>
+    </ul>
+
     <h2>Cancellation types:</h2>
     <p>In situations of cancellation, the alternative of receiving an open-end credit for an indefinite period of time will always be offered.</p>
     <p>In case of rejection of the open credit; partial or total cancellations will proceed as follows.</p>
@@ -50,6 +64,20 @@
     <p>Para el servicio de recogida en el hotel, el pasajero debe esperar en el lobby del hotel con su Check Out completado para el transporte solicitado en el horario confirmado por la compa&ntilde;&iacute;a.</p>
     <p>Para el servicio de recogida en casas vacacionales, el cliente debe confirmar la direcci&oacute;n exacta de su servicio. Tendr&aacute;n hasta 24 horas antes de la hora programada de recogida para confirmar la ubicaci&oacute;n, la fecha y la hora. Si el servicio no se confirma dentro de ese plazo, se considerar&aacute; un servicio cancelado de Tipo C sin responsabilidad alguna para "la compa&ntilde;&iacute;a".</p>
     <p>Si se selecciona la opci&oacute;n "Recogida por confirmar" al comprar el servicio, el cliente tendr&aacute; hasta 24 horas antes de la hora programada de recogida para confirmar la ubicaci&oacute;n, la fecha y la hora. Si el servicio no se confirma dentro de ese plazo, se considerar&aacute; un servicio cancelado de Tipo C sin responsabilidad alguna para "la compa&ntilde;&iacute;a".</p>
+
+    <p>Aeropuerto de Canc&uacute;n:</p>
+    <ul>
+        <li>Si el vuelo llega entre las 11 PM y 5 AM las llegadas en efectivo deber&aacute;n ser pagadas en su totalidad.</li>
+        <li>Toda salida hacia el Aeropuerto de Canc&uacute;n deber&aacute; ser pagada en su totalidad.</li>
+    </ul>
+    <p>Aeropuerto de Tulum:</p>
+    <ul>
+        <li>Toda llegada y Salida deber&aacute; ser pagada en su totalidad.</li>
+    </ul>
+    <p>General:</p>
+    <ul>
+        <li>Todo servicio de traslado Hotel-Hotel deber&aacute; ser pagado en su totalidad.</li>
+    </ul>
     
     <h2><strong>Tipos de cancelaci&oacute;n:</strong></h2>
     <p>En situaciones de cancelación, siempre se brindará la alternativa de recibir un crédito abierto por tiempo indefinido.</p>
