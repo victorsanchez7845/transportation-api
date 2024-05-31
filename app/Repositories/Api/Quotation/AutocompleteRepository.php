@@ -51,7 +51,7 @@ class AutocompleteRepository{
             return $searchDB;
         endif;
 
-        return false;
+        //return false;
         
         $data = $this->send($request->keyword);
         if($data == false){
