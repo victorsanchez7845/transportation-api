@@ -47,6 +47,9 @@ class SearchRepository{
                 "is_cancelled" => $rez->is_cancelled,
                 "creation_date" => $rez->created_at,
                 "destination_id" => $rez->destination_id,
+                "payment_exchange_rate" => [
+                    "USD_MXN" => 18
+                ]
             ],
             "site" => [
                 "id" => $rez->site_id,
