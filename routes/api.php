@@ -16,6 +16,7 @@ use App\Http\Controllers\Api\Contact\ContactController;
 use App\Http\Controllers\Api\Terms\TermsController;
 use App\Http\Controllers\Api\Hotels\HotelsController;
 use App\Http\Controllers\Api\Hotels\RatesController;
+use App\Http\Controllers\Api\Spam\SpamController;
 use App\Http\Middleware\Auth;
 
 /*
@@ -32,6 +33,11 @@ use App\Http\Middleware\Auth;
 Route::middleware([Auth::class])->group(function () {
 
     Route::prefix('v1')->group(function () {
+
+        //SPAM PROCESS
+        Route::get('/spamChangeStatus', [SpamController::class,'spamChangeStatus'])->withoutMiddleware([Auth::class]);
+        Route::get('/spamCallCount', [SpamController::class,'spamCallCount'])->withoutMiddleware([Auth::class]);
+        
         //Ruta de autenticación
         Route::post('/oauth', [OauthController::class,'index'])->withoutMiddleware([Auth::class]);
 
