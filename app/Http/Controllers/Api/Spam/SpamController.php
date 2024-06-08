@@ -42,6 +42,7 @@ class SpamController extends Controller
             }
     
             $this->SpamRepository->spamChangeStatus($request);
+            $this->SpamRepository->spamCallCount($request);
 
             DB::commit();
     
@@ -61,39 +62,39 @@ class SpamController extends Controller
         }
     }
 
-    public function spamCallCount(Request $request){
-        try {
-            $validator = Validator::make($request->all(), [
-                'id' => 'required|integer|exists:reservations_items,id',
-                'status' => 'required|integer',
-            ]);
+    // public function spamCallCount(Request $request){
+    //     try {
+    //         $validator = Validator::make($request->all(), [
+    //             'id' => 'required|integer|exists:reservations_items,id',
+    //             'status' => 'required|integer',
+    //         ]);
     
-            if ($validator->fails()) {
-                return response()->json([
-                    'errors' => [
-                        'code' => 'required_params',                
-                    ],
-                    'message' =>  $validator->errors()->all()
-                ], Response::HTTP_BAD_REQUEST);
-            }
+    //         if ($validator->fails()) {
+    //             return response()->json([
+    //                 'errors' => [
+    //                     'code' => 'required_params',                
+    //                 ],
+    //                 'message' =>  $validator->errors()->all()
+    //             ], Response::HTTP_BAD_REQUEST);
+    //         }
     
-            $this->SpamRepository->spamCallCount($request);
+    //         $this->SpamRepository->spamCallCount($request);
 
-            DB::commit();
+    //         DB::commit();
     
-            return response()->json([
-                'success' => true,
-                'message' => "Se actualizo el conteo correctamente."
-            ], Response::HTTP_OK);
-        } catch (Exception $e) {
-            DB::rollback();
-            return response()->json([
-                'errors' => [
-                    'code' => 'internal_server',
-                    'message' => $e->getMessage()
-                ],
-                'message' => 'Internal Server'
-            ], Response::HTTP_INTERNAL_SERVER_ERROR);
-        }
-    }
+    //         return response()->json([
+    //             'success' => true,
+    //             'message' => "Se actualizo el conteo correctamente."
+    //         ], Response::HTTP_OK);
+    //     } catch (Exception $e) {
+    //         DB::rollback();
+    //         return response()->json([
+    //             'errors' => [
+    //                 'code' => 'internal_server',
+    //                 'message' => $e->getMessage()
+    //             ],
+    //             'message' => 'Internal Server'
+    //         ], Response::HTTP_INTERNAL_SERVER_ERROR);
+    //     }
+    // }
 }

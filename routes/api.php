@@ -35,8 +35,8 @@ Route::middleware([Auth::class])->group(function () {
     Route::prefix('v1')->group(function () {
 
         //SPAM PROCESS
-        Route::get('/spamChangeStatus', [SpamController::class,'spamChangeStatus'])->withoutMiddleware([Auth::class]);
-        Route::get('/spamCallCount', [SpamController::class,'spamCallCount'])->withoutMiddleware([Auth::class]);
+        Route::post('/spamChangeStatus', [SpamController::class,'spamChangeStatus'])->withoutMiddleware([Auth::class]);
+        // Route::get('/spamCallCount', [SpamController::class,'spamCallCount'])->withoutMiddleware([Auth::class]);
         
         //Ruta de autenticación
         Route::post('/oauth', [OauthController::class,'index'])->withoutMiddleware([Auth::class]);
