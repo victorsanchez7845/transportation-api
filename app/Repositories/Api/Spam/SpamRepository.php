@@ -14,7 +14,7 @@ class SpamRepository{
 
     public function spamCallCount($request){
         $item = ReservationsItems::find($request->id);
-        $item->spam_count = ( $request->status == 1 ? ( $item->spam_count + 1 ) : $item->spam_count );
+        $item->spam_count = ( $item->spam_count + 1 );
         $item->save();
     }
 }
