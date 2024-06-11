@@ -46,14 +46,15 @@ class AutocompleteRepository{
 
     public function search($request){
 
-        $searchDB = $this->searcDB($request);
+        /*$searchDB = $this->searcDB($request);
         if($searchDB != false):
             return $searchDB;
-        endif;
+        endif;*/
 
         //return false;
         
-        $data = $this->send($request->keyword);
+        $data = $this->sendNew($request->keyword);
+
         if($data == false){
             return false;
         }
@@ -94,4 +95,71 @@ class AutocompleteRepository{
 
         return $data['results'];
     }
+
+    function sendNew($query) {        
+                
+        // Paso 1: Obtener el place_id usando la API de Autocomplete
+        $urlAutocomplete = 'https://maps.googleapis.com/maps/api/place/autocomplete/json?input=' . urlencode($query) . '&components=country:mx&location=21.0419282,-86.8769593&radius=400000&strictbounds=true&key=' . config('services.maps.key');
+    
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $urlAutocomplete);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        $responseAutocomplete = curl_exec($ch);
+        curl_close($ch);
+    
+        $responseDataAutocomplete = json_decode($responseAutocomplete, true);
+        $items = [];
+
+        if(isset( $responseDataAutocomplete['status'] ) && $responseDataAutocomplete['status'] == "OK"):
+            
+            if( isset($responseDataAutocomplete['predictions']) && sizeof($responseDataAutocomplete['predictions']) > 0 ):
+                foreach($responseDataAutocomplete['predictions'] as $keyP => $valueP):
+
+                    $id = $valueP['place_id'];
+                    $name = $valueP['structured_formatting']['main_text'];
+                    $address = $valueP['structured_formatting']['secondary_text'];                    
+
+                    // Paso 2: Obtener los detalles del lugar usando el place_id
+                    $urlDetails = 'https://maps.googleapis.com/maps/api/place/details/json?place_id=' . $id . '&fields=geometry&key=' . config('services.maps.key');    
+                    $ch = curl_init();
+                    curl_setopt($ch, CURLOPT_URL, $urlDetails);
+                    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+                    $responseDetails = curl_exec($ch);
+                    curl_close($ch);
+            
+                    $responseDataDetails = json_decode($responseDetails, true);
+
+                    if(isset( $responseDataDetails['status'] ) && $responseDataDetails['status'] == "OK"):
+                        
+                        if(isset( $responseDataDetails['result']['geometry']['location'] )):
+                            $items[] = [
+                                "name" => $name,
+                                "formatted_address" => $address,
+                                "geometry" => [
+                                    "location" => [
+                                        "lat" => $responseDataDetails['result']['geometry']['location']['lat'],
+                                        "lng" => $responseDataDetails['result']['geometry']['location']['lng'],
+                                    ]
+                                ]
+                            ];
+                        else:
+                            return false;
+                        endif;
+
+                    else:
+                        return false;
+                    endif;
+
+                endforeach;
+
+                return $items;
+
+            else:
+                return false;
+            endif;
+        else:
+            return false;
+        endif;
+    }
+    
 }
