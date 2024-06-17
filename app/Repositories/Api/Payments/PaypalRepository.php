@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\DB;
 class PaypalRepository{
     private $data = [];
 
-    public function check($request){
+    public function check($request, $type = 0){
         $response = [
             "status" => false,            
         ];
@@ -63,6 +63,11 @@ class PaypalRepository{
         try{
 
             $merchantId = config('services.paypal.merchant'); // Merchant ID
+            if($type == 1):
+                // Nueva cuenta de paypal | cabrivieramaya@gmail.com
+                $merchantId = "4YFWSB3V6T8P2";
+            endif;
+
             $currency = $data['currency'];
             $total = $data['total'];
             $description = (($request->language == "en")?'Transportation service':'Servicio de transportación');

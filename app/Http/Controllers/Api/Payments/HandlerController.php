@@ -13,7 +13,7 @@ class HandlerController extends Controller
 {
     public function index(Request $request, StripeRepository $handlerStripe, PaypalRepository $handlerPaypal, MifelRepository $handlerMifel){
         $validator = Validator::make($request->all(), [
-            'type' => 'required|in:STRIPE,PAYPAL,MIFEL',
+            'type' => 'required|in:STRIPE,PAYPAL,MIFEL,PAYPAL-1',
             'id' => 'integer',
             'language' => 'required|in:en,es',
             'success_url' => 'required',
@@ -35,7 +35,9 @@ class HandlerController extends Controller
         if($request->type == "PAYPAL"):
             $items = $handlerPaypal->check($request);
         endif;
-
+        if($request->type == "PAYPAL-1"):
+            $items = $handlerPaypal->check($request, 1);
+        endif;
         if($request->type == "MIFEL"):
             $items = $handlerMifel->check($request);
         endif;
