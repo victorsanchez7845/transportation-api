@@ -120,4 +120,8 @@ class VerifyController extends Controller
         endif;
         http_response_code(200);
     }
+
+    public function mifel(Request $request){
+        return response()->json([], 200);
+    }
 }
