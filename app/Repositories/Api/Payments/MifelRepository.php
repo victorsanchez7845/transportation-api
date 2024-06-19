@@ -5,8 +5,22 @@ use Illuminate\Support\Facades\DB;
 
 class MifelRepository{
     private $data = [];
-    private $entityID = "8a82941852cad0530152cbb0b9030333";
-    private $token = "OGE4Mjk0MTg1MmNhZDA1MzAxNTJjYmIwYmM1ZjAzN2R8UnFRbTlOYWpSaw==";
+    
+    private $env = "dev";
+    private $credentials = [
+        "dev" => [
+            "URL" => "https://eu-test.oppwa.com/v1/checkouts",
+            "entityID" => "8ac7a4ca8fcb8b3e018fd001fb460379",
+            "token" => "OGFjN2E0Y2E4ZmNiOGIzZTAxOGZkMDAxNmY2YTAzNzV8ZWZTU2p6N1dGc1BkZVljUg==",
+            "descriptor" => "9372793",
+        ],
+        "live" => [
+            "URL" => "",
+            "entityID" => "",
+            "token" => "",
+            "descriptor" => "",
+        ]
+    ];
 
     public function check($request){
         $response = [
@@ -57,13 +71,14 @@ class MifelRepository{
         $data = [
             "amount" => $this->getExchange($rez[0]->currency, "MXN", $total),
             "currency" => "MXN",
-            "paymentType" => 'DB',
-            "transactionCategory" => 'EC',
-            "merchantTransactionId" => $rez[0]->id . strtotime(date("Y-m-d H:i:s")),
-            "merchantInvoiceId" => $rez[0]->id . strtotime(date("Y-m-d H:i:s")),
+            "paymentType" => 'DB',            
+            "merchantTransactionId" => $rez[0]->id ."-". strtotime(date("Y-m-d H:i:s")),            
             "customer.email" => $rez[0]->client_email,
             "customer.phone" => $rez[0]->client_phone,
         ];
+        
+        // echo "<pre>";
+        // print_r($data);
 
         $available_months = [
             'months' => [],
@@ -183,16 +198,21 @@ class MifelRepository{
 
     public function makeRequest($data = []) {
         $items = [
-            'entityId' => $this->entityID,
+            'entityId' => $this->credentials[ $this->env ]['entityID'],
+            'descriptor' => $this->credentials[ $this->env ]['descriptor'],            
         ];
 
+        if($this->env == "dev"):
+            $items['testMode'] = "EXTERNAL";
+        endif;
+                
         $data = array_merge($items, $data);
-        $url = "https://eu-test.oppwa.com/v1/checkouts";
+        $url = $this->credentials[ $this->env ]['URL'];
     
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-                       'Authorization:Bearer '. $this->token ));
+                       'Authorization:Bearer '. $this->credentials[ $this->env ]['token'] ));
         curl_setopt($ch, CURLOPT_POST, 1);
         curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data) );
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);// this should be set to true in production
