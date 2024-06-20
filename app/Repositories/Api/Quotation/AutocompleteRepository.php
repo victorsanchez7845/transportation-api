@@ -53,29 +53,16 @@ class AutocompleteRepository{
 
         return false;
         
-        $data = $this->sendNew($request->keyword);
+        $data = $this->sendAws($request->keyword);
 
         if($data == false){
             return false;
         }
-
-        $items = [];
-        foreach($data as $key => $value):
-            $items[] = [
-                "name" => $value['name'],
-                "address" => $value['formatted_address'],
-                "type" => "GCP",
-                "geo" => [
-                    "lat" => $value['geometry']['location']['lat'],
-                    "lng" => $value['geometry']['location']['lng'],
-                ]
-            ];
-        endforeach;
-
-        return $items;
+                
+        return $data;
     }
     
-    public function send($keyword = ''){
+    public function legacySend($keyword = ''){
         
         $api_url = "https://maps.googleapis.com/maps/api/place/textsearch/json?query=". urlencode($keyword) . "&location=21.0442704,-86.8747223&radius=400&key=".config('services.maps.key');
     
@@ -96,7 +83,7 @@ class AutocompleteRepository{
         return $data['results'];
     }
 
-    function sendNew($query) {        
+    function sendGoogle($query) {        
                 
         // Paso 1: Obtener el place_id usando la API de Autocomplete
         $urlAutocomplete = 'https://maps.googleapis.com/maps/api/place/autocomplete/json?input=' . urlencode($query) . '&components=country:mx&location=21.0419282,-86.8769593&radius=400000&strictbounds=true&key=' . config('services.maps.key');
@@ -134,12 +121,11 @@ class AutocompleteRepository{
                         if(isset( $responseDataDetails['result']['geometry']['location'] )):
                             $items[] = [
                                 "name" => $name,
-                                "formatted_address" => $address,
-                                "geometry" => [
-                                    "location" => [
-                                        "lat" => $responseDataDetails['result']['geometry']['location']['lat'],
-                                        "lng" => $responseDataDetails['result']['geometry']['location']['lng'],
-                                    ]
+                                "address" => $address,
+                                "type" => "GCP",
+                                "geo" => [
+                                    "lat" => $responseDataDetails['result']['geometry']['location']['lat'],
+                                    "lng" => $responseDataDetails['result']['geometry']['location']['lng'],
                                 ]
                             ];
                         else:
@@ -162,4 +148,79 @@ class AutocompleteRepository{
         endif;
     }
     
+    public function sendAws($keyword = ''){
+                
+        $headers = array(
+            'Content-Type: application/json',
+        );
+        
+        $URL = "https://places.geo.us-east-1.amazonaws.com/places/v0/indexes/caribbean-transfers/search/text?key=v1.public.eyJqdGkiOiI0YmIxNWQ1NC1lYTc3LTQwMmQtYTMwNi0yNzc4YTU2ZWNjZWUifWHU8xowy-yNSmwa3JJvIomxTwiewFnXSoT9v6RgBjopSXfMd4mJgKNcG2EhBeTJarJzagTIop--qWWW50SiS1MOcD9XciGmjI8sOwhIu6RrQJNfqpyvOgbatMvVPalN9GT1NYFS4zNBtsuSlVfnsQTPdi9lv-kL6f5qBMWmsKnt9YYD3br2LZIo3s6Xkvk7SRUPNY4dB4lQcUnIfS50Skd6N3KhBYa1ONekm0b9LJtZfUHPGP0r6_cEdsqP-FJ8MLaG8o9PRe7Oqi-m_J1zmA5iR-Lo6TGp840sJ0u0rj9yOXlc8ezQ_FZG7zqZtasydgfr4sE7oIRO4go4AGnAfAI.ZWU0ZWIzMTktMWRhNi00Mzg0LTllMzYtNzlmMDU3MjRmYTkx";
+
+        $data = [
+            "Text" => $keyword,
+            "FilterCountries" => ["MEX"],
+            "MaxResults" => 15
+        ];
+
+        $curl = curl_init();
+
+        curl_setopt($curl, CURLOPT_POST, 1);
+        curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($data));
+
+        curl_setopt($curl, CURLOPT_URL, $URL);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);        
+        $response = curl_exec($curl);        
+        if ($response === false) {
+            curl_close($curl);
+            return false;
+        }
+        
+        $data = json_decode($response, true);
+        
+        if( isset( $data['Results'] ) && sizeof($data['Results']) <= 0 ):
+            return false;
+        endif;
+        
+        $items = [];
+        foreach($data['Results'] as $key => $value):
+            
+            $place = $this->awsSplitData($value['Place']['Label']);
+            
+            $items[] = [
+                "name" => $place['name'],
+                "address" => $place['address'],
+                "type" => "GCP",
+                "geo" => [
+                    "lat" => $value['Place']['Geometry']['Point'][1],
+                    "lng" => $value['Place']['Geometry']['Point'][0],
+                ]
+            ];        
+        endforeach;
+
+        return $items;
+    }
+
+    private function awsSplitData($string) {
+        // Buscamos la primera coma en la cadena
+        $posicion = strpos($string, ',');
+        
+        // Si no se encuentra una coma, devolvemos un arreglo vacío
+        if ($posicion === false) {
+            return [];
+        }
+        
+        // Dividimos la cadena en dos partes
+        $name = substr($string, 0, $posicion);
+        $address = substr($string, $posicion + 1);
+        
+        // Eliminamos espacios en blanco adicionales
+        $name = trim($name);
+        $address = trim($address);
+        
+        return [
+            "name" => $name,
+            "address" => $address
+        ];        
+    }
 }
