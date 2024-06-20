@@ -46,12 +46,12 @@ class AutocompleteRepository{
 
     public function search($request){
 
-        /*$searchDB = $this->searcDB($request);
+        $searchDB = $this->searcDB($request);
         if($searchDB != false):
             return $searchDB;
-        endif;*/
+        endif;
 
-        //return false;
+        return false;
         
         $data = $this->sendNew($request->keyword);
 
