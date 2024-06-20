@@ -49,9 +49,7 @@ class AutocompleteRepository{
         $searchDB = $this->searcDB($request);
         if($searchDB != false):
             return $searchDB;
-        endif;
-
-        return false;
+        endif;        
         
         $data = $this->sendAws($request->keyword);
 
