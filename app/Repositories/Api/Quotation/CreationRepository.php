@@ -83,6 +83,7 @@ class CreationRepository{
                 $rez_db->client_email = trim( strtolower($this->request['email_address']) );
                 $rez_db->client_phone = $this->request['phone'];
                 $rez_db->currency = $service_token['data']['request']['currency'];
+                $rez_db->language = $service_token['data']['request']['language'];
                 $rez_db->rate_group = $service_token['data']['request']['rate_group'];
                 $rez_db->is_cancelled = 0;
                 $rez_db->is_commissionable = $is_commissionable;    
