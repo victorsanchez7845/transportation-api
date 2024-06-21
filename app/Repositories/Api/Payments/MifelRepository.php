@@ -89,7 +89,69 @@ class MifelRepository{
             ]
         ];
         
-        if($rez[0]->currency == "MXN"):
+        if(false):
+            if($rez[0]->currency == "MXN"):
+                    $additional = 0;
+                    $total = $data['amount'] + $additional;
+
+                    $available_months['months'][] = 1;
+                    $available_months['table'][] = [
+                        'months' => 1,
+                        'monthly' => number_format( $total , 2 ),
+                        'financing' => 0,
+                        'total' => number_format( $total, 2 ),
+                    ];
+
+                if($data['amount'] >= 300):
+                    $additional = ($data['amount'] * 0.035);
+                    $total = $data['amount'] + $additional;
+
+                    $available_months['months'][] = 3;
+                    $available_months['table'][] = [
+                        'months' => 3,
+                        'monthly' => number_format( $total / 3, 2 ),
+                        'financing' => number_format( $additional, 2 ),
+                        'total' => number_format( $total, 2 )
+                    ];
+                endif;
+                if($data['amount'] >= 600):
+                    $additional = ($data['amount'] * 0.055);
+                    $total = $data['amount'] + $additional;
+
+                    $available_months['months'][] = 6;
+                    $available_months['table'][] = [
+                        'months' => 6,
+                        'monthly' => number_format( $total / 6, 2 ),
+                        'financing' => number_format( $additional, 2 ),
+                        'total' => number_format( $total, 2 )
+                    ];
+
+                endif;
+                if($data['amount'] >= 900):
+                    $additional = ($data['amount'] * 0.085);
+                    $total = $data['amount'] + $additional;
+
+                    $available_months['months'][] = 9;
+                    $available_months['table'][] = [
+                        'months' => 9,
+                        'monthly' => number_format( $total / 9, 2 ),
+                        'financing' => number_format( $additional, 2 ),
+                        'total' => number_format( $total, 2 )
+                    ];
+                endif;
+                if($data['amount'] >= 1200):
+                    $additional = ($data['amount'] * 0.115);
+                    $total = $data['amount'] + $additional;
+
+                    $available_months['months'][] = 12;
+                    $available_months['table'][] = [
+                        'months' => 12,
+                        'monthly' => number_format( $total / 12, 2 ),
+                        'financing' => number_format( $additional, 2 ),
+                        'total' => number_format( $total, 2 )
+                    ];
+                endif;
+            else:
                 $additional = 0;
                 $total = $data['amount'] + $additional;
 
@@ -100,68 +162,21 @@ class MifelRepository{
                     'financing' => 0,
                     'total' => number_format( $total, 2 ),
                 ];
-
-            if($data['amount'] >= 300):
-                $additional = ($data['amount'] * 0.035);
-                $total = $data['amount'] + $additional;
-
-                $available_months['months'][] = 3;
-                $available_months['table'][] = [
-                    'months' => 3,
-                    'monthly' => number_format( $total / 3, 2 ),
-                    'financing' => number_format( $additional, 2 ),
-                    'total' => number_format( $total, 2 )
-                ];
             endif;
-            if($data['amount'] >= 600):
-                $additional = ($data['amount'] * 0.055);
-                $total = $data['amount'] + $additional;
-
-                $available_months['months'][] = 6;
-                $available_months['table'][] = [
-                    'months' => 6,
-                    'monthly' => number_format( $total / 6, 2 ),
-                    'financing' => number_format( $additional, 2 ),
-                    'total' => number_format( $total, 2 )
-                ];
-
-            endif;
-            if($data['amount'] >= 900):
-                $additional = ($data['amount'] * 0.085);
-                $total = $data['amount'] + $additional;
-
-                $available_months['months'][] = 9;
-                $available_months['table'][] = [
-                    'months' => 9,
-                    'monthly' => number_format( $total / 9, 2 ),
-                    'financing' => number_format( $additional, 2 ),
-                    'total' => number_format( $total, 2 )
-                ];
-            endif;
-            if($data['amount'] >= 1200):
-                $additional = ($data['amount'] * 0.115);
-                $total = $data['amount'] + $additional;
-
-                $available_months['months'][] = 12;
-                $available_months['table'][] = [
-                    'months' => 12,
-                    'monthly' => number_format( $total / 12, 2 ),
-                    'financing' => number_format( $additional, 2 ),
-                    'total' => number_format( $total, 2 )
-                ];
-            endif;
-        else:
-            $additional = 0;
-            $total = $data['amount'] + $additional;
-
-            $available_months['months'][] = 1;
-            $available_months['table'][] = [
-                'months' => 1,
-                'monthly' => number_format( $total , 2 ),
-                'financing' => 0,
-                'total' => number_format( $total, 2 ),
-            ];
         endif;
+
+        //Eliminar para el plan de pagos fijos
+        $additional = 0;
+        $total = $data['amount'] + $additional;
+
+        $available_months['months'][] = 1;
+        $available_months['table'][] = [
+            'months' => 1,
+            'monthly' => number_format( $total , 2 ),
+            'financing' => 0,
+            'total' => number_format( $total, 2 ),
+        ];
+        //Eliminar para el plan de pagos fijos
 
         $items = $this->makeRequest( $data );
         
