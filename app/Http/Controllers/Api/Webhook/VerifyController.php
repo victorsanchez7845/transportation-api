@@ -86,7 +86,7 @@ class VerifyController extends Controller
                 exit();
             endif;
 
-            $exchange = $paymentRepository->getExchange(strtoupper($event['mc_currency']), $check->currency);       
+            $exchange = $paymentRepository->getExchange(strtoupper($event['mc_currency']), $check->currency);
             $data = [
                 'id' => $event['invoice'],
                 'total' => $event['mc_gross'],
@@ -121,7 +121,99 @@ class VerifyController extends Controller
         http_response_code(200);
     }
 
-    public function mifel(Request $request){
-        return response()->json([], 200);
+    public function mifel(Request $request, PaymentRepository $paymentRepository){
+        
+        $payload = @file_get_contents('php://input');
+        $event = json_decode($payload, true);
+
+        if(!isset( $event['encryptedBody'] )):
+            return response()->json([
+                'error' => [
+                    'code' => 'params',
+                    'message' => 'encryptedBody are needed'
+                ]
+            ], 400);            
+        endif;
+        
+        $key_from_configuration = "274B4820DC914E4E5F08E90542C713E79C8CB606C11452474D7C2245DF0933B3";  //KEY de desarrollo: A316D872053A63C8BEDE94971DA4CFEA8F7B7B0927741DA7033965C62471FD9D
+        $iv_from_http_header = $request->header('x-initialization-vector');
+        $auth_tag_from_http_header = $request->header('x-authentication-tag');
+        $http_body = $event['encryptedBody'];
+
+        $key = hex2bin($key_from_configuration);
+        $iv = hex2bin($iv_from_http_header);
+        $auth_tag = hex2bin($auth_tag_from_http_header);
+        $cipher_text = hex2bin($http_body);
+        
+        $decrypt_data = openssl_decrypt($cipher_text, "aes-256-gcm", $key, OPENSSL_RAW_DATA, $iv, $auth_tag);
+        if($decrypt_data == false):
+            return response()->json([
+                'error' => [
+                    'code' => 'decrypt',
+                    'message' => 'It was not possible to decrypt the data'
+                ]
+            ], 400);
+        endif;
+
+        $result = json_decode($decrypt_data, true);
+        if($result['type'] == "PAYMENT"):
+            //$result['payload']['merchantTransactionId'] = "16318-12312312312312"; //ELIMINAR EN PRODUCCIÓN
+
+            $transactionID = explode("-", $result['payload']['merchantTransactionId']);
+            $id = $transactionID[0];
+
+            $check = $paymentRepository->checkReservation( $id );
+            if($check == false):
+                return response()->json([
+                    'error' => [
+                        'code' => 'not_found',
+                        'message' => 'Reservation not found'
+                    ]
+                ], 400);
+            endif;
+
+            $exchange = $paymentRepository->getExchange("MXN", $check->currency);
+            
+            $data = [
+                'id' => $id,
+                'total' => $result['payload']['amount'],
+                'currency' => "MXN",
+                'exchange_rate' => $exchange->exchange_rate,
+                'operation' => $exchange->operation,
+                'method' => 'MIFEL',
+                'description' => 'Automated payment',
+                'object' => $decrypt_data,
+                'reference' => $result['payload']['id'],
+            ];
+
+            //Guardamos el pago en la base de datos
+            $response = $paymentRepository->savePayment($data);
+            if( $response ):
+                //Envío de correo al cliente...
+                $email = [];
+                $email['code'] = $check->code;
+                $email['email'] = $check->client_email;
+                $email['language'] = $check->language;
+                $email['type'] = 'confirmed';        
+                $this->sendEmail(config('app.url')."/api/v1/reservation/send", $email);  
+
+                return response()->json(['OK'], 200);
+            else:
+                return response()->json([
+                    'error' => [
+                        'code' => 'error',
+                        'message' => '¡Error saving payment!'
+                    ]
+                ], 400);
+            endif;
+
+        else:
+            return response()->json([
+                'error' => [
+                    'code' => 'payment_type',
+                    'message' => 'The notification is not of type PAYMENT'
+                ]
+            ], 400);
+        endif;
     }
 }
