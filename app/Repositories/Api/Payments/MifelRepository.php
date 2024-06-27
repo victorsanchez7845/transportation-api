@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\DB;
 class MifelRepository{
     private $data = [];
     
-    private $env = "dev";
+    private $env = "live";
     private $credentials = [
         "dev" => [
             "URL" => "https://eu-test.oppwa.com/v1/checkouts",
@@ -15,10 +15,10 @@ class MifelRepository{
             "descriptor" => "9372793",
         ],
         "live" => [
-            "URL" => "",
-            "entityID" => "",
-            "token" => "",
-            "descriptor" => "",
+            "URL" => "https://eu-prod.oppwa.com/v1/checkouts",
+            "entityID" => "8acda4ce904f6efe0190522c41fd0f26",
+            "token" => "OGFjZGE0Y2U5MDRmNmVmZTAxOTA1MjJiM2NhZTBmMjF8WVNDNXc3eGdaQ3BDUGZhQw==",
+            "descriptor" => "9372793",
         ]
     ];
 
