@@ -122,7 +122,7 @@ class VerifyController extends Controller
     }
 
     public function mifel(Request $request, PaymentRepository $paymentRepository){
-        return response()->json(['OK'], 200);
+        //return response()->json(['OK'], 200);
         
         $payload = @file_get_contents('php://input');
         $event = json_decode($payload, true);
@@ -136,7 +136,7 @@ class VerifyController extends Controller
             ], 400);            
         endif;
         
-        $key_from_configuration = "274B4820DC914E4E5F08E90542C713E79C8CB606C11452474D7C2245DF0933B3";  //KEY de desarrollo: A316D872053A63C8BEDE94971DA4CFEA8F7B7B0927741DA7033965C62471FD9D
+        $key_from_configuration = "DE11A77EB43C76E68A84631C6A716B5AC9C3499148CE27DF70F72CA511FEA8B0";  //KEY de desarrollo: A316D872053A63C8BEDE94971DA4CFEA8F7B7B0927741DA7033965C62471FD9D
         $iv_from_http_header = $request->header('x-initialization-vector');
         $auth_tag_from_http_header = $request->header('x-authentication-tag');
         $http_body = $event['encryptedBody'];
