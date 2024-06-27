@@ -122,6 +122,7 @@ class VerifyController extends Controller
     }
 
     public function mifel(Request $request, PaymentRepository $paymentRepository){
+        return response()->json(['OK'], 200);
         
         $payload = @file_get_contents('php://input');
         $event = json_decode($payload, true);
