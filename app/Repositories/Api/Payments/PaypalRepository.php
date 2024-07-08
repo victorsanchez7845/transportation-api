@@ -65,7 +65,7 @@ class PaypalRepository{
             $merchantId = config('services.paypal.merchant'); // Merchant ID
             if($type == 1):
                 // Nueva cuenta de paypal | cabrivieramaya@gmail.com
-                $merchantId = "4YFWSB3V6T8P2";
+                // $merchantId = "4YFWSB3V6T8P2";
             endif;
 
             $currency = $data['currency'];
