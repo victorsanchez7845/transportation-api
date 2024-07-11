@@ -137,12 +137,12 @@ class CreationController extends Controller
         // Realizar la solicitud
         $result = @file_get_contents($url, false, $context);
 
-        if ($result === FALSE) {
-            // Manejar el error
-            return response()->json(['error' => 'Error al consultar la URL'], 500);
-        }
+        // if ($result === FALSE) {
+        //     // Manejar el error
+        //     return response()->json(['error' => 'Error al consultar la URL'], 500);
+        // }
 
-        // Retornar la respuesta del servidor
-        return response()->json(['response' => json_decode($result)], 200);
+        // // Retornar la respuesta del servidor
+        // return response()->json(['response' => json_decode($result)], 200);
     }    
 }
