@@ -10,7 +10,7 @@ use App\Repositories\Api\Quotation\DistanceRepository;
 use App\Repositories\Api\Quotation\SearchRepository;
 use App\Repositories\Api\Reservation\SearchRepository as ReservationSearch;
 use App\Traits\TokenTrait;
-
+use DateTime;
 
 class CreationController extends Controller
 {
@@ -64,10 +64,21 @@ class CreationController extends Controller
                 ]
             ], 404);
         }
+
+        $dateTime = new DateTime($request['data']['request']['start']['pickup']);
+        $departure_date = $dateTime->format('Y-m-d');
+        $departure_date_today = ( $departure_date == date('Y-m-d') ? true : false );
+        $this->sendToSocketIoContent(array(
+            'success' => $data['status'],
+            'date' => $departure_date,
+            'today' => $departure_date_today,
+            'message' => 'Se agrego servicio correctamente, para '.(  $departure_date_today ? " el día de hoy, es necesario recargar la pagina para actualizar la información " : " la fecha ".$departure_date ),
+        ));
         
-        //Buscamos la reservación creada
+        //Buscamos la reservación creada        
         $res_search->setData( new \Illuminate\Http\Request( $data['data'] ) );
         $data = $res_search->search();
+        
         if($data == false){
             return response()->json([
                 'error' => [
@@ -79,4 +90,59 @@ class CreationController extends Controller
 
         return response()->json($data, 200);
     }
+
+    private function sendToSocketIoCurl($data)
+    {
+        // URL del servidor Express
+        $url = "http://localhost:4000/createBooking";
+
+        // Configurar cURL
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_POST, 1);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
+
+        // Ejecutar y obtener la respuesta
+        $response = curl_exec($ch);
+        curl_close($ch);
+
+        // Retornar respuesta (opcional)
+        // dump($response);
+        return response()->json(['response' => $response]);    
+    }
+
+    private function sendToSocketIoContent($data)
+    {
+        // URL del servidor Express
+        $url = "https://socket-caribbean-transfers.up.railway.app/createBooking";
+
+        // Convertir datos a JSON
+        $dataJson = json_encode($data);
+
+        // Configurar encabezados
+        $options = [
+            'http' => [
+                'header'  => "Content-Type: application/json\r\n" .
+                             "Content-Length: " . strlen($dataJson) . "\r\n",
+                'method'  => 'POST',
+                'content' => $dataJson,
+            ],
+        ];
+
+        // Crear contexto de la solicitud
+        $context  = stream_context_create($options);
+
+        // Realizar la solicitud
+        $result = @file_get_contents($url, false, $context);
+
+        // if ($result === FALSE) {
+        //     // Manejar el error
+        //     return response()->json(['error' => 'Error al consultar la URL'], 500);
+        // }
+
+        // // Retornar la respuesta del servidor
+        // return response()->json(['response' => json_decode($result)], 200);
+    }    
 }
