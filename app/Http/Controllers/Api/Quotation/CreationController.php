@@ -65,15 +65,15 @@ class CreationController extends Controller
             ], 404);
         }
 
-        $dateTime = new DateTime($request['data']['request']['start']['pickup']);
-        $departure_date = $dateTime->format('Y-m-d');
-        $departure_date_today = ( $departure_date == date('Y-m-d') ? true : false );
-        $this->sendToSocketIoContent(array(
-            'success' => $data['status'],
-            'date' => $departure_date,
-            'today' => $departure_date_today,
-            'message' => 'Se agrego servicio correctamente, para '.(  $departure_date_today ? " el día de hoy, es necesario recargar la pagina para actualizar la información " : " la fecha ".$departure_date ),
-        ));
+        // $dateTime = new DateTime($request['data']['request']['start']['pickup']);
+        // $departure_date = $dateTime->format('Y-m-d');
+        // $departure_date_today = ( $departure_date == date('Y-m-d') ? true : false );
+        // $this->sendToSocketIoContent(array(
+        //     'success' => $data['status'],
+        //     'date' => $departure_date,
+        //     'today' => $departure_date_today,
+        //     'message' => 'Se agrego servicio correctamente, para '.(  $departure_date_today ? " el día de hoy, es necesario recargar la pagina para actualizar la información " : " la fecha ".$departure_date ),
+        // ));
         
         //Buscamos la reservación creada        
         $res_search->setData( new \Illuminate\Http\Request( $data['data'] ) );
