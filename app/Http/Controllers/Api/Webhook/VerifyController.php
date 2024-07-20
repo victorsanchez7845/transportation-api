@@ -159,14 +159,23 @@ class VerifyController extends Controller
         if($result['type'] == "PAYMENT"):
             //$result['payload']['merchantTransactionId'] = "16318-12312312312312"; //ELIMINAR EN PRODUCCIÓN
             
-            if($result['payload']['result']['code'] != "000.100.110"){
+            if (strpos($result['payload']['result']['code'], '000.100') === false) {
+                return response()->json([
+                    'error' => [
+                        'code' => 'payment_type',
+                        'message' => 'Is not successful'
+                    ]
+                ], 400);
+            }
+            
+            /*if($result['payload']['result']['code'] != "000.100.110"){
                 return response()->json([
                     'error' => [
                         'code' => 'payment_type',
                         'message' => 'The notification is not of type PAYMENT'
                     ]
                 ], 400);
-            }
+            }*/
             
             $transactionID = explode("-", $result['payload']['merchantTransactionId']);
             $id = $transactionID[0];
