@@ -13,7 +13,7 @@ class HandlerController extends Controller
 {
     public function index(Request $request, StripeRepository $handlerStripe, PaypalRepository $handlerPaypal, MifelRepository $handlerMifel){
         $validator = Validator::make($request->all(), [
-            'type' => 'required|in:STRIPE,PAYPAL,MIFEL,PAYPAL-1',
+            'type' => 'required|in:STRIPE,STRIPE-2,PAYPAL,MIFEL,PAYPAL-1',
             'id' => 'integer',
             'language' => 'required|in:en,es',
             'success_url' => 'required',
@@ -30,6 +30,9 @@ class HandlerController extends Controller
         }
 
         if($request->type == "STRIPE"):
+            $items = $handlerStripe->check($request);
+        endif;
+        if($request->type == "STRIPE-2"): //Nueva cuenta de Stripe para probar
             $items = $handlerStripe->check($request);
         endif;
         if($request->type == "PAYPAL"):

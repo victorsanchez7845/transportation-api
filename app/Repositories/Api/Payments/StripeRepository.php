@@ -59,7 +59,12 @@ class StripeRepository{
         ];
 
         try{
-            $stripe = new \Stripe\StripeClient(config('services.stripe.key'));
+            $key = config('services.stripe.key');
+            if($this->data['type'] == "STRIPE-2"){
+                $key = "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";
+            }
+
+            $stripe = new \Stripe\StripeClient( $key );
             $product = $stripe->products->create([
                 'name' => (($request->language == "en")?'Transportation service':'Servicio de transportación'),
             ]);
