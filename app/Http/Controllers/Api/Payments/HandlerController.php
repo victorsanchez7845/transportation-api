@@ -46,6 +46,10 @@ class HandlerController extends Controller
         endif;
 
         if($items['status'] == false){
+            if($items['code'] == "cancelled" && $request->language == "es"):
+                $items['message'] = "Su reserva ha sido cancelada, si desea reactivarla póngase en contacto con nosotros.";
+            endif;
+            
             return response()->json([
                 'error' => [
                     'code' => $items['code'],

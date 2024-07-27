@@ -49,15 +49,15 @@ class MifelRepository{
                                 GROUP BY reservation_id
                             ) as p ON p.reservation_id = rez.id
                             INNER JOIN sites as site ON site.id = rez.site_id
-                            WHERE rez.id = :code
+                            WHERE rez.id = :code AND rez.is_cancelled = 0
                             GROUP BY rez.id, site.payment_domain",
                         [
                             'code' => $this->data['id']
                         ]);
         
         if(sizeof($rez) <= 0):
-            $response['code'] = "not_found";
-            $response['message'] = "Reservation not found";
+            $response['code'] = "cancelled";
+            $response['message'] = "Your reservation has been cancelled, if you want to reactivate it contact us.";
             return $response;
         endif;
 
