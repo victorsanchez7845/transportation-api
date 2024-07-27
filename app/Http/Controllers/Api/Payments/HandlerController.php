@@ -18,6 +18,7 @@ class HandlerController extends Controller
             'language' => 'required|in:en,es',
             'success_url' => 'required',
             'cancel_url' => 'required',
+            'redirect' => 'integer',
         ]);
 
         if ($validator->fails()) {
@@ -28,7 +29,7 @@ class HandlerController extends Controller
                     ]
                 ], 404);
         }
-
+        
         if($request->type == "STRIPE"):
             $items = $handlerStripe->check($request);
         endif;
@@ -57,6 +58,10 @@ class HandlerController extends Controller
                 ]
             ], 404);            
         }
+
+        if(isset( $request->redirect ) && $request->redirect == 1):            
+            return redirect()->away($items['data']['url']);
+        endif;
 
         return response()->json($items['data'], 200);
        
