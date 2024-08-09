@@ -158,7 +158,16 @@ class VerifyController extends Controller
         $result = json_decode($decrypt_data, true);
         if($result['type'] == "PAYMENT"):
             //$result['payload']['merchantTransactionId'] = "16318-12312312312312"; //ELIMINAR EN PRODUCCIÓN
-            
+            if( $result['payload']['paymentType'] != "DB" ){
+                return response()->json([
+                    'error' => [
+                        'code' => 'payment_type',
+                        'message' => 'Incorrect code type'
+                    ]
+                ], 400);
+            }
+
+
             if ( $result['payload']['resultDetails']['acquirerResponse'] != 00 ) {
                 return response()->json([
                     'error' => [
