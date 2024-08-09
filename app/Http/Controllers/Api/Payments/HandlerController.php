@@ -66,4 +66,32 @@ class HandlerController extends Controller
         return response()->json($items['data'], 200);
        
     }
+
+    public function mifelValidate(Request $request, MifelRepository $handlerMifel){
+
+        $validator = Validator::make($request->all(), [            
+            'id' => 'required',            
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                    'error' => [
+                        'code' => 'required_params',
+                        'message' =>  $validator->errors()->all() 
+                    ]
+                ], 404);
+        }
+
+        $items = $handlerMifel->validate($request);
+        if($items == false){
+            return response()->json([
+                'error' => [
+                    'code' => 'declined',
+                    'message' => 'The bank had an error in returning the data.'
+                ]
+            ], 404);
+        }
+
+        return response()->json([], 200);
+    }
 }

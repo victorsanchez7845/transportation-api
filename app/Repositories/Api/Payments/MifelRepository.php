@@ -194,6 +194,35 @@ class MifelRepository{
         endif;        
     }
 
+    public function validate($request){
+
+        $url = $this->credentials[ $this->env ]['URL']."/".$request->id."/payment";
+
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true); // Esto debería estar en true en producción
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);        
+
+        $responseData = curl_exec($ch);
+
+        if (curl_errno($ch)) {
+            return curl_error($ch);
+        }
+        
+        $data = json_decode($responseData, true);
+
+        if( !isset( $data['resultDetails']['acquirerResponse'] ) ){
+            return false;
+        }
+
+        if($data['resultDetails']['acquirerResponse'] == "00"){
+            return true;
+        }else{
+            return false;
+        }
+        
+    }
+
     public function getExchange($origin, $destination = "MXN", $total = 0){        
         $items = DB::select('SELECT operation, exchange_rate
                                 FROM payments_exchange_rate
