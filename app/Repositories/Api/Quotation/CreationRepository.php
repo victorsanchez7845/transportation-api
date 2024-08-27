@@ -92,6 +92,10 @@ class CreationRepository{
                 $rez_db->reference = $reference;
                 $rez_db->affiliate_id = $affiliate_id;
                 $rez_db->accept_messages = (( $accept_messages )? 1 : 0 );
+
+                if( isset( $this->request['origin_sale_id'] ) ):
+                    $rez_db->origin_sale_id = $this->request['origin_sale_id'];
+                endif;
                 
                 if($pay_at_arrival):
                     $rez_db->pay_at_arrival = 1;
