@@ -17,6 +17,7 @@ use App\Http\Controllers\Api\Terms\TermsController;
 use App\Http\Controllers\Api\Hotels\HotelsController;
 use App\Http\Controllers\Api\Hotels\RatesController;
 use App\Http\Controllers\Api\Spam\SpamController;
+use App\Http\Controllers\Api\Promotions\PromotionsController;
 use App\Http\Middleware\Auth;
 
 /*
@@ -81,6 +82,9 @@ Route::middleware([Auth::class])->group(function () {
 
         Route::get('/terms-and-conditions', [TermsController::class,'terms'])->withoutMiddleware([Auth::class]);
         Route::get('/privacy-policy', [TermsController::class,'privacy'])->withoutMiddleware([Auth::class]);
+
+        Route::get('/promotions', [PromotionsController::class,'index'])->withoutMiddleware([Auth::class]);
+        Route::get('/promotions-download', [PromotionsController::class,'download'])->withoutMiddleware([Auth::class]);
         
     });
     
