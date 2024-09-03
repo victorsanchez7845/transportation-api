@@ -84,6 +84,7 @@ Route::middleware([Auth::class])->group(function () {
         Route::get('/privacy-policy', [TermsController::class,'privacy'])->withoutMiddleware([Auth::class]);
 
         Route::get('/promotions', [PromotionsController::class,'index'])->withoutMiddleware([Auth::class]);
+        Route::get('/promotions-download', [PromotionsController::class,'download'])->withoutMiddleware([Auth::class]);
         
     });
     
