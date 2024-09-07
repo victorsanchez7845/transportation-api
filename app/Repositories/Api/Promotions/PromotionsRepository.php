@@ -18,10 +18,10 @@ class PromotionsRepository{
     }
 
     public function check($request){
-        $item =  DB::select('SELECT rit.code, rez.is_cancelled
-                            FROM reservations_items as rit
                         INNER JOIN reservations as rez ON rez.id = rit.reservation_id
-                        WHERE rit.code = :code and rit.destination_service_id = 1', [
+        $item =  DB::select('SELECT rez.id
+                                FROM reservations as rez
+                                WHERE rez.id = :code AND rez.is_cancelled = 0 AND rez.is_duplicated = 0 AND rez.is_advanced = 1 ', [
                             'code' => $request->code,
                         ]);
         if(sizeof($item) >= 1):
