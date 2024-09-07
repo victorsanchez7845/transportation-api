@@ -61,6 +61,11 @@ class CreationRepository{
                 $is_commissionable = 0;
             endif;
 
+            $is_advanced = 0;
+            if(in_array($service_token['data']['item']['id'], [5])):
+                $is_advanced = 1;
+            endif;
+
             //Obtenemos la distancia en Tiempo (Segundos) y KM [Texto]
             $distance_data = $distance->get( new \Illuminate\Http\Request($service_token['data']['request']) );
             $zones_data = $search->findDestinations( new \Illuminate\Http\Request($service_token['data']['request']) ); //Identificamos a que zona pertenecen los puntos..
@@ -92,6 +97,7 @@ class CreationRepository{
                 $rez_db->reference = $reference;
                 $rez_db->affiliate_id = $affiliate_id;
                 $rez_db->accept_messages = (( $accept_messages )? 1 : 0 );
+                $rez_db->is_advanced = $is_advanced;
 
                 if( isset( $this->request['origin_sale_id'] ) ):
                     $rez_db->origin_sale_id = $this->request['origin_sale_id'];
