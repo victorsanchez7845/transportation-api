@@ -49,7 +49,8 @@ class SearchRepository{
                 "destination_id" => $rez->destination_id,
                 "payment_exchange_rate" => [
                     "USD_MXN" => 18
-                ]
+                ],
+                "is_advanced" => $rez->is_advanced,
             ],
             "site" => [
                 "id" => $rez->site_id,
@@ -76,7 +77,7 @@ class SearchRepository{
 
     public function check(){
 
-        $rez = DB::select('SELECT res.id as reservation_id, res.pay_at_arrival, item.code, res.destination_id, res.created_at, res.client_first_name, res.client_last_name, res.client_email, res.client_phone, res.currency, res.language, res.rate_group, res.is_cancelled, site.id as site_id, site.name as site_name, site.logo, site.color, site.transactional_email as email, site.transactional_email_send as send_email, prov.name as provider_name, prov.transactional_phone as provider_transactional_phone, prov.transactional_emails as provider_transactional_email
+        $rez = DB::select('SELECT res.id as reservation_id, res.is_advanced, res.pay_at_arrival, item.code, res.destination_id, res.created_at, res.client_first_name, res.client_last_name, res.client_email, res.client_phone, res.currency, res.language, res.rate_group, res.is_cancelled, site.id as site_id, site.name as site_name, site.logo, site.color, site.transactional_email as email, site.transactional_email_send as send_email, prov.name as provider_name, prov.transactional_phone as provider_transactional_phone, prov.transactional_emails as provider_transactional_email
                             FROM reservations_items as item 
                                 INNER JOIN reservations as res ON res.id = item.reservation_id
                                 INNER JOIN sites as site ON site.id = res.site_id
