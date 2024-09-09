@@ -64,13 +64,7 @@
                                     </td>
                                     <td style="width: 70%; padding: 0px; border: 0px; padding-left: 15px;">
                                         <p style="font-size: 14pt; margin: 0px; color: #425466;">{{ $value->name }}</p>
-                                        <p style="font-size: 10pt; margin: 0px; color: #425466;">
-                                            @if(app()->getLocale() == "en")
-                                                Present this coupon printed or digital
-                                            @else
-                                                Presente este cupón impreso o digital
-                                            @endif
-                                        </p>
+                                        <p style="font-size: 10pt; margin: 0px; color: #425466;">{{ $value->hidden_instructions }}</p>
                                         <p style="font-size: 18pt; margin: 0px; color: #16161D; font-weight:bold;">
                                             @if(app()->getLocale() == "en")
                                                 Up to {{ $value->promo }}
