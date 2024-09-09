@@ -32,7 +32,7 @@ class PromotionsRepository{
 
     public function getItems($request){
         $items = $request->coupons;
-        return DB::select('SELECT pro.id, IFNULL(trans.name, pro.name) AS name, IFNULL(trans.description, pro.description) AS description, pro.logo, 
+        return DB::select('SELECT pro.id, IFNULL(trans.name, pro.name) AS name, IFNULL(trans.description, pro.description) AS description, pro.logo, IFNULL(trans.hidden_instructions, pro.hidden_instructions) AS hidden_instructions, 
                             IFNULL(trans.type, pro.type) AS type, IFNULL(trans.promo, pro.promo) AS promo
                         FROM promotions as pro
                             LEFT JOIN promotions_translate as trans ON trans.promotion_id = pro.id AND trans.lang = :lang
