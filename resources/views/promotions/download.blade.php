@@ -59,10 +59,10 @@
                         <table class="two">
                             <tbody>
                                 <tr>
-                                    <td style="width: 30%; vertical-align: middle; border: 0px; padding: 0px; text-align: center;">
+                                    <td style="width: 80px; vertical-align: middle; border: 0px; padding: 0px; text-align: center;">
                                         <img src="{{ $value->logo }}" width="80px">
                                     </td>
-                                    <td style="width: 70%; padding: 0px; border: 0px; padding-left: 15px;">
+                                    <td style="width: 220px; padding: 0px; border: 0px; padding-left: 15px;">
                                         <p style="font-size: 14pt; margin: 0px; color: #425466;">{{ $value->name }}</p>
                                         <p style="font-size: 10pt; margin: 0px; color: #425466;">{{ $value->hidden_instructions }}</p>
                                         <p style="font-size: 18pt; margin: 0px; color: #16161D; font-weight:bold;">
