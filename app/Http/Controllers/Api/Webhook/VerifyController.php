@@ -243,4 +243,8 @@ class VerifyController extends Controller
             ], 400);
         endif;
     }
+
+    public function mit(Request $request, PaymentRepository $paymentRepository){
+        return response()->json(['OK'], 200);
+    }
 }
