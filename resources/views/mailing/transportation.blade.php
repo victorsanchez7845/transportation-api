@@ -52,7 +52,7 @@
         table.table_init {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 20px;
+            margin-top: 15px;
             border-radius: 15px;
         }
         .header{
@@ -151,7 +151,7 @@
 <body style="background-color: #f7fafb;">
     <div class="container">
         <div class="header">
-            <img src="{{ $data['site']['logo'] }}" style="max-width:400px;">
+            <img src="{{ $data['site']['logo'] }}" style="max-width:600px;">
         </div>
         <table class="table_init">
             <tbody>                
