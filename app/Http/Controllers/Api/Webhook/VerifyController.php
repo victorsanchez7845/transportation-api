@@ -260,7 +260,7 @@ class VerifyController extends Controller
             ], 400);
         endif;        
 
-        $xml = AESCrypto::decrypt( $payload, config('services.santander.seed') );
+        $xml = AESCrypto::decrypt( $event['strResponse'], config('services.santander.seed') );
         //$xml = AESCrypto::decrypt( $event['strResponse'], '5DCC67393750523CD165F17E1EFADD21' ); //COMENTAR EN PRODUCCIÓN  
 
         $xmlObject = simplexml_load_string($xml);
