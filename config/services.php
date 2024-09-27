@@ -54,4 +54,9 @@ return [
     'paypal' => [
         'merchant' => env('PAYPAL_MERCHANT_ID'),
     ],
+    'santander' => [
+        'user' => env('SANTANDER_USER',''),
+        'password' => env('SANTANDER_PASSWORD',''),
+        'seed' => env('SANTANDER_SEED',''),
+    ],
 ];
