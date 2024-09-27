@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Repositories\Api\Webhook\PaymentRepository;
 use Illuminate\Support\Facades\Validator;
 use App\Traits\FunctionsTrait;
+use App\Services\AESCrypto;
 
 class VerifyController extends Controller
 {
@@ -245,6 +246,85 @@ class VerifyController extends Controller
     }
 
     public function mit(Request $request, PaymentRepository $paymentRepository){
-        return response()->json(['OK'], 200);
+
+        $payload = @file_get_contents('php://input');
+        $event = array();
+        parse_str($payload, $event);        
+
+        if( !isset( $event['strResponse'] ) ):
+            return response()->json([
+                'error' => [
+                    'code' => 'strResponse',
+                    'message' => 'strResponse is needed'
+                ]
+            ], 400);
+        endif;        
+
+        $xml = AESCrypto::decrypt( $payload, config('services.santander.seed') );
+        //$xml = AESCrypto::decrypt( $event['strResponse'], '5DCC67393750523CD165F17E1EFADD21' ); //COMENTAR EN PRODUCCIÓN  
+
+        $xmlObject = simplexml_load_string($xml);
+        $xmlObject = json_decode(json_encode($xmlObject), true);
+
+        if($xmlObject['response'] == "approved"):
+            
+            //$xmlObject['reference'] = "36949-".strtotime(date("Y-m-d H:i:s")); //COMENTAR EN PRODUCCIÓN
+        
+            $id = explode("-", $xmlObject['reference']);
+            $id = $id[0];           
+
+            $check = $paymentRepository->checkReservation( $id );
+            if($check == false):
+                return response()->json([
+                    'error' => [
+                        'code' => 'not_found',
+                        'message' => 'Reservation not found'
+                    ]
+                ], 400);
+            endif;
+
+            $exchange = $paymentRepository->getExchange("MXN", $check->currency);            
+
+            $data = [
+                'id' => $id,
+                'total' => $xmlObject['amount'],
+                'currency' => "MXN",
+                'exchange_rate' => $exchange->exchange_rate,
+                'operation' => $exchange->operation,
+                'method' => 'SANTANDER',
+                'description' => 'Automated payment',
+                'object' => json_encode($xmlObject),
+                'reference' => $xmlObject['foliocpagos'],
+            ];
+
+            //Guardamos el pago en la base de datos
+            $response = $paymentRepository->savePayment($data);
+            if( $response ):
+                //Envío de correo al cliente...
+                $email = [];
+                $email['code'] = $check->code;
+                $email['email'] = $check->client_email;
+                $email['language'] = $check->language;
+                $email['type'] = 'confirmed';        
+                $this->sendEmail(config('app.url')."/api/v1/reservation/send", $email);  
+
+                return response()->json(['OK'], 200);
+            else:
+                return response()->json([
+                    'error' => [
+                        'code' => 'error',
+                        'message' => '¡Error saving payment!'
+                    ]
+                ], 400);
+            endif;
+
+        else:
+            return response()->json([
+                'error' => [
+                    'code' => 'not_approved',
+                    'message' => 'The response is: '.$xmlObject['response']
+                ]
+            ], 400);
+        endif;
     }
 }

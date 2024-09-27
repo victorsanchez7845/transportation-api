@@ -10,13 +10,13 @@ class SantanderRepository{
     private $env = "live";
     private $credentials = [
         "dev" => [
-            "URL" => "https://bc.mitec.com.mx/p/gen",
-            "id_company" => "8J8C",
-            "id_branch" => "0002",
-            "user" => "",
-            "password" => "",
-            "seed" => "",
-            "data0" => "9265657419",
+            "URL" => "https://sandboxpo.mit.com.mx/gen",
+            "id_company" => "SNBX",
+            "id_branch" => "01SNBXBRNCH",
+            "user" => "SNBXUSR0123",
+            "password" => "SECRETO",
+            "seed" => "5DCC67393750523CD165F17E1EFADD21",
+            "data0" => "SNDBX123",
         ],
         "live" => [
             "URL" => "https://bc.mitec.com.mx/p/gen",
@@ -112,10 +112,12 @@ class SantanderRepository{
         return $response;
     }
 
-    public function init(){        
-        $this->credentials[ $this->env ]['user'] = config('services.santander.user');
-        $this->credentials[ $this->env ]['password'] = config('services.santander.password');
-        $this->credentials[ $this->env ]['seed'] = config('services.santander.seed');
+    public function init(){
+        if( $this->env == "live" ):
+            $this->credentials[ $this->env ]['user'] = config('services.santander.user');
+            $this->credentials[ $this->env ]['password'] = config('services.santander.password');
+            $this->credentials[ $this->env ]['seed'] = config('services.santander.seed');
+        endif;
     }
 
     public function makeXML($data = []){        
