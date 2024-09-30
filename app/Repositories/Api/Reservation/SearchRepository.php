@@ -48,7 +48,7 @@ class SearchRepository{
                 "creation_date" => $rez->created_at,
                 "destination_id" => $rez->destination_id,
                 "payment_exchange_rate" => [
-                    "USD_MXN" => 18
+                    "USD_MXN" => 19
                 ],
                 "is_advanced" => $rez->is_advanced,
             ],
