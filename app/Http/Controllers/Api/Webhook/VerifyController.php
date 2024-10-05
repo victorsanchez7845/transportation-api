@@ -247,25 +247,25 @@ class VerifyController extends Controller
 
     public function mit(Request $request, PaymentRepository $paymentRepository){
 
-        /*$payload = @file_get_contents('php://input');
-        $event = array();
-        parse_str($payload, $event);*/
-
-        if( !isset( $request->strResponse ) ):
+        $payload = @file_get_contents('php://input');
+        
+        if (strpos($payload, 'strResponse') === false) {
             return response()->json([
                 'error' => [
                     'code' => 'strResponse',
                     'message' => 'strResponse is needed'
                 ]
             ], 400);
-        endif;
-        
-        $xml = AESCrypto::decrypt( $request->strResponse, config('services.santander.seed') );
-        //$xml = AESCrypto::decrypt( $request->strResponse, '5DCC67393750523CD165F17E1EFADD21' ); //COMENTAR EN PRODUCCIÓN  
-        
+        }
+
+        $event['strResponse'] = str_replace("strResponse=", "", $payload);
+
+        $xml = AESCrypto::decrypt( $event['strResponse'], config('services.santander.seed') );
+        //$xml = AESCrypto::decrypt( $event['strResponse'], '5DCC67393750523CD165F17E1EFADD21' ); //COMENTAR EN PRODUCCIÓN  
+
         $xmlObject = simplexml_load_string($xml);
         $xmlObject = json_decode(json_encode($xmlObject), true);        
-        //dd($xmlObject);
+
         if($xmlObject['response'] == "approved"):
             
             //$xmlObject['reference'] = "36949-".strtotime(date("Y-m-d H:i:s")); //COMENTAR EN PRODUCCIÓN
