@@ -248,23 +248,23 @@ class VerifyController extends Controller
     public function mit(Request $request, PaymentRepository $paymentRepository){
 
         $payload = @file_get_contents('php://input');
-        $event = array();
-        parse_str($payload, $event);        
-
-        if( !isset( $event['strResponse'] ) ):
+        
+        if (strpos($payload, 'strResponse') === false) {
             return response()->json([
                 'error' => [
                     'code' => 'strResponse',
                     'message' => 'strResponse is needed'
                 ]
             ], 400);
-        endif;        
+        }
+
+        $event['strResponse'] = str_replace("strResponse=", "", $payload);
 
         $xml = AESCrypto::decrypt( $event['strResponse'], config('services.santander.seed') );
         //$xml = AESCrypto::decrypt( $event['strResponse'], '5DCC67393750523CD165F17E1EFADD21' ); //COMENTAR EN PRODUCCIÓN  
 
         $xmlObject = simplexml_load_string($xml);
-        $xmlObject = json_decode(json_encode($xmlObject), true);
+        $xmlObject = json_decode(json_encode($xmlObject), true);        
 
         if($xmlObject['response'] == "approved"):
             
