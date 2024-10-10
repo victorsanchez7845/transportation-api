@@ -98,6 +98,7 @@ class CreationRepository{
                 $rez_db->affiliate_id = $affiliate_id;
                 $rez_db->accept_messages = (( $accept_messages )? 1 : 0 );
                 $rez_db->is_advanced = $is_advanced;
+                $rez_db->call_center_agent_id = ((isset($this->request['call_center_agent']))? $this->request['call_center_agent'] : 0);
 
                 if( isset( $this->request['origin_sale_id'] ) ):
                     $rez_db->origin_sale_id = $this->request['origin_sale_id'];
