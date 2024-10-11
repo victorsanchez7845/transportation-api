@@ -129,7 +129,7 @@ class RatesRepository{
         //endif;
 
         $rates = DB::select('SELECT rate.*, dest.name as destination_name, dest.status as destination_status, IFNULL(dest_trans.translation, serv.name) AS service_name, 
-                                serv.passengers, serv.luggage, serv.price_type, serv.image_url, serv.id as service_id,
+                                serv.passengers, serv.luggage, serv.price_type, serv.image_url, serv.id as service_id, serv.cash_fee,
                                 zoneA.name as zone_nameA, zoneA.status as zone_statusA, zoneB.name as zone_nameB, zoneB.status as zone_statusB
                             FROM rates_transfers as rate
                             INNER JOIN destinations as dest ON dest.id = rate.destination_id
@@ -204,6 +204,7 @@ class RatesRepository{
                     "luggage" => $value->luggage,
                     "image" => $value->image_url,
                     "price" => $this->getExchangeConvertion($final_price),
+                    "cash_fee" => $this->getExchangeConvertion($value->cash_fee),
                     "currency" => $this->request['currency'],
                     "vehicles" => $vehicles
                 ]
