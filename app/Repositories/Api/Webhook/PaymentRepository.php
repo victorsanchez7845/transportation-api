@@ -39,6 +39,8 @@ class PaymentRepository{
         $sales_db->reference = $data['reference'];
 
         if($sales_db->save()){
+            Sales::where('reservation_id', $data['id'])->where('sale_type_id', 3)->update(['deleted_at' => date("Y-m-d H:i:s") ]);
+
             $follow_up_db = new ReservationsFollowUp;
             $follow_up_db->name = 'System';
             $follow_up_db->text = 'Pago realizado ('.$data['description'].')';

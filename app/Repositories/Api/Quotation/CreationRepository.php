@@ -81,6 +81,11 @@ class CreationRepository{
             if( isset( $this->request['affiliate_id'] ) ):
                 $affiliate_id = $this->request['affiliate_id'];
             endif;
+
+            $cash_fee = 0;
+            if(isset( $service_token['data']['item']['cash_fee'] )):
+                $cash_fee = $service_token['data']['item']['cash_fee'];
+            endif;
                            
                 $rez_db = new Reservations;                
                 $rez_db->client_first_name = $this->request['first_name'];
@@ -237,6 +242,18 @@ class CreationRepository{
                     $sales_db->sale_type_id = 1;
                     $sales_db->reservation_id = $rez_db->id;
                     $sales_db->save();
+
+                    if( $rez_db->pay_at_arrival ):
+                        $sales_db = new Sales;
+                        $sales_db->description = (( $service_token['data']['request']['language'] == "en" ) ? 'Tax service':'Tarifa de servicio');
+                        $sales_db->quantity = 1;
+                        $sales_db->total = $cash_fee;
+                        $sales_db->call_center_agent_id = 0;
+                        $sales_db->sale_type_id = 3;
+                        $sales_db->reservation_id = $rez_db->id;
+                        $sales_db->save();
+                    endif;
+                    
 
                     if(isset( $this->request['special_request'] )):
                         $follow_up_db = new ReservationsFollowUp;
