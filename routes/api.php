@@ -76,7 +76,7 @@ Route::middleware([Auth::class])->group(function () {
         Route::post('/ipn/paypal', [VerifyController::class,'paypal'])->withoutMiddleware([Auth::class]);
         Route::post('/ipn/mifel', [VerifyController::class,'mifel'])->withoutMiddleware([Auth::class]);
         Route::post('/ipn/mifel-validate', [HandlerController::class,'mifelValidate'])->withoutMiddleware([Auth::class]);
-        Route::post('/ipn/mit', [VerifyController::class,'mit'])->withoutMiddleware([Auth::class,'auth:api']);
+        Route::post('/ipn/mit', [VerifyController::class,'mit'])->withoutMiddleware([Auth::class]);
 
         //Contact form
         Route::post('/contact', [ContactController::class,'index'])->withoutMiddleware([Auth::class]);
