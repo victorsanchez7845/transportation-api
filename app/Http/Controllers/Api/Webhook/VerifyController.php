@@ -246,7 +246,7 @@ class VerifyController extends Controller
     }
 
     public function mit(Request $request, PaymentRepository $paymentRepository){
-        return response()->json(['OK'], 200);
+
         $strResponse = $request->input('strResponse');
         if( $strResponse == NULL ):
             return response()->json([
