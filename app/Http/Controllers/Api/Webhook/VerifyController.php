@@ -291,7 +291,7 @@ class VerifyController extends Controller
                 'method' => 'SANTANDER',
                 'description' => 'Automated payment',
                 'object' => json_encode($xmlObject),
-                'reference' => $xmlObject['foliocpagos'],
+                'reference' => $xmlObject['reference'],
             ];
 
             //Guardamos el pago en la base de datos
