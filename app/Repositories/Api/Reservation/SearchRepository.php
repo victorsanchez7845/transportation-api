@@ -226,7 +226,7 @@ class SearchRepository{
 
     public function getTypesCancellations($request){
         $types = DB::select("SELECT * FROM types_cancellations 
-            WHERE status = :status  ORDER BY id ASC", 
+            WHERE status = :status  ORDER BY name_es ASC", 
             [
                 'status' => 1
             ]);
