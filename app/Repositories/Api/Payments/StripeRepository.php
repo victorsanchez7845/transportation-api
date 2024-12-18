@@ -59,9 +59,10 @@ class StripeRepository{
         ];
 
         try{
-            $key = config('services.stripe.key');
+            $key = "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";
+            //$key = config('services.stripe.key');
             if($this->data['type'] == "STRIPE-2"){
-                $key = "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";
+                //$key = "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";
             }
 
             $stripe = new \Stripe\StripeClient( $key );
