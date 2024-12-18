@@ -42,7 +42,7 @@ class VerifyController extends Controller
                     'currency' => "MXN",
                     'exchange_rate' => $exchange->exchange_rate,
                     'operation' => $exchange->operation,
-                    'method' => 'STRIPE',
+                    'method' => 'CARD',
                     'description' => 'Stripe',
                     'object' => json_encode($paymentIntent),
                     'reference' => $paymentIntent->id
