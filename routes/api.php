@@ -70,6 +70,7 @@ Route::middleware([Auth::class])->group(function () {
 
         //Payments
         Route::get('/reservation/payment/handler', [HandlerController::class,'index'])->withoutMiddleware([Auth::class]);
+        Route::get('/reservation/payment/expressCheckoutElements', [HandlerController::class,'indexStripeElements'])->withoutMiddleware([Auth::class]);
 
         //Payments IPN
         Route::post('/ipn/stripe', [VerifyController::class,'stripe'])->withoutMiddleware([Auth::class]);
