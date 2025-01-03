@@ -23,8 +23,8 @@ class StripeElementsRepository{
             $stripe = new \Stripe\StripeClient( $key );
     
             $items = $stripe->paymentIntents->create([
-                'amount' => ($data['total'] * 100),
-                'currency' => 'mxn',
+                'amount' => 10,
+                'currency' => 'usd',
                 'automatic_payment_methods' => ['enabled' => true],
             ]);
 
