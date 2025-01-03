@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\Payments;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Repositories\Api\Payments\StripeRepository;
+use App\Repositories\Api\Payments\StripeElementsRepository;
 use App\Repositories\Api\Payments\PaypalRepository;
 use App\Repositories\Api\Payments\MifelRepository;
 use App\Repositories\Api\Payments\SantanderRepository;
@@ -69,6 +70,36 @@ class HandlerController extends Controller
 
         return response()->json($items['data'], 200);
        
+    }
+
+    public function indexStripeElements(Request $request, StripeElementsRepository $handlerStripe){
+        $validator = Validator::make($request->all(), [
+            'language' => 'required|in:en,es',
+            'total' => 'required',
+            'currency' => 'required|in:USD,MXN'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                    'error' => [
+                        'code' => 'required_params',
+                        'message' =>  $validator->errors()->all() 
+                    ]
+                ], 404);
+        }
+
+        $items = $handlerStripe->check($request);
+
+        if($items['status'] == false){
+            return response()->json([
+                'error' => [
+                    'code' => $items['code'],
+                    'message' => $items['message']
+                ]
+            ], 404);            
+        }
+
+        return response()->json($items['data'], 200);
     }
 
     public function mifelValidate(Request $request, MifelRepository $handlerMifel){
