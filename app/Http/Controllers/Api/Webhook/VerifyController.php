@@ -42,7 +42,7 @@ class VerifyController extends Controller
                     'currency' => "MXN",
                     'exchange_rate' => $exchange->exchange_rate,
                     'operation' => $exchange->operation,
-                    'method' => 'CARD',
+                    'method' => 'STRIPE',
                     'description' => 'Stripe',
                     'object' => json_encode($paymentIntent),
                     'reference' => $paymentIntent->id
@@ -122,7 +122,7 @@ class VerifyController extends Controller
         http_response_code(200);
     }
 
-    public function mifel(Request $request, PaymentRepository $paymentRepository){        
+    public function mifel(Request $request, PaymentRepository $paymentRepository){
         
         $payload = @file_get_contents('php://input');
         $event = json_decode($payload, true);
