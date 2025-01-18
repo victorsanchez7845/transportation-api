@@ -9,6 +9,7 @@ use App\Models\ReservationsItems;
 use App\Models\ReservationsServices;
 use App\Models\Sales;
 use App\Models\Payments;
+use App\Models\PaymentsError;
 use App\Models\ReservationsFollowUp;
 use Illuminate\Support\Facades\DB;
 
@@ -37,7 +38,7 @@ class CreationRepository{
             'status' => false
         ];
 
-        try {            
+        try {                        
 
             DB::beginTransaction();           
             
@@ -85,6 +86,19 @@ class CreationRepository{
             $cash_fee = 0;
             if(isset( $service_token['data']['item']['cash_fee'] )):
                 $cash_fee = $service_token['data']['item']['cash_fee'];
+            endif;
+
+            $payment = [
+                "status" => false,
+                "data" => []
+            ];            
+
+            if( isset( $this->request['data']['payment']['id'] ) ):
+                $payment['status'] = true;
+                $payment['data']['id'] = $this->request['data']['payment']['id'];
+                $payment['data']['brand'] = $this->request['data']['payment']['brand'];
+                $payment['data']['amount'] = $this->request['data']['payment']['amount'];
+                $payment['data']['currency'] = $this->request['data']['payment']['currency'];
             endif;
                            
                 $rez_db = new Reservations;                
@@ -165,59 +179,6 @@ class CreationRepository{
                             $data_rez['language'] = $service_token['data']['request']['language'];
                             $data_rez['type'] = 'new';
                             $data_rez['provider'] = '1';
-                           
-                            /*
-                            //Si es un viaje sencillo y viaje redondo, se ejecuta el siguiente bloque de código.
-                            if(in_array($service_token['data']['request']['type'], ['one-way', 'round-trip']) ):
-                                $service_db = new ReservationsServices;
-                                $service_db->reservation_item_id = $rez_item_db->id;
-                                $service_db->destination_service_id = $service_token['data']['item']['id'];
-
-                                $service_db->from_name = $service_token['data']['request']['start']['place'];
-                                $service_db->from_lat = $service_token['data']['request']['start']['lat'];
-                                $service_db->from_lng = $service_token['data']['request']['start']['lng'];
-                                $service_db->from_zone = $zones_data['start']['data']['zone']['id'];
-
-                                $service_db->to_name = $service_token['data']['request']['end']['place'];
-                                $service_db->to_lat = $service_token['data']['request']['end']['lat'];
-                                $service_db->to_lng = $service_token['data']['request']['end']['lng'];
-                                $service_db->to_zone = $zones_data['end']['data']['zone']['id'];
-
-                                $service_db->distance_time = ((isset($distance_data['time_seconds']))? $distance_data['time_seconds'] :  0);
-                                $service_db->distance_km = ((isset($distance_data['distance']))? $distance_data['distance'] : '');
-                                $service_db->status = 'PENDING';
-                                $service_db->pickup = $service_token['data']['request']['start']['pickup'];
-                                $service_db->flight_number = $this->request['flight_number'];
-                                $service_db->flight_data = '';
-                                $service_db->passengers = ( $service_token['data']['request']['passengers'] / $quantity);
-                                $service_db->save();
-                            endif;
-
-                            //Si es una reserva de tipo redondo, se ejecuta el siguiente bloque de código.
-                            if(in_array($service_token['data']['request']['type'], ['round-trip']) ):
-                                $service_db = new ReservationsServices;
-                                $service_db->reservation_item_id = $rez_item_db->id;
-                                $service_db->destination_service_id = $service_token['data']['item']['id'];
-
-                                $service_db->from_name = $service_token['data']['request']['end']['place'];
-                                $service_db->from_lat = $service_token['data']['request']['end']['lat'];
-                                $service_db->from_lng = $service_token['data']['request']['end']['lng'];
-                                $service_db->from_zone = $zones_data['end']['data']['zone']['id'];
-
-                                $service_db->to_name = $service_token['data']['request']['start']['place'];
-                                $service_db->to_lat = $service_token['data']['request']['start']['lat'];
-                                $service_db->to_lng = $service_token['data']['request']['start']['lng'];
-                                $service_db->to_zone = $zones_data['start']['data']['zone']['id'];                        
-
-                                $service_db->distance_time = ((isset($distance_data['time_seconds']))? $distance_data['time_seconds'] :  0);
-                                $service_db->distance_km = ((isset($distance_data['distance']))? $distance_data['distance'] : '');
-                                $service_db->status = 'PENDING';
-                                $service_db->pickup = $service_token['data']['request']['end']['pickup'];
-                                $service_db->flight_number = '';
-                                $service_db->flight_data = '';
-                                $service_db->passengers = ( $service_token['data']['request']['passengers'] / $quantity);
-                                $service_db->save();
-                            endif;*/
 
                         endif;
 
@@ -232,6 +193,25 @@ class CreationRepository{
                     $total = $service_token['data']['item']['price'];
                     if( isset( $this->request['data']['callcenter']['total'] ) ):
                         $total = $this->request['data']['callcenter']['total'];
+                    endif;
+
+                    if($payment['status'] == true):
+                        $exchange = $this->getExchange("MXN", $service_token['data']['request']['currency']);
+
+                        $payment_db = new Payments;
+                        if($payment['data']['brand'] == "STRIPE"):
+                            $payment_db->description = "Stripe";
+                        else:
+                            $payment_db->description = "PayPal";
+                        endif;                        
+                        $payment_db->total = $payment['data']['amount'];
+                        $payment_db->exchange_rate = $exchange->exchange_rate;
+                        $payment_db->operation = $exchange->operation;
+                        $payment_db->payment_method = $payment['data']['brand'];
+                        $payment_db->currency = strtoupper($payment['data']['currency']);
+                        $payment_db->reservation_id = $rez_db->id;
+                        $payment_db->reference = $payment['data']['id'];
+                        $payment_db->save();
                     endif;
 
                     $sales_db = new Sales;
@@ -278,6 +258,10 @@ class CreationRepository{
 
         } catch (\Exception $e) {
             DB::rollback();
+
+            //Si existe un error y hay pago realizado, guardamos un respaldo de toda la data...
+            $this->paymentErrorHistory();
+            
             $data['code'] = "database";
             $data['message'] = $e->getMessage();
             return $data;
@@ -286,6 +270,28 @@ class CreationRepository{
 
     public function getSite($id){
         return DB::select('SELECT id, is_commissionable FROM sites WHERE id = :id ', [ 'id' => $id ]);
+    }
+
+    public function getExchange($origin, $destination = "MXN"){        
+        $items = DB::select('SELECT operation, exchange_rate
+                                FROM payments_exchange_rate
+                            WHERE origin = :origin AND destination = :destination
+                            LIMIT 1', 
+                        [
+                            'origin' => $origin,
+                            'destination' => $destination
+                        ]);
+
+        return $items[0];
+    }
+
+    public function paymentErrorHistory(){
+        if( isset($this->request['data']['payment']['id']) ):
+            $payment_db = new PaymentsError;
+            $payment_db->data = serialize($this->request);
+            $payment_db->created_at = date("Y-m-d H:i:s");
+            $payment_db->save();            
+        endif;
     }
 
 }
