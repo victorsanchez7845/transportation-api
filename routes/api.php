@@ -18,6 +18,7 @@ use App\Http\Controllers\Api\Hotels\HotelsController;
 use App\Http\Controllers\Api\Hotels\RatesController;
 use App\Http\Controllers\Api\Spam\SpamController;
 use App\Http\Controllers\Api\Promotions\PromotionsController;
+use App\Http\Controllers\Api\Integrations\MasterToursController;
 use App\Http\Middleware\Auth;
 
 /*
@@ -87,6 +88,9 @@ Route::middleware([Auth::class])->group(function () {
 
         Route::get('/promotions', [PromotionsController::class,'index'])->withoutMiddleware([Auth::class]);
         Route::get('/promotions-download', [PromotionsController::class,'download'])->withoutMiddleware([Auth::class]);
+
+        //Integration Master Tours
+        Route::get('/integrations/master-tours/list', [MasterToursController::class,'listing'])->withoutMiddleware([Auth::class]);
         
     });
     
