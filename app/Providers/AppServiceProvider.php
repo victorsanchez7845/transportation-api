@@ -5,6 +5,7 @@ use Airbrake\Instance;
 use Airbrake\ErrorHandler;
 use Airbrake\Notifier;
 use Illuminate\Support\ServiceProvider;
+use App\Services\AirbrakeService;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -13,7 +14,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->singleton(AirbrakeService::class, function () {
+            return new AirbrakeService();
+        });
     }
 
     /**
@@ -23,7 +26,7 @@ class AppServiceProvider extends ServiceProvider
     {   
         //Todas estas líneas de código, fueron agregadas para obtener los errores de la App y mandarlas a Airbrake.
         // Configura la instancia de Airbrake
-        $notifier = new Notifier([
+        /*$notifier = new Notifier([
             'projectId' => config('services.airbrake.id'),
             'projectKey' => config('services.airbrake.key'),
         ]);
@@ -33,7 +36,7 @@ class AppServiceProvider extends ServiceProvider
 
         // Crea un manejador de errores y regístralo
         $handler = new ErrorHandler($notifier);
-        $handler->register();
+        $handler->register();*/
 
     }
 }
