@@ -51,7 +51,7 @@ class MasterToursRepository{
 
                 $this->data[] = [
                     "id" => $item['IdReserva'],
-                    "reference" => $item['reference'],
+                    "reference" => $item['legId'],
                     "client" => [
                         "name" => $item['Nombres'],
                         "phone" => $item['NroTelefono'],
