@@ -92,3 +92,11 @@ php artisan db:seed --class=DatabaseSeeder
 
 ## Middleware
 php artisan make:middleware Token
+
+## Errors
+
+use App\Services\AirbrakeService;
+
+// Report a custom error message to Airbrake
+$airbrake = app(AirbrakeService::class);
+$airbrake->reportMessage('This is a custom error message 2');
