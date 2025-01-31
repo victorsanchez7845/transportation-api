@@ -11,6 +11,7 @@ use App\Repositories\Api\Quotation\SearchRepository;
 use App\Repositories\Api\Reservation\SearchRepository as ReservationSearch;
 use App\Traits\TokenTrait;
 use DateTime;
+use App\Services\AirbrakeService;
 
 class CreationController extends Controller
 {
@@ -33,6 +34,10 @@ class CreationController extends Controller
         ]);
 
         if ($validator->fails()) {
+            //Error on validation items
+            $airbrake = app(AirbrakeService::class);
+            $airbrake->reportMessage('[CREATION][VALIDATION]: '. implode(",", $validator->errors()->all() ));
+
             return response()->json([
                 'error' => [
                     'code' => 'required_params',
@@ -46,6 +51,10 @@ class CreationController extends Controller
 
         $service_token = $creation->checkServiceToken($request);
         if($service_token == false){
+            //Error in Token
+            $airbrake = app(AirbrakeService::class);
+            $airbrake->reportMessage('[CREATION][TOKEN]: The service token is invalid');
+
             return response()->json([
                 'error' => [
                     'code' => 'service_token_invalid',
@@ -80,6 +89,10 @@ class CreationController extends Controller
         $data = $res_search->search();
         
         if($data == false){
+            //Error in Token
+            $airbrake = app(AirbrakeService::class);
+            $airbrake->reportMessage('[CREATION][SEARCH]: Searching created reservation');
+
             return response()->json([
                 'error' => [
                     'code' => 'not_found',

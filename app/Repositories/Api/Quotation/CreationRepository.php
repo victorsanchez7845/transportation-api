@@ -13,6 +13,9 @@ use App\Models\PaymentsError;
 use App\Models\ReservationsFollowUp;
 use Illuminate\Support\Facades\DB;
 
+use App\Services\AirbrakeService;
+use Exception;
+
 class CreationRepository{
     use CodeTrait, TokenTrait, FunctionsTrait;
     private $bearer = '';
@@ -38,8 +41,8 @@ class CreationRepository{
             'status' => false
         ];
 
-        try {                        
-
+        try {
+            
             DB::beginTransaction();           
             
             $bearer_token = $this->get( $this->bearer );
@@ -262,6 +265,9 @@ class CreationRepository{
             //Si existe un error y hay pago realizado, guardamos un respaldo de toda la data...
             $this->paymentErrorHistory();
             
+            $airbrake = app(AirbrakeService::class);
+            $airbrake->report($e);
+
             $data['code'] = "database";
             $data['message'] = $e->getMessage();
             return $data;
