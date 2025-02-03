@@ -23,7 +23,7 @@ class CreationController extends Controller
         $validator = Validator::make($request->all(), [
             'service_token' => 'required',
             'first_name' => 'required|max:75',
-            'last_name' => 'required|max:75',
+            'last_name' => 'max:75',
             'email_address' => 'required|email|max:85',
             'phone' => 'required',
             'site_id' => 'required|integer',
