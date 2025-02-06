@@ -66,6 +66,9 @@ class CreationController extends Controller
         $data = $creation->create($distance, $search);
 
         if($data['status'] == false){
+            $airbrake = app(AirbrakeService::class);
+            $airbrake->reportMessage('[CREATION][CREATE]: Error generating the reservation: '.$data['code']." | ".$data['message']);
+
             return response()->json([
                 'error' => [
                     'code' => $data['code'],
