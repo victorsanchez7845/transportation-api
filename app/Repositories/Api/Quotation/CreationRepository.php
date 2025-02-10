@@ -115,7 +115,7 @@ class CreationRepository{
                 $rez_db->is_cancelled = 0;
                 $rez_db->is_commissionable = $is_commissionable;    
                 $rez_db->site_id = $this->request['site_id'];
-                $rez_db->destination_id = $zones_data['start']['data']['destination']['id'];
+                $rez_db->destination_id = 1;
                 $rez_db->reference = $reference;
                 $rez_db->affiliate_id = $affiliate_id;
                 $rez_db->accept_messages = (( $accept_messages )? 1 : 0 );
