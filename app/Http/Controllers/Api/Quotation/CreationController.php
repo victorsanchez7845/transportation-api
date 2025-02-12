@@ -30,6 +30,7 @@ class CreationController extends Controller
             'call_center_agent' => 'integer',
             'flight_number' => 'max:140',
             'pay_at_arrival' => 'integer|min:0|max:1',
+            'is_quotation' => 'integer|min:0|max:1',
             'affiliate_id' => 'integer',
         ]);
 

@@ -56,8 +56,10 @@ class CreationRepository{
             endif;
 
             $pay_at_arrival = false;
+            $is_quotation = false;
             $accept_messages = false;
             if(isset($this->request['pay_at_arrival'])) $pay_at_arrival = true;
+            if(isset($this->request['is_quotation'])) $is_quotation = true;
             if(isset($this->request['accept_messages'])) $accept_messages = true;
 
             $is_commissionable = 1;
