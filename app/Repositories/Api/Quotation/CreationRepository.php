@@ -132,6 +132,10 @@ class CreationRepository{
                     $rez_db->pay_at_arrival = 1;
                 endif;
 
+                if($is_quotation):
+                    $rez_db->is_quotation = 1;
+                endif;
+
                 if($rez_db->save()):
                     
                     //Con este loop agregamos otro código de reservación en caso de que sobrepase el limite de la unidad (ASUR así lo pide).
