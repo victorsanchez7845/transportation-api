@@ -183,12 +183,16 @@ class CreationRepository{
                         endif;
                         
                         if($rez_item_db->save()):
-                            $newDate = $this->getNewDate(date('Y-m-d H:m:s'), $service_token['data']['request']['start']['pickup']);
-                            if( $newDate != null ){
-                                $booking = Reservations::find($rez_db->id);
-                                $booking->expires_at = $newDate;
-                                $booking->save();
-                            }
+                            // APLICA SOLO SI ES COTIZACION
+                            if($is_quotation):
+                                $newDate = $this->getNewDate(date('Y-m-d H:m:s'), $service_token['data']['request']['start']['pickup']);
+                                if( $newDate != null ){
+                                    $booking = Reservations::find($rez_db->id);
+                                    $booking->expires_at = $newDate;
+                                    $booking->save();
+                                }
+                            endif;
+
                             
                             $data_rez['code'] = $rez_item_db->code;
                             $data_rez['email'] = $rez_db->client_email;
