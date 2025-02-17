@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\DB;
 
 use App\Services\AirbrakeService;
 use Exception;
+use Carbon\Carbon;
 
 class CreationRepository{
     use CodeTrait, TokenTrait, FunctionsTrait;
@@ -182,6 +183,12 @@ class CreationRepository{
                         endif;
                         
                         if($rez_item_db->save()):
+                            $newDate = $this->getNewDate(date('Y-m-d H:m:s'), $service_token['data']['request']['start']['pickup']);
+                            if( $newDate != null ){
+                                $booking = Reservations::find($rez_db->id);
+                                $booking->expires_at = $newDate;
+                                $booking->save();
+                            }
                             
                             $data_rez['code'] = $rez_item_db->code;
                             $data_rez['email'] = $rez_db->client_email;
@@ -191,7 +198,7 @@ class CreationRepository{
 
                         endif;
 
-                    $counter++;
+                        $counter++;
                     }
 
                     $label = $service_token['data']['item']['name'].' | '.(($service_token['data']['request']['type'] == "one-way")?'One Way':'Round Trip');
@@ -282,6 +289,29 @@ class CreationRepository{
 
     public function getSite($id){
         return DB::select('SELECT id, is_commissionable FROM sites WHERE id = :id ', [ 'id' => $id ]);
+    }
+
+    public function getNewDate($fecha1, $fecha2){
+        $fecha1 = Carbon::parse($fecha1);
+        $fecha2 = Carbon::parse($fecha2);
+
+        $diasDiferencia = $fecha1->diffInDays($fecha2);
+
+        if ($diasDiferencia === 0) {
+            // Si son 0 días, sumarle 3 horas a la primera fecha
+            return $fecha1->addHours(3);
+        } elseif ($diasDiferencia === 1) {
+            // Si es 1 día, establecer la fecha antes de la medianoche basado en la primera fecha
+            return $fecha1->copy()->endOfDay()->subSecond();
+        } elseif ($diasDiferencia >= 2 && $diasDiferencia <= 4) {
+            // Si son 2, 3 o 4 días, la nueva fecha es un día antes de la segunda fecha
+            return $fecha2->copy()->subDay();
+        } elseif ($diasDiferencia >= 5) {
+            // Si es 5 días o más, la nueva fecha es dos días antes de la segunda fecha
+            return $fecha2->copy()->subDays(2);
+        }
+
+        return null; // En caso de que no se cumpla ninguna condición (casi imposible)
     }
 
     public function getExchange($origin, $destination = "MXN"){        
