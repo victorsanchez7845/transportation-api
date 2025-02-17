@@ -296,13 +296,11 @@ class CreationRepository{
         $fecha2 = Carbon::parse($fecha2);
 
         $diasDiferencia = $fecha1->diffInDays($fecha2);
-
-        if ($diasDiferencia === 0) {
-            // Si son 0 días, sumarle 3 horas a la primera fecha
-            return $fecha1->addHours(3);
-        } elseif ($diasDiferencia === 1) {
-            // Si es 1 día, establecer la fecha antes de la medianoche basado en la primera fecha
-            return $fecha1->copy()->endOfDay()->subSecond();
+        $horasDiferencia = $fecha1->diffInHours($fecha2);
+    
+        if ($diasDiferencia === 0 || $diasDiferencia === 1) {
+            // Si la diferencia es de 0 o 1 días, restar 3 horas a la segunda fecha
+            return $fecha2->copy()->subHours(3);
         } elseif ($diasDiferencia >= 2 && $diasDiferencia <= 4) {
             // Si son 2, 3 o 4 días, la nueva fecha es un día antes de la segunda fecha
             return $fecha2->copy()->subDay();
