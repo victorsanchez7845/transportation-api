@@ -63,6 +63,7 @@ class CreationRepository{
             if(isset($this->request['is_quotation'])) $is_quotation = true;
             if(isset($this->request['accept_messages'])) $accept_messages = true;
 
+            //NOS AYUDA A SABER SI LA RESERVA SERA COMISIONADA
             $is_commissionable = 1;
             if($site[0]->is_commissionable == 0):
                 $is_commissionable = 0;
@@ -133,7 +134,7 @@ class CreationRepository{
                     $rez_db->pay_at_arrival = 1;
                 endif;
 
-                if($is_quotation):
+                if($is_quotation && $site[0]->is_cxc == 0):
                     $rez_db->is_quotation = 1;
                 endif;
 
@@ -292,7 +293,7 @@ class CreationRepository{
     }
 
     public function getSite($id){
-        return DB::select('SELECT id, is_commissionable FROM sites WHERE id = :id ', [ 'id' => $id ]);
+        return DB::select('SELECT id, is_commissionable, is_cxc FROM sites WHERE id = :id ', [ 'id' => $id ]);
     }
 
     public function getNewDate($fecha1, $fecha2){
@@ -316,7 +317,7 @@ class CreationRepository{
         return null; // En caso de que no se cumpla ninguna condición (casi imposible)
     }
 
-    public function getExchange($origin, $destination = "MXN"){        
+    public function getExchange($origin, $destination = "MXN"){
         $items = DB::select('SELECT operation, exchange_rate
                                 FROM payments_exchange_rate
                             WHERE origin = :origin AND destination = :destination
