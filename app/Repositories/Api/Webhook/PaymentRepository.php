@@ -4,6 +4,7 @@ namespace App\Repositories\Api\Webhook;
 use App\Models\Sales;
 use App\Models\ReservationsFollowUp;
 use Illuminate\Support\Facades\DB;
+use App\Models\Reservations;
 use App\Models\Payments;
 
 class PaymentRepository{
@@ -39,8 +40,16 @@ class PaymentRepository{
         $sales_db->reference = $data['reference'];
 
         if($sales_db->save()){
-            Sales::where('reservation_id', $data['id'])->where('sale_type_id', 3)->update(['deleted_at' => date("Y-m-d H:i:s") ]);
+            //ACTUALIZAMOS EL ESTATUS DE LA RESERVA, CUANDO SE AGREGA UN PAGO Y ESTA ES COTIZACIÓN
+            $booking = Reservations::find($data['id']);
+            if( $booking && $booking->is_quotation == 1 ){
+                $booking->is_quotation = 0;
+                $booking->expires_at = NULL;
+                $booking->save();
+            }
 
+            
+            Sales::where('reservation_id', $data['id'])->where('sale_type_id', 3)->update(['deleted_at' => date("Y-m-d H:i:s") ]);
             $follow_up_db = new ReservationsFollowUp;
             $follow_up_db->name = 'System';
             $follow_up_db->text = 'Pago realizado ('.$data['description'].')';
@@ -53,7 +62,7 @@ class PaymentRepository{
         }
     }
 
-    public function getExchange($origin, $destination = "MXN"){        
+    public function getExchange($origin, $destination = "MXN"){
         $items = DB::select('SELECT operation, exchange_rate
                                 FROM payments_exchange_rate
                             WHERE origin = :origin AND destination = :destination
