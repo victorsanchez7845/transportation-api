@@ -26,8 +26,9 @@ class validateQuotationController extends Controller
                     'error' => [
                         'code' => 'not_data',
                         'message' => 'There is no data to process'
-                    ]
-                ], 404);            
+                    ],
+                    'message' => 'There is no data to process'
+                ], 404);
             }
 
             foreach ($data as $key => $booking) {
@@ -61,11 +62,17 @@ class validateQuotationController extends Controller
                         $email['language'] = $booking->language;
                         $email['type'] = 'cancel';
                         $result = $this->sendEmail(config('app.url')."/api/v1/reservation/send", $email);
-                        dd($result);
                     }
-                    dd($resultBooking);
                 }
             }
+
+            return response()->json([
+                'error' => [
+                    'code' => 'success',
+                    'message' => 'the quotes were cancelled correctly'
+                ],
+                'message' => 'the quotes were cancelled correctly'
+            ], 200);            
         } catch (Exception $e) {
             return response()->json([
                 'error' => [
