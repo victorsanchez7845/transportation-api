@@ -57,7 +57,7 @@ class VerifyController extends Controller
                     $email['email'] = $check->client_email;
                     $email['language'] = $check->language;
                     $email['type'] = 'confirmed';        
-                    $this->sendEmail(config('app.url')."/api/v1/reservation/send", $email);  
+                    $this->sendEmail(config('app.url')."/api/v1/reservation/send", $email);
 
                     http_response_code(200);
                     //$stripe->index($request);

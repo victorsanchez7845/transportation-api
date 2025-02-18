@@ -178,7 +178,9 @@ class SearchController extends Controller
             $follow_up_db->reservation_id = $data['config']['id'];
             $follow_up_db->save();
 
-            return response()->json(['status' => "success"], 200);
+            return response()->json([
+                'status' => "success"
+            ], 200);
         else:
             $follow_up_db = new ReservationsFollowUp;
             $follow_up_db->name = 'Sistema';
@@ -227,7 +229,7 @@ class SearchController extends Controller
 
         $this->request = $request->all();
 
-        $url = config('app.url')."/api/v1/mailing/reservation/view";        
+        $url = config('app.url')."/api/v1/mailing/reservation/view";
 
         $params = array(
             'code' => $this->request['code'],

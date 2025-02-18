@@ -15,7 +15,7 @@
                     $reservation_status_label = "PENDIENTE";
                 endif;
             break;        
-        default:                
+        default:
             break;
     }
 @endphp

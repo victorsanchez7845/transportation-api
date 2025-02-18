@@ -31,7 +31,7 @@ trait FunctionsTrait
         endif;
     }
 
-    public static function sendEmail($baseUrl = '', $data = []){        
+    public static function sendEmail($baseUrl = '', $data = []){
         $url = $baseUrl . '?' . http_build_query($data);        
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
@@ -51,7 +51,7 @@ trait FunctionsTrait
         echo $result->getDataUri();
     }
 
-    public static function slug($phrase) {        
+    public static function slug($phrase) {
         $slug = iconv('UTF-8', 'ASCII//TRANSLIT', $phrase);
         
         $slug = str_replace(' - ', '-', $slug);        

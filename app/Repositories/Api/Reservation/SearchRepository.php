@@ -29,13 +29,18 @@ class SearchRepository{
         $payments = $this->getPayments( $rez->reservation_id );
        
         $status = "PENDING";
+
+        if($rez->is_cancelled == 1):
+            $status = "CANCELLED";
+        endif;
+
         if($payments['total'] >= $sales['total']):
             $status = "CONFIRMED";
         endif;
         
         if($rez->pay_at_arrival == 1):
             $status = "CONFIRMED";
-        endif;        
+        endif;
 
         $data = [
             "status" => $status,

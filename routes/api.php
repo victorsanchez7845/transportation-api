@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\Quotation\AutocompleteController;
 use App\Http\Controllers\Api\Quotation\SearchController;
 use App\Http\Controllers\Api\Quotation\PhoneController;
 use App\Http\Controllers\Api\Quotation\CreationController;
+use App\Http\Controllers\Api\Quotation\validateQuotationController;
 use App\Http\Controllers\Api\Flights\SearchController as FlightSearch;
 use App\Http\Controllers\Api\Mailing\ReservationController as MailingReservation;
 use App\Http\Controllers\Api\Reservation\SearchController as SearchReservation;
@@ -39,6 +40,9 @@ Route::middleware([Auth::class])->group(function () {
         //SPAM PROCESS
         Route::post('/spamChangeStatus', [SpamController::class,'spamChangeStatus'])->withoutMiddleware([Auth::class]);
         Route::post('/spamCallCount', [SpamController::class,'spamCallCount'])->withoutMiddleware([Auth::class]);
+
+        // QUOTATION CANCEL
+        Route::get('/validateQuotation', [validateQuotationController::class,'validateQuotation'])->withoutMiddleware([Auth::class]);
         
         //Ruta de autenticación
         Route::post('/oauth', [OauthController::class,'index'])->withoutMiddleware([Auth::class]);

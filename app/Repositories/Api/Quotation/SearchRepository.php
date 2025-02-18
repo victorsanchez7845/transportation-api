@@ -6,7 +6,17 @@ use Location\Coordinate;
 use Location\Polygon;
 
 class SearchRepository{
-    private $data = [];    
+    private $data = [];
+
+    /**
+     * Nos proporciona las reservaciones que son cotizaciones, y que cuenta con una fecha de vigencia
+     */
+    public function getBookingQuotation(){
+        return DB::select('SELECT rez.id, rez.client_email, rez.language, rez.is_cancelled, rez.is_quotation, rez.expires_at, item.code
+                    FROM reservations as rez 
+                    INNER JOIN reservations_items AS item ON item.reservation_id = rez.id
+                WHERE rez.is_cancelled = 0 AND rez.is_quotation = 1 AND rez.expires_at IS NOT NULL');
+    }
 
     public function findDestinations($request){
         
