@@ -139,10 +139,13 @@
             display: inline-block;
             font-weight: bold;
         }
-        span.payment.type-CONFIRMED{
-            background-color: #198f51;            
+        span.payment.type-CONFIRMED,
+        span.type-CONFIRMED{
+            background-color: #198f51;
+            color: white;
         }
-        span.payment.type-CANCELLED{
+        span.payment.type-CANCELLED,
+        span.type-CANCELLED{
             background-color: #dc3545;
             color: white;
         }
