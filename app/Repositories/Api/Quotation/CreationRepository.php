@@ -136,6 +136,7 @@ class CreationRepository{
 
                 if($is_quotation && $site[0]->is_cxc == 0):
                     $rez_db->is_quotation = 1;
+                    $rez_db->was_is_quotation = 1;
                 endif;
 
                 if($rez_db->save()):
