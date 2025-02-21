@@ -257,7 +257,7 @@ class SearchController extends Controller
         curl_close($ch);
         
         $jsonData = json_decode($response);
-        if ($jsonData === null && json_last_error() !== JSON_ERROR_NONE) {     
+        if ($jsonData === null && json_last_error() !== JSON_ERROR_NONE) {
             //Es HTML, esto indica que todo va bien...
             $data['status'] = true;
             $data['data'] = $response;
@@ -268,7 +268,6 @@ class SearchController extends Controller
             $data['data'] = json_decode($response, true);
             return $data;     
         }
-
     }
 
     public function getProvider($id){

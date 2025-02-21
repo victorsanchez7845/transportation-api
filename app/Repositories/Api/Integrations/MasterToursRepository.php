@@ -29,10 +29,8 @@ class MasterToursRepository{
     use MT, CodeTrait, MailjetTrait;
 
     public function listing($request){
-
-        $data = MT::getListing();
+        $data = MT::getListing();        
         if(sizeof($data) > 0):
-
             $this->getZones();
             $this->parseData($data);
             return $this->saveNewReservations();
@@ -58,14 +56,14 @@ class MasterToursRepository{
                         "flight" => $item['NroVuelo']
                     ],
                     "from" => [
-                        "id" => $this->check($item['Recojo_Latitud'], $item['Recojo_Longitud']),
+                        "id" => $this->check($item['Recojo_Latitud'], $item['Recojo_Longitud'], $item),
                         "name" => $item['Recojo'],
-                        "date" => $date,                        
+                        "date" => $date,
                         "lat" => $item['Recojo_Latitud'],
                         "lng" => $item['Recojo_Longitud'],
                     ],
                     "to" => [
-                        "id" => $this->check($item['Destino_Latitud'], $item['Destino_Longitud']),
+                        "id" => $this->check($item['Destino_Latitud'], $item['Destino_Longitud'], $item),
                         "name" => $item['Destino'],
                         "lat" => $item['Destino_Latitud'],
                         "lng" => $item['Destino_Longitud'],
@@ -121,18 +119,23 @@ class MasterToursRepository{
         return false;
     }
 
-    public function check($lat, $lng){
+    public function check($lat, $lng, $item){
 
         foreach($this->zones as $key => $value):
 
             $geofence = new Polygon();
             foreach($value['items'] as $keyI => $valueI):
-                $geofence->addPoint(new Coordinate($valueI['lat'], $valueI['lng']));
+                $geofence->addPoint(new Coordinate((float) $valueI['lat'], (float) $valueI['lng']));
             endforeach;
             
-            $start = new Coordinate($lat, $lng);
+            $start = new Coordinate((float) $lat, (float) $lng);
             if($geofence->contains($start)){
                 return $value['zone']['id'];
+            }
+
+            if (!is_numeric($lat) || !is_numeric($lng)) {
+                // dd($item, 1);
+                return 1;
             }
 
         endforeach;
@@ -158,104 +161,104 @@ class MasterToursRepository{
         DB::beginTransaction();
 
         try {
-                foreach($this->data as $key => $item):
+            foreach($this->data as $key => $item):
 
-                    $search = $this->searchByReference($item['id']);
-                    if($search == false):                        
+                $search = $this->searchByReference($item['id']);
+                if($search == false):
 
-                        $rez_db = new Reservations;
-                        $rez_db->client_first_name = $item['client']['name'];                 
-                        $rez_db->client_last_name = '';
-                        $rez_db->client_email = "bookings@caribbean-transfers.com";
-                        $rez_db->client_phone = $item['client']['phone'];
-                        $rez_db->currency = "USD";
-                        $rez_db->language = "en";
-                        $rez_db->rate_group = 'xLjDl18';
-                        $rez_db->is_cancelled = 0;
-                        $rez_db->is_commissionable = 0;
-                        $rez_db->site_id = 30;
-                        $rez_db->destination_id = 1;
-                        $rez_db->reference = $item['reference'];
-                        $rez_db->reference_two = $item['id'];                    
-                        $rez_db->is_advanced = 0;
-                        $rez_db->origin_sale_id = 11;
-                        if($rez_db->save()):
+                    $rez_db = new Reservations;
+                    $rez_db->client_first_name = $item['client']['name'];                 
+                    $rez_db->client_last_name = '';
+                    $rez_db->client_email = "bookings@caribbean-transfers.com";
+                    $rez_db->client_phone = $item['client']['phone'];
+                    $rez_db->currency = "USD";
+                    $rez_db->language = "en";
+                    $rez_db->rate_group = 'xLjDl18';
+                    $rez_db->is_cancelled = 0;
+                    $rez_db->is_commissionable = 0;
+                    $rez_db->site_id = 30;
+                    $rez_db->destination_id = 1;
+                    $rez_db->reference = $item['reference'];
+                    $rez_db->reference_two = $item['id'];                    
+                    $rez_db->is_advanced = 0;
+                    $rez_db->origin_sale_id = 11;
+                    if($rez_db->save()):
 
-                            $rez_item_db = new ReservationsItems;
-                            $rez_item_db->reservation_id = $rez_db->id;
-                            $rez_item_db->code = $this->generateCode();
+                        $rez_item_db = new ReservationsItems;
+                        $rez_item_db->reservation_id = $rez_db->id;
+                        $rez_item_db->code = $this->generateCode();
 
-                            $rez_item_db->destination_service_id = $item['vehicle']['id'];
+                        $rez_item_db->destination_service_id = $item['vehicle']['id'];
 
-                            $rez_item_db->from_name = $item['from']['name'];
-                            $rez_item_db->from_lat = $item['from']['lat'];
-                            $rez_item_db->from_lng = $item['from']['lng'];
-                            $rez_item_db->from_zone = $item['from']['id'];
+                        $rez_item_db->from_name = $item['from']['name'];
+                        $rez_item_db->from_lat = $item['from']['lat'];
+                        $rez_item_db->from_lng = $item['from']['lng'];
+                        $rez_item_db->from_zone = $item['from']['id'];
 
-                            $rez_item_db->to_name = $item['to']['name'];
-                            $rez_item_db->to_lat = $item['to']['lat'];
-                            $rez_item_db->to_lng = $item['to']['lng'];
-                            $rez_item_db->to_zone = $item['to']['id'];
+                        $rez_item_db->to_name = $item['to']['name'];
+                        $rez_item_db->to_lat = $item['to']['lat'];
+                        $rez_item_db->to_lng = $item['to']['lng'];
+                        $rez_item_db->to_zone = $item['to']['id'];
 
-                            $rez_item_db->distance_time = 0;
-                            $rez_item_db->distance_km = '';                            
-                            $rez_item_db->is_round_trip = 0;
-                            
-                            $rez_item_db->flight_number = $item['client']['flight'];
-                            $rez_item_db->flight_data = '';
-                            $rez_item_db->passengers =  $item['vehicle']['pax'];
-                            $rez_item_db->op_one_status = 'PENDING';                        
-                            $rez_item_db->op_one_pickup = $item['from']['date'];                            
-                            $rez_item_db->save();
+                        $rez_item_db->distance_time = 0;
+                        $rez_item_db->distance_km = '';                            
+                        $rez_item_db->is_round_trip = 0;
+                        
+                        $rez_item_db->flight_number = $item['client']['flight'];
+                        $rez_item_db->flight_data = '';
+                        $rez_item_db->passengers =  $item['vehicle']['pax'];
+                        $rez_item_db->op_one_status = 'PENDING';                        
+                        $rez_item_db->op_one_pickup = $item['from']['date'];                            
+                        $rez_item_db->save();
 
-                            $sales_db = new Sales;
-                            $sales_db->description = "Transportation";
-                            $sales_db->quantity = 1;
-                            $sales_db->total = 0;
-                            $sales_db->call_center_agent_id = 0;
-                            $sales_db->sale_type_id = 1;
-                            $sales_db->reservation_id = $rez_db->id;
-                            $sales_db->save();
+                        $sales_db = new Sales;
+                        $sales_db->description = "Transportation";
+                        $sales_db->quantity = 1;
+                        $sales_db->total = 0;
+                        $sales_db->call_center_agent_id = 0;
+                        $sales_db->sale_type_id = 1;
+                        $sales_db->reservation_id = $rez_db->id;
+                        $sales_db->save();
 
-                            $follow_up_db = new ReservationsFollowUp;
-                            $follow_up_db->name = 'Automated message';
-                            $follow_up_db->text = $item['vehicle']['name'];
-                            $follow_up_db->type = 'OPERATION';
-                            $follow_up_db->reservation_id = $rez_db->id;
-                            $follow_up_db->save();
-                            
-                            DB::commit();
+                        $follow_up_db = new ReservationsFollowUp;
+                        $follow_up_db->name = 'Automated message';
+                        $follow_up_db->text = $item['vehicle']['name'];
+                        $follow_up_db->type = 'OPERATION';
+                        $follow_up_db->reservation_id = $rez_db->id;
+                        $follow_up_db->save();
+                        
+                        DB::commit();
 
-                            MT::acceptReservation($item['id']);
-                            
-                        endif;
-
+                        MT::acceptReservation($item['id']);
+                        
                     endif;
 
-                endforeach;
+                endif;
 
-                $html = $this->HTML();
-                
-                $email_data = array(
-                    "Messages" => array(
-                        array(
-                            "From" => array(
+            endforeach;
+
+            $html = $this->HTML();
+            
+            $email_data = array(
+                "Messages" => array(
+                    array(
+                        "From" => array(
+                            "Email" => "bookings@caribbean-transfers.com",
+                            "Name" => "Bookings"
+                        ),
+                        "To" => array(
+                            array(
                                 "Email" => "bookings@caribbean-transfers.com",
-                                "Name" => "Bookings"
-                            ),
-                            "To" => array(
-                                array(
-                                    "Email" => "bookings@caribbean-transfers.com",
-                                    "Name" => "Reservaciones"
-                                )
-                            ),
-                            "Subject" => 'NEW - Master Tours API | '.date("Y-m-d H:i"),
-                            "HTMLPart" => $html
-                        )
+                                "Name" => "Reservaciones"
+                            )
+                        ),
+                        "Subject" => 'NEW - Master Tours API | '.date("Y-m-d H:i"),
+                        "HTMLPart" => $html
                     )
-                );
+                )
+            );
 
-                $this->sendMailjet($email_data);
+            $this->sendMailjet($email_data);
 
             return response()->json($this->data, 200);
             
