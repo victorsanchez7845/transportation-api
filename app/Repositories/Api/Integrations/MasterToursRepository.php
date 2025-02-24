@@ -153,7 +153,7 @@ class MasterToursRepository{
     }
 
     public function saveNewReservations(){
-                
+        
         if(sizeof($this->data) <= 0):
             return response()->json([], 200);
         endif;
@@ -164,7 +164,7 @@ class MasterToursRepository{
             foreach($this->data as $key => $item):
 
                 $search = $this->searchByReference($item['id']);
-                if($search == false):
+                if($search == false){
 
                     $rez_db = new Reservations;
                     $rez_db->client_first_name = $item['client']['name'];                 
@@ -232,8 +232,9 @@ class MasterToursRepository{
                         MT::acceptReservation($item['id']);
                         
                     endif;
-
-                endif;
+                }else{
+                    MT::acceptReservation($item['id']);
+                }
 
             endforeach;
 
