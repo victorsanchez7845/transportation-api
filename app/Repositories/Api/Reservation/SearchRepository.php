@@ -42,6 +42,11 @@ class SearchRepository{
             $status = "CONFIRMED";
         endif;
 
+        $ads = $sales['total'];
+        if($rez->currency == "USD"):
+            $ads = $ads * 19;
+        endif;
+
         $data = [
             "status" => $status,
             "config" => [
@@ -56,6 +61,7 @@ class SearchRepository{
                     "USD_MXN" => 19
                 ],
                 "is_advanced" => $rez->is_advanced,
+                "ads_total" => number_format($ads, 2, '.', '')
             ],
             "site" => [
                 "id" => $rez->site_id,
