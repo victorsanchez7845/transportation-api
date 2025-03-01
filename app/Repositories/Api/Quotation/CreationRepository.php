@@ -65,7 +65,7 @@ class CreationRepository{
 
             //NOS AYUDA A SABER SI LA RESERVA SERA COMISIONADA
             $is_commissionable = 1;
-            if($site[0]->is_commissionable == 0):
+            if( !isset($this->request['is_commissionable']) && $site[0]->is_commissionable == 0):
                 $is_commissionable = 0;
             endif;
 
