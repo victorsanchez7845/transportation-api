@@ -178,11 +178,11 @@ class MasterToursRepository{
 
         if( $rates ){
             if( $vehicle == 1 || $vehicle == 3 || $vehicle == 6 ){
-                $data['amount'] = ( $pax >= 8 ? $rates[0]->ow_12 : ( $pax >= 3 ? $rates[0]->ow_37 : $rates[0]->up_8_ow ) );
+                $data['amount'] = ( $pax >= 8 ? ( isset($rates[0]->ow_12) ? $rates[0]->ow_12 : 0 ) : ( $pax >= 3 ? ( isset($rates[0]->ow_37) ? $rates[0]->ow_37 : 0 ) : ( isset($rates[0]->up_8_ow) ? $rates[0]->up_8_ow : 0 ) ) );
             }else{
-                $data['amount'] = $rates[0]->one_way;
+                $data['amount'] = ( isset($rates[0]->one_way) ? $rates[0]->one_way : 0 );
             }
-            $data['operating_cost'] = $rates[0]->operating_cost;
+            $data['operating_cost'] = ( isset($rates[0]->operating_cost) ? $rates[0]->operating_cost : 0 );
         }
 
         return $data;
