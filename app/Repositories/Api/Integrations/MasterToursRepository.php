@@ -34,7 +34,6 @@ class MasterToursRepository{
             $this->getZones();
             $this->parseData($data);
             return $this->saveNewReservations();
-
         endif;
     }
 
@@ -56,14 +55,14 @@ class MasterToursRepository{
                         "flight" => $item['NroVuelo']
                     ],
                     "from" => [
-                        "id" => $this->check($item['Recojo_Latitud'], $item['Recojo_Longitud'], $item),
+                        "id" => $this->check($item['Recojo_Latitud'], $item['Recojo_Longitud']),
                         "name" => $item['Recojo'],
                         "date" => $date,
                         "lat" => $item['Recojo_Latitud'],
                         "lng" => $item['Recojo_Longitud'],
                     ],
                     "to" => [
-                        "id" => $this->check($item['Destino_Latitud'], $item['Destino_Longitud'], $item),
+                        "id" => $this->check($item['Destino_Latitud'], $item['Destino_Longitud']),
                         "name" => $item['Destino'],
                         "lat" => $item['Destino_Latitud'],
                         "lng" => $item['Destino_Longitud'],
@@ -72,7 +71,8 @@ class MasterToursRepository{
                         "id" => (( isset( $this->vehicles[$item['TipoVehiculo']] ) )? $this->vehicles[$item['TipoVehiculo']] : 1),
                         "pax" => $item['CantidadPasajeros'],
                         "name" => $item['TipoVehiculo']
-                    ]                    
+                    ],
+                    "rate" =>  $this->Rate( (( isset( $this->vehicles[$item['TipoVehiculo']] ) )? $this->vehicles[$item['TipoVehiculo']] : 1), $item['CantidadPasajeros'], $this->check($item['Recojo_Latitud'], $item['Recojo_Longitud']),  $this->check($item['Destino_Latitud'], $item['Destino_Longitud']) )
                 ];
 
             endif;
@@ -119,7 +119,7 @@ class MasterToursRepository{
         return false;
     }
 
-    public function check($lat, $lng, $item){
+    public function check($lat, $lng){
 
         foreach($this->zones as $key => $value):
 
@@ -134,13 +134,58 @@ class MasterToursRepository{
             }
 
             if (!is_numeric($lat) || !is_numeric($lng)) {
-                // dd($item, 1);
                 return 1;
             }
 
         endforeach;
 
         return 1;        
+    }
+
+    public function Rate(int $vehicle = 1, int $pax = 8, int $zone_one = 1, int $zone_two = 1):array
+    {
+        //return
+        $data = [
+            "amount" => 0,
+            "operating_cost" => 0
+        ];
+
+        // params query
+        $params = [
+            "destination_id" => 1,
+            "destination_service_id" => $vehicle,
+            "zone_one" => $zone_one,
+            "zone_two" => $zone_two,
+            "zone_three" => $zone_two,
+            "zone_four" => $zone_one,
+            "enterprise_id" => 11,
+        ];        
+
+        $rates = DB::select("SELECT 
+                                    ds.name as service_name, ds.price_type,
+                                    rt.*,
+                                    zoneOne.name as from_name,
+	                                zoneTwo.name as to_name
+                             FROM rates_enterprises as rt
+                                    LEFT JOIN destination_services as ds ON ds.id = rt.destination_service_id
+                                    LEFT JOIN enterprises as e ON e.id = rt.enterprise_id
+                                    LEFT JOIN zones as zoneOne ON zoneOne.id = rt.zone_one
+                                    LEFT JOIN zones as zoneTwo ON zoneTwo.id = rt.zone_one
+                             WHERE rt.destination_id = :destination_id
+                                AND rt.destination_service_id = :destination_service_id
+                                AND ( (rt.zone_one = :zone_one AND rt.zone_two = :zone_two) OR ( rt.zone_one = :zone_three AND rt.zone_two = :zone_four )  ) 
+                                AND e.id = :enterprise_id", $params);
+
+        if( $rates ){
+            if( $vehicle == 1 || $vehicle == 3 || $vehicle == 6 ){
+                $data['amount'] = ( $pax >= 8 ? $rates[0]['ow_12'] : ( $pax >= 3 ? $rates[0]['ow_37'] : $rates[0]['up_8_ow'] ) );
+            }else{
+                $data['amount'] = $rates[0]['one_way'];
+            }
+            $data['operating_cost'] = $rates[0]['operating_cost'];
+        }
+
+        return $data;
     }
 
     public function searchByReference($id){
@@ -207,14 +252,15 @@ class MasterToursRepository{
                         $rez_item_db->flight_number = $item['client']['flight'];
                         $rez_item_db->flight_data = '';
                         $rez_item_db->passengers =  $item['vehicle']['pax'];
-                        $rez_item_db->op_one_status = 'PENDING';                        
-                        $rez_item_db->op_one_pickup = $item['from']['date'];                            
+                        $rez_item_db->op_one_status = 'PENDING';
+                        $rez_item_db->op_one_operating_cost = round( ($item['rate']['operating_cost'] * 19), 2 );
+                        $rez_item_db->op_one_pickup = $item['from']['date'];
                         $rez_item_db->save();
 
                         $sales_db = new Sales;
                         $sales_db->description = "Transportation";
                         $sales_db->quantity = 1;
-                        $sales_db->total = 0;
+                        $sales_db->total = $item['rate']['amount'];
                         $sales_db->call_center_agent_id = 0;
                         $sales_db->sale_type_id = 1;
                         $sales_db->reservation_id = $rez_db->id;
