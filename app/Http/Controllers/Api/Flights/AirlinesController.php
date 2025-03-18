@@ -19,7 +19,8 @@ class AirlinesController extends Controller
     public function index(Request $request, AirlinesRepository $airlines){
 
         $validator = Validator::make($request->all(), [            
-            'code' => 'required|max:5',
+            'language' => 'required|max:5',
+            'iata' => 'required|max:5',
         ]);
 
         if ($validator->fails()) {
@@ -32,18 +33,17 @@ class AirlinesController extends Controller
         }        
 
         $send = $airlines->getAirlines($request);
-
-        die("PAso");
+        
         if($send == false){
             return response()->json([
                 'error' => [
-                    'code' => 'mailing_system',
-                    'message' => 'The mailing platform has a problem, please report to development'
+                    'code' => 'not_found',
+                    'message' => 'No airlines found'
                 ]
             ], 404);            
         }
 
-        return response()->json(['status' => "success"], 200);
+        return response()->json($send, 200);
 
     }
 }
