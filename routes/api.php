@@ -20,6 +20,7 @@ use App\Http\Controllers\Api\Hotels\RatesController;
 use App\Http\Controllers\Api\Spam\SpamController;
 use App\Http\Controllers\Api\Promotions\PromotionsController;
 use App\Http\Controllers\Api\Integrations\MasterToursController;
+use App\Http\Controllers\Api\Flights\AirlinesController;
 use App\Http\Middleware\Auth;
 
 /*
@@ -95,6 +96,9 @@ Route::middleware([Auth::class])->group(function () {
 
         //Integration Master Tours
         Route::get('/integrations/master-tours/list', [MasterToursController::class,'listing'])->withoutMiddleware([Auth::class]);
+
+        //Airlines
+        Route::get('/airlines', [AirlinesController::class,'index'])->withoutMiddleware([Auth::class]);
         
     });
     
