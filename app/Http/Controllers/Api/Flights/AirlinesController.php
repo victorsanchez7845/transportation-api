@@ -43,7 +43,16 @@ class AirlinesController extends Controller
             ], 404);            
         }
 
-        return response()->json($send, 200);
+        $items = []; 
+        foreach($send as $key => $value):            
+            if( !isset( $items[ $value->terminal_name ] ) ):
+                $items[ $value->terminal_name ] = [];
+            endif;
+
+            $items[ $value->terminal_name ][] = $value;
+        endforeach;
+
+        return response()->json($items, 200);
 
     }
 }
