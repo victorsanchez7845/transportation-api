@@ -41,8 +41,9 @@ Route::middleware([Auth::class])->group(function () {
         Route::post('/spamChangeStatus', [SpamController::class,'spamChangeStatus'])->withoutMiddleware([Auth::class]);
         Route::post('/spamCallCount', [SpamController::class,'spamCallCount'])->withoutMiddleware([Auth::class]);
 
-        // QUOTATION CANCEL
+        // VALIDATE QUOTATION CANCEL
         Route::get('/validateQuotation', [validateQuotationController::class,'validateQuotation'])->withoutMiddleware([Auth::class]);
+        // Route::get('/validateDuplicate', [validateQuotationController::class,'validateQuotation'])->withoutMiddleware([Auth::class]);
         
         //Ruta de autenticación
         Route::post('/oauth', [OauthController::class,'index'])->withoutMiddleware([Auth::class]);

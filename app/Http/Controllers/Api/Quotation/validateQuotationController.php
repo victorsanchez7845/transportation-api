@@ -45,7 +45,7 @@ class validateQuotationController extends Controller
                         'op_one_operating_cost' => 0,
                         'op_one_cancellation_type_id' => 17,
                         'vehicle_id_two' => NULL,
-                        'driver_id_two' => NULL,                        
+                        'driver_id_two' => NULL,
                         'op_two_status' => 'CANCELLED',
                         'op_two_status_operation' => 'PENDING',
                         'op_two_time_operation' => NULL,

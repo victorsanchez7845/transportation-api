@@ -40,7 +40,7 @@ class StripeElementsRepository{
 
     }
 
-    public function getExchange($origin, $destination = "MXN", $total = 0){        
+    public function getExchange($origin, $destination = "MXN", $total = 0){
         $items = DB::select('SELECT operation, exchange_rate
                                 FROM payments_exchange_rate
                             WHERE origin = :origin AND destination = :destination
