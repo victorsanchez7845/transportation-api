@@ -95,6 +95,11 @@ class CreationRepository{
                 $cash_fee = $service_token['data']['item']['cash_fee'];
             endif;
 
+            $campaign = '';
+            if( isset( $this->request['campaign'] ) ):
+                $campaign = $this->request['campaign'];
+            endif;
+
             $payment = [
                 "status" => false,
                 "data" => []
@@ -125,6 +130,7 @@ class CreationRepository{
                 $rez_db->accept_messages = (( $accept_messages )? 1 : 0 );
                 $rez_db->is_advanced = $is_advanced;
                 $rez_db->call_center_agent_id = ((isset($this->request['call_center_agent']))? $this->request['call_center_agent'] : 0);
+                $rez_db->campaign = $campaign;
 
                 if( isset( $this->request['origin_sale_id'] ) ):
                     $rez_db->origin_sale_id = $this->request['origin_sale_id'];
