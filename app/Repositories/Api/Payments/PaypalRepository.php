@@ -223,7 +223,7 @@ class PaypalRepository{
         $response['data'] = ['url' => $paypalURL];
         return $response;
     }
-    
+
     public function getToken(){        
         $clientId = "AZxVyIFCk6LofbbQ1t6Uk7mIoEkE2iZ0lADH4sSpu-znHTpBR1Ce2ia7mTtk9kA2nTzcd9GcCvK3Gp_P";
         $clientSecret = "EG4cBO1xslWKbcpzLsnnI8f7TlvYl9syR4Yamrjd9E-oMxZS7nIl7hqTatQHJKDVXGSbmZ4fMt_nhUhH";
@@ -275,8 +275,9 @@ class PaypalRepository{
 
         // Mostrar respuesta
         $orderResponse = json_decode($response, true);
+        
         if (isset($orderResponse['id'])) {
-            return $orderResponse['links'][1]['href'];
+            return $orderResponse['id'];
         } else {
             return false;
         }
