@@ -54,7 +54,7 @@ class SearchController extends Controller
             'code' => 'max:12',
             'email' => 'required|email|max:75',
             'language' => 'required|in:en,es',
-            'type' => 'required|in:new,update,cancel',
+            'type' => 'required|in:new,update,cancel,confirmed',
             'provider' => 'in:1',
         ]);
 
