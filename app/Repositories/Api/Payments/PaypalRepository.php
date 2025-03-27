@@ -6,9 +6,9 @@ use Illuminate\Support\Facades\DB;
 class PaypalRepository{
     private $data = [];
     private $PayPal = [
-        "clientId" => "AZxVyIFCk6LofbbQ1t6Uk7mIoEkE2iZ0lADH4sSpu-znHTpBR1Ce2ia7mTtk9kA2nTzcd9GcCvK3Gp_P",
-        "clientSecret" => "EG4cBO1xslWKbcpzLsnnI8f7TlvYl9syR4Yamrjd9E-oMxZS7nIl7hqTatQHJKDVXGSbmZ4fMt_nhUhH",
-        "URL" => "https://api-m.sandbox.paypal.com"
+        "clientId" => "AWTzKEcwaE0x4o6LaZSkVu7ewjCEPKADYnn7Zsgj1W7Sj6CDT0FXtALR3C0PZNkXC3-EJuUQHJ53VFtU",
+        "clientSecret" => "EBPMvZyXNP87ynoIil-0Pn6_2jVW7YVzkQy1n9HLXQX5AaDQxOQtiiNvvgNojOI_1uDhjiw9Swtb2XRA",
+        "URL" => "https://api-m.paypal.com"
     ];
 
     public function check($request, $type = 0){
