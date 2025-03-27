@@ -132,4 +132,31 @@ class HandlerController extends Controller
 
         return response()->json([], 200);
     }
+
+    public function payPalCaptureOrder(Request $request, PaypalRepository $handlerPaypal){
+        $validator = Validator::make($request->all(), [            
+            'id' => 'required',            
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                    'error' => [
+                        'code' => 'required_params',
+                        'message' =>  $validator->errors()->all() 
+                    ]
+                ], 404);
+        }
+
+        $items = $handlerPaypal->ordersCapture($request);
+        if($items == false){
+            return response()->json([
+                'error' => [
+                    'code' => 'order_capture',
+                    'message' => 'Error capturing the order'
+                ]
+            ], 404);
+        }
+
+        return response()->json($items, 200);
+    }
 }

@@ -5,6 +5,11 @@ use Illuminate\Support\Facades\DB;
 
 class PaypalRepository{
     private $data = [];
+    private $PayPal = [
+        "clientId" => "AZxVyIFCk6LofbbQ1t6Uk7mIoEkE2iZ0lADH4sSpu-znHTpBR1Ce2ia7mTtk9kA2nTzcd9GcCvK3Gp_P",
+        "clientSecret" => "EG4cBO1xslWKbcpzLsnnI8f7TlvYl9syR4Yamrjd9E-oMxZS7nIl7hqTatQHJKDVXGSbmZ4fMt_nhUhH",
+        "URL" => "https://api-m.sandbox.paypal.com"
+    ];
 
     public function check($request, $type = 0){
         $response = [
@@ -224,12 +229,41 @@ class PaypalRepository{
         return $response;
     }
 
+    public function ordersCapture($request){        
+
+        $token = $this->getToken();
+        if($token == false){
+            $response['code'] = "token";
+            $response['message'] = "Error handling token";
+            return $response;
+        }
+
+        $captureUrl = $this->PayPal['URL'] . "/v2/checkout/orders/{$request->id}/capture";        
+
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $captureUrl);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+            "Content-Type: application/json",
+            "Authorization: Bearer $token"
+        ]);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+        $captureResponse = curl_exec($ch);
+        curl_close($ch);
+
+        $response['status'] = true;
+        $response['data'] = json_decode($captureResponse, true);
+        return $response;
+
+    }
+
     public function getToken(){        
-        $clientId = "AZxVyIFCk6LofbbQ1t6Uk7mIoEkE2iZ0lADH4sSpu-znHTpBR1Ce2ia7mTtk9kA2nTzcd9GcCvK3Gp_P";
-        $clientSecret = "EG4cBO1xslWKbcpzLsnnI8f7TlvYl9syR4Yamrjd9E-oMxZS7nIl7hqTatQHJKDVXGSbmZ4fMt_nhUhH";
+        $clientId = $this->PayPal['clientId'];
+        $clientSecret = $this->PayPal['clientSecret'];
 
         // URL del endpoint de autenticación
-        $url = "https://api-m.sandbox.paypal.com/v1/oauth2/token";
+        $url = $this->PayPal['URL'] . "/v1/oauth2/token";
 
         // Inicializar cURL
         $ch = curl_init($url);
@@ -261,7 +295,7 @@ class PaypalRepository{
     public function createOrder($token, $itemData){
 
         $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, "https://api-m.sandbox.paypal.com/v2/checkout/orders");
+        curl_setopt($ch, CURLOPT_URL, $this->PayPal['URL'] . "/v2/checkout/orders");
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_POST, true);
         curl_setopt($ch, CURLOPT_HTTPHEADER, [
