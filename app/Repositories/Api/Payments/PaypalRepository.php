@@ -176,10 +176,16 @@ class PaypalRepository{
 
         $description = (($request->language == "en")?'Transportation service':'Servicio de transportación');
 
+        $lang = "en-US";
+        if($request->language == "es"):
+            $lang = "es-MX";
+        endif;
+        
         $itemData = [
             "intent" => "CAPTURE", 
             "purchase_units" => [
                   [
+                    "reference_id" => $rez[0]->id,
                     "invoice_id" => $rez[0]->id,
                     "items" => [
                         [
@@ -205,8 +211,10 @@ class PaypalRepository{
                 ]
             ], 
             "application_context" => [
+                "user_action" => "PAY_NOW",                
                 "return_url" => $data['payment_domain'] . $request->success_url, 
-                "cancel_url" => $data['payment_domain'] . $request->cancel_url
+                "cancel_url" => $data['payment_domain'] . $request->cancel_url,
+                "locale" => $lang
             ] 
         ];
         
