@@ -15,7 +15,7 @@ class HandlerController extends Controller
 {
     public function index(Request $request, StripeRepository $handlerStripe, PaypalRepository $handlerPaypal, MifelRepository $handlerMifel, SantanderRepository $handlerSantander){
         $validator = Validator::make($request->all(), [
-            'type' => 'required|in:STRIPE,STRIPE-2,PAYPAL,MIFEL,PAYPAL-1,SANTANDER',
+            'type' => 'required|in:STRIPE,STRIPE-2,PAYPAL,MIFEL,PAYPAL-1,PAYPAL-V2,SANTANDER',
             'id' => 'integer',
             'language' => 'required|in:en,es',
             'success_url' => 'required',
@@ -43,6 +43,9 @@ class HandlerController extends Controller
         endif;
         if($request->type == "PAYPAL-1"):
             $items = $handlerPaypal->check($request, 1);
+        endif;
+        if($request->type == "PAYPAL-V2"):
+            $items = $handlerPaypal->orders($request, 1);
         endif;
         if($request->type == "MIFEL"):
             $items = $handlerMifel->check($request);
@@ -128,5 +131,32 @@ class HandlerController extends Controller
         }
 
         return response()->json([], 200);
+    }
+
+    public function payPalCaptureOrder(Request $request, PaypalRepository $handlerPaypal){
+        $validator = Validator::make($request->all(), [            
+            'id' => 'required',            
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                    'error' => [
+                        'code' => 'required_params',
+                        'message' =>  $validator->errors()->all() 
+                    ]
+                ], 404);
+        }
+
+        $items = $handlerPaypal->ordersCapture($request);
+        if($items == false){
+            return response()->json([
+                'error' => [
+                    'code' => 'order_capture',
+                    'message' => 'Error capturing the order'
+                ]
+            ], 404);
+        }
+
+        return response()->json($items, 200);
     }
 }
