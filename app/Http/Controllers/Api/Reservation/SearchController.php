@@ -201,7 +201,7 @@ class SearchController extends Controller
     public function makeQr(Request $request){
         // Realizar validaciones
         $validator = Validator::make($request->all(), [
-            'code' => 'max:20',
+            'code' => 'max:200',
         ]);
 
         if ($validator->fails()) {
