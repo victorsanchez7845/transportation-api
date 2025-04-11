@@ -226,7 +226,10 @@
                                                     <p style="font-size: 14pt;">{{$key}}</p>
                                                 </td>
                                                 <td rowspan="7" style="text-align:right;">
-                                                    <img src="{{config('app.url')}}/api/v1/reservation/qr?code={{$key}}" width="250">
+                                                    @php
+                                                        $QR = urlencode('https://api.caribbean-transfers.com/api/v1/mailing/reservation/view?code='.$key.'&email='.trim(strtolower($data['client']['email'])).'&language='.$lang);
+                                                    @endphp
+                                                    <img src="{{config('app.url')}}/api/v1/reservation/qr?code={{$QR}}" width="250">
                                                 </td>
                                             </tr>
                                             <tr>
