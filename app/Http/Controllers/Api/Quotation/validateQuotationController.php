@@ -34,7 +34,12 @@ class validateQuotationController extends Controller
             foreach ($data as $key => $booking) {
                 $expires_at = Carbon::parse($booking->expires_at);
                 if ($expires_at->isPast()) {
-                    $resultBooking = Reservations::where('id', $booking->id)->update([ 'is_cancelled' => 1, 'cancellation_type_id' => 17, 'is_quotation' => 0, 'expires_at' => NULL ]);
+                    $resultBooking = Reservations::where('id', $booking->id)->update([ 
+                        'is_cancelled' => 1, 
+                        'cancellation_type_id' => 17, 
+                        'is_quotation' => 0, 
+                        'expires_at' => NULL 
+                    ]);
                     $resultItemsBooking = ReservationsItems::where('reservation_id', $booking->id)->update([ 
                         'vehicle_id_one' => NULL,
                         'driver_id_one' => NULL,
@@ -51,7 +56,7 @@ class validateQuotationController extends Controller
                         'op_two_time_operation' => NULL,
                         'op_two_preassignment' => NULL,
                         'op_two_operating_cost' => 0,
-                        'op_two_cancellation_type_id' => 17,                        
+                        'op_two_cancellation_type_id' => 17,
                     ]);
 
                     if( $resultBooking && $resultItemsBooking ){

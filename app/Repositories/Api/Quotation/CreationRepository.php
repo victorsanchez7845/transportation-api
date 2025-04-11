@@ -136,11 +136,11 @@ class CreationRepository{
                     $rez_db->origin_sale_id = $this->request['origin_sale_id'];
                 endif;
                 
-                if($pay_at_arrival):
+                if( $pay_at_arrival && $site[0]->is_cxc == 0 ):
                     $rez_db->pay_at_arrival = 1;
                 endif;
 
-                if($is_quotation && $site[0]->is_cxc == 0):
+                if( $is_quotation && $site[0]->is_cxc == 0 && !$pay_at_arrival ):
                     $rez_db->is_quotation = 1;
                     $rez_db->was_is_quotation = 1;
                 endif;
@@ -149,8 +149,7 @@ class CreationRepository{
                     
                     //Con este loop agregamos otro código de reservación en caso de que sobrepase el limite de la unidad (ASUR así lo pide).
                     $counter = 1;
-                    while ($counter <= $quantity) {
-                        
+                    while ($counter <= $quantity) {                        
                         //Insertamos los códigos de reservación, esto se aplico porque un cliente puede tener multiples reservaciones en caso de que haya superado el limite de capacidad dela uto.
                         $rez_item_db = new ReservationsItems;
                         $rez_item_db->reservation_id = $rez_db->id;
@@ -180,11 +179,9 @@ class CreationRepository{
                         $rez_item_db->flight_data = '';
                         $rez_item_db->passengers = ( $service_token['data']['request']['passengers'] / $quantity);
 
-
                         $rez_item_db->op_one_status = 'PENDING';                        
                         $rez_item_db->op_one_pickup = $service_token['data']['request']['start']['pickup'];
-                        
-                        
+                                                
                         if(in_array($service_token['data']['request']['type'], ['round-trip']) ):
                             $rez_item_db->op_two_status = 'PENDING';
                             $rez_item_db->op_two_pickup = $service_token['data']['request']['end']['pickup'];
@@ -200,14 +197,12 @@ class CreationRepository{
                                     $booking->save();
                                 }
                             endif;
-
                             
                             $data_rez['code'] = $rez_item_db->code;
                             $data_rez['email'] = $rez_db->client_email;
                             $data_rez['language'] = $service_token['data']['request']['language'];
                             $data_rez['type'] = 'new';
                             $data_rez['provider'] = '1';
-
                         endif;
 
                         $counter++;
