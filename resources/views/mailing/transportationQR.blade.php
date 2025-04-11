@@ -121,13 +121,6 @@
             <tbody>
                 <tr>
                     <td class="white_content">
-                        <p class="gray_color" style="margin-bottom:15px;">
-                            @if($lang == "en")
-                                This email shows in detail the information of your reservation made on {{ $creation_date }}, in which we ask that if it is not correct please contact us to make the corresponding modifications.
-                            @else
-                                En el presente correo se muestra a detalle la información de su reservación realizada el día {{ $creation_date }}, en el cual le pedimos que si no es correcta ponganse en contacto con nosotros para hacer las modificaciones correspondientes.
-                            @endif
-                        </p>
                         <p style="margin-bottom:15px;">
                             <strong>
                                 @if($lang == "en")
