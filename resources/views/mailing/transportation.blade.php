@@ -214,6 +214,15 @@
                                 @endif
                             </strong>
                         </p>
+                        <p style="margin-bottom:15px;">
+                            <strong>
+                                @if($lang == "en")
+                                    AT CARIBBEAN TRANSFERS WE TAKE YOUR SAFETY VERY SERIOUSLY. THEREFORE, IT WILL BE NECESSARY TO PRESENT AN OFFICIAL ID AND SIGN THE SERVICE PICK UP FORM AT THE TIME OF BOARDING YOUR UNIT.
+                                @else
+                                    EN CARIBBEAN TRANSFERS NOS TOMAMOS MUY EN SERIO SU SEGURIDAD. POR ELLO, SERÁ NECESARIO PRESENTAR UNA IDENTIFICACIÓN OFICIAL Y FIRMAR EL FORMULARIO DE TOMA DE SERVICIO AL MOMENTO DE ABORDAR SU UNIDAD.
+                                @endif
+                            </strong>
+                        </p>
                         <h2>Total: {{ number_format($data['sales']['total'],2) }} {{ $data['config']['currency'] }}</h2>
                         @if(sizeof($data['items']) >= 1)
                             @foreach ($data['items'] as $key => $value)     
