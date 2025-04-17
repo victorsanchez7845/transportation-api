@@ -21,12 +21,20 @@ class StripeElementsRepository{
         try{
             $key = config('services.stripe.key');
             $stripe = new \Stripe\StripeClient( $key );
-    
-            $items = $stripe->paymentIntents->create([
+            
+            $stripe_ = [
                 'amount' => ($data['total'] * 100),
                 'currency' => 'mxn',
                 'automatic_payment_methods' => ['enabled' => true],
-            ]);
+            ];
+
+            if(isset( $this->data['id'] )){
+                $stripe_['metadata'] = [
+                    'reservation_id' => $this->data['id'],
+                ];
+            }
+
+            $items = $stripe->paymentIntents->create($stripe_);
 
             $response['status'] = true;
             $response['data'] = ['id' => $items['client_secret']];
