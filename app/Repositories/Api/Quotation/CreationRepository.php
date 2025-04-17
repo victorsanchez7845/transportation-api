@@ -12,7 +12,7 @@ use App\Models\Payments;
 use App\Models\PaymentsError;
 use App\Models\ReservationsFollowUp;
 use Illuminate\Support\Facades\DB;
-
+use Illuminate\Support\Str;
 use App\Services\AirbrakeService;
 use Exception;
 use Carbon\Carbon;
@@ -113,7 +113,8 @@ class CreationRepository{
                 $payment['data']['currency'] = $this->request['data']['payment']['currency'];
             endif;
                            
-                $rez_db = new Reservations;                
+                $rez_db = new Reservations;
+                $rez_db->uuid = Str::uuid();
                 $rez_db->client_first_name = $this->request['first_name'];
                 $rez_db->client_last_name = $this->request['last_name'];
                 $rez_db->client_email = trim( strtolower($this->request['email_address']) );
