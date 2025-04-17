@@ -27,7 +27,11 @@ class SearchRepository{
 
         $sales = $this->getSales( $rez->reservation_id );        
         $payments = $this->getPayments( $rez->reservation_id );
-       
+        
+        if( $sales['total'] > $payments['total']):
+            $payments['pending'] = number_format($sales['total'] - $payments['total'], 2, '.', '');
+        endif;
+        
         $status = "PENDING";
 
         if($rez->is_cancelled == 1):
@@ -208,6 +212,7 @@ class SearchRepository{
     public function getPayments($id){
         $data = [
             "total" => 0,
+            "pending" => 0,
             "items" => []
         ];
         
