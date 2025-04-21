@@ -20,8 +20,9 @@ class SearchController extends Controller
     public function index(Request $request, SearchRepository $search){
         // Realizar validaciones
         $validator = Validator::make($request->all(), [
-            'code' => 'max:12',
-            'email' => 'required|email|max:75',
+            'uuid' => 'nullable|string',
+            'code' => 'max:25|required_without:uuid',
+            'email' => 'email|max:75|required_without:uuid',
             'language' => 'required|in:en,es',
         ]);
 
@@ -33,7 +34,7 @@ class SearchController extends Controller
                 ]
             ], 404);
         }
-
+        
         $search->setData($request);
         $data = $search->search();
         if($data == false){
