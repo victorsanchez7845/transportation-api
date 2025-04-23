@@ -33,7 +33,7 @@
     @if( $data['brand'] == "Go Transfers" )
         <p>You can get a full refund by canceling at least 24 hours before the service.</p>
     @else
-        <p> <strong>Type A:</strong> Cancellation more than 12 hours before the scheduled service as stated in the ticket will generate a charge of 15% of the value of the contracted service.</p>
+        <p> <strong>Type A:</strong> Cancellation more than 12 hours before the scheduled service as stated in the ticket will generate a charge of 25% of the value of the contracted service.</p>
         <p><strong>Type B:</strong> Cancellation 12 hours or less prior to scheduled service as stated on the ticket is non-refundable.</p>
     @endif
 
@@ -86,7 +86,7 @@
     @if( $data['brand'] == "Go Transfers" )
         <p>Puedes obtener un reembolso ¡completo! cancelando al menos 24 horas antes del servicio</p>
     @else
-        <p><strong>Tipo A</strong>: La cancelación con más de 12 horas antes del servicio programado según lo establecido en el boleto generará un cargo del 15% del valor del servicio contratado.</p>
+        <p><strong>Tipo A</strong>: La cancelación con más de 12 horas antes del servicio programado según lo establecido en el boleto generará un cargo del 25% del valor del servicio contratado.</p>
         <p><strong>Tipo B</strong>: La cancelación con 12 horas o menos antes del servicio programado según lo establecido en el boleto no es reembolsable.</p>
     @endif
 
