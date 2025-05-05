@@ -47,7 +47,7 @@ class SearchRepository{
             $dates[$tomorrow][] = [ 'start' => 0, 'end' => 9];
             $dates[$tomorrow][] = [ 'start' => 20, 'end' => 23];
     
-
+            /*
             if(isset( $dates[ $pickup_time ] )){    
 
                 // Verificar si $hola está dentro de algún rango para la fecha $today
@@ -70,7 +70,7 @@ class SearchRepository{
                 if($found_one == true && $found_two):
                     return false;
                 endif;
-            }                    
+            }*/
 
 
             /*$current_date_time = strtotime( date("Y-m-d H:i") );
