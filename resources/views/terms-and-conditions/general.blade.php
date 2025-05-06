@@ -25,17 +25,15 @@
     <ul>
         <li>All Hotel-Hotel transfer services must be paid in full.</li>
     </ul>
-
-    <h2>Cancellation types:</h2>
-    <p>In situations of cancellation, the alternative of receiving an open-end credit for an indefinite period of time will always be offered.</p>
-    <p>In case of rejection of the open credit; partial or total cancellations will proceed as follows.</p>
-
-    @if( $data['brand'] == "Go Transfers" )
-        <p>You can get a full refund by canceling at least 24 hours before the service.</p>
-    @else
-        <p> <strong>Type A:</strong> Cancellation more than 12 hours before the scheduled service as stated in the ticket will generate a charge of 25% of the value of the contracted service.</p>
-        <p><strong>Type B:</strong> Cancellation 12 hours or less prior to scheduled service as stated on the ticket is non-refundable.</p>
-    @endif
+    
+    <h2><strong>Cancellation and refund policy:</strong></h2>    
+    <p>Any request for cancellation must be informed in writing by e-mail to our Customer Service Department, mentioning your reservation number.</p>
+    <ul>
+        <li>To cancel your reservation, you should contact the email {{ $data['email'] }} customer service department with your reservation number and the reason of the cancellation</li>
+        <li>If you acquired the Economical rate you are only eligible for open-credit</li>
+        <li>If you acquired the PLUS rate you can get a full refund if you cancel 24 hours in advance.</li>
+        <li>In case of a NO SHOW, NO refund apply.</li>        
+    </ul>
 
     <p>In case of applying a refund, the customer will receive his money in the same form in which the payment was made or apply an open credit.</p>
     
@@ -79,18 +77,15 @@
         <li>Todo servicio de traslado Hotel-Hotel deber&aacute; ser pagado en su totalidad.</li>
     </ul>
     
-    <h2><strong>Tipos de cancelaci&oacute;n:</strong></h2>
-    <p>En situaciones de cancelación, siempre se brindará la alternativa de recibir un crédito abierto por tiempo indefinido.</p>
-    <p>En caso de rechazar el crédito abierto; las cancelaciones parciales o totales procederán de la siguiente manera.</p>
-
-    @if( $data['brand'] == "Go Transfers" )
-        <p>Puedes obtener un reembolso ¡completo! cancelando al menos 24 horas antes del servicio</p>
-    @else
-        <p><strong>Tipo A</strong>: La cancelación con más de 12 horas antes del servicio programado según lo establecido en el boleto generará un cargo del 25% del valor del servicio contratado.</p>
-        <p><strong>Tipo B</strong>: La cancelación con 12 horas o menos antes del servicio programado según lo establecido en el boleto no es reembolsable.</p>
-    @endif
-
-    <p>En caso de un NO SHOW, no se aplica ningún reembolso.</p>
+    <h2><strong>Política de cancelación y reembolso</strong></h2>    
+    <p>Cualquier solicitud de cancelación debe ser comunicada por escrito por correo electrónico a nuestro Departamento de Atención al Cliente, mencionando su número de reserva.</p>
+    <ul>
+        <li>Para cancelar su reservación, debe contactar al correo electrónico {{ $data['email'] }} al departamento de servicio al cliente con su número de reservación y el motivo de la cancelación</li>
+        <li>Si usted adquirió la tarifa Economica solo eres candidato a un credito abierto por 12 meses</li>
+        <li>Si usted adquirio la tarifa PLUS puedes obtener un reembolso completo <strong>cancelando al menos 24 horas antes del servicio</strong></li>
+        <li>En caso de un NO SHOW, no se aplica ningún reembolso.</li>        
+    </ul>
+    
     <p>En caso de aplicar un reembolso, el cliente recibirá su dinero en la misma forma en que se realizó el pago o aplicar un crédito abierto.</p>
 
     <p>El monto depende del motivo de la queja y est&aacute; sujeto a an&aacute;lisis y autorizaci&oacute;n por parte del personal correspondiente.</p>
