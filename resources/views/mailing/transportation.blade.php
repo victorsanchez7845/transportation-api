@@ -18,6 +18,8 @@
         default:
             break;
     }
+    $provider_name = $data['provider']['name'];
+    $destination_name = $data['provider']['destination'];
 @endphp
 <!DOCTYPE html>
 <html lang="{{$lang}}">
@@ -185,9 +187,9 @@
                                                 </tbody>
                                             </table>
                                             @if($lang == "en")
-                                                <p>Thank you very much for booking with us, your service will be operated by Caribbean Transfers which is our official tourist transportation company in Cancun and the Riviera Maya.</p>
+                                                <p>Thank you very much for booking with us, your service will be operated by {{ $provider_name }} which is our official tourist transportation company in {{ $destination_name }}.</p>
                                             @else
-                                                <p>Muchas gracias por reservar con nosotros, Su servicio sera operado por Caribbean Transfers la cuál es nuestra empresa de transporte turístico oficial en Cancún y la Riviera Maya.</p>
+                                                <p>Muchas gracias por reservar con nosotros, Su servicio sera operado por {{ $provider_name }} la cuál es nuestra empresa de transporte turístico oficial en {{ $destination_name }}.</p>
                                             @endif
                                         </td>
                                     </tr>
@@ -208,18 +210,18 @@
                         <p style="margin-bottom:15px;">
                             <strong>
                                 @if($lang == "en")
-                                    PLEASE PRESENT THIS PRINTED OR DIGITAL (CELL PHONE) RECEIPT TO THE CARIBBEAN TRANSFERS REPRESENTATIVE TO BOARD YOUR UNIT.
+                                    PLEASE PRESENT THIS PRINTED OR DIGITAL (CELL PHONE) RECEIPT TO THE {{ strtoupper($provider_name) }} REPRESENTATIVE TO BOARD YOUR UNIT.
                                 @else
-                                    POR FAVOR, PRESENTE ESTE RECIBO IMPRESO O DIGITAL (CELULAR) AL REPRESENTANTE DE CARIBBEAN TRANSFERS, PARA ABORDAR SU UNIDAD.
+                                    POR FAVOR, PRESENTE ESTE RECIBO IMPRESO O DIGITAL (CELULAR) AL REPRESENTANTE DE {{ strtoupper($provider_name) }}, PARA ABORDAR SU UNIDAD.
                                 @endif
                             </strong>
                         </p>
                         <p style="margin-bottom:15px;">
                             <strong>
                                 @if($lang == "en")
-                                    AT CARIBBEAN TRANSFERS WE TAKE YOUR SAFETY VERY SERIOUSLY. THEREFORE, IT WILL BE NECESSARY TO PRESENT AN OFFICIAL ID AND SIGN THE SERVICE PICK UP FORM AT THE TIME OF BOARDING YOUR UNIT.
+                                    AT {{ strtoupper($provider_name) }} WE TAKE YOUR SAFETY VERY SERIOUSLY. THEREFORE, IT WILL BE NECESSARY TO PRESENT AN OFFICIAL ID AND SIGN THE SERVICE PICK UP FORM AT THE TIME OF BOARDING YOUR UNIT.
                                 @else
-                                    EN CARIBBEAN TRANSFERS NOS TOMAMOS MUY EN SERIO SU SEGURIDAD. POR ELLO, SERÁ NECESARIO PRESENTAR UNA IDENTIFICACIÓN OFICIAL Y FIRMAR EL FORMULARIO DE TOMA DE SERVICIO AL MOMENTO DE ABORDAR SU UNIDAD.
+                                    EN {{ strtoupper($provider_name) }} NOS TOMAMOS MUY EN SERIO SU SEGURIDAD. POR ELLO, SERÁ NECESARIO PRESENTAR UNA IDENTIFICACIÓN OFICIAL Y FIRMAR EL FORMULARIO DE TOMA DE SERVICIO AL MOMENTO DE ABORDAR SU UNIDAD.
                                 @endif
                             </strong>
                         </p>
@@ -388,7 +390,7 @@
                             <p>1.- When you arrive to the Airport, first you are going to go through immigrations, following you will be guided to the baggage claim area.</p>
                             <p>2.- Once you have picked up your luggage you will be directed to Customs.</p>
                             <p>3.- After you have cleared customs, please proceed to walk <strong>OUTSIDE</strong> your arrival terminal - <strong>it is very important to go all the way out since there will be large groups of "tourist advisors" which will try to stop you and claim to give you information about the destination however what they really do is sell time share, offering tours for free or discounted prices. For your own convenience please do not stop anywhere between customs and the airport exit.</strong></p>
-                            <p>4.- One of our representatives will be waiting for you and will gladly greet you so you can start enjoying your vacations. He will have a board with the Caribbean Transfers LOGO. This person will call your pick up transportation.</p>
+                            <p>4.- One of our representatives will be waiting for you and will gladly greet you so you can start enjoying your vacations. He will have a board with the {{ $provider_name }} LOGO. This person will call your pick up transportation.</p>
                             <p>5.- WE ARE ALWAYS AT THE AIRPORT, in case you can`t see us, please dial our phone numbers.</p>
                             <p>6.- Tips for driver are <strong>NOT INCLUDED</strong>.</p>
                             <p>IMPORTANT: <strong>DO NOT</strong> be fooled by others at the airport. Others may say they are with us or tell you they do not know us to steal your business. Our greeters are there all day, so you can ask security for help finding us, but beware of the pirates as they may tell you we are not there. We are <strong>ALWAYS THERE</strong>. </p>
@@ -411,7 +413,7 @@
                             <p>1.- Cuando llegue al aeropuerto, primero pasará por el control de inmigración y, a continuación, será conducido a la zona de recogida de equipajes.</p>
                             <p>2.- Una vez que haya recogido su equipaje, se le dirigirá a la aduana.</p>
                             <p>3.- Después de pasar la aduana, diríjase al <strong>EXTERIOR</strong> de la terminal de llegada - <strong>  es muy importante llegar hasta la salida, ya que habrá grandes grupos de "asesores turísticos" que intentarán pararle y afirmarán que le dan información sobre el destino, aunque lo que realmente hacen es vender tiempo compartido, ofreciendo visitas gratuitas o a precios rebajados. Por su propia comodidad, no se detenga entre la aduana y la salida del aeropuerto.</strong></p>
-                            <p>4.- Uno de nuestros representantes le estará esperando y gustosamente le dará la bienvenida para que pueda empezar a disfrutar de sus vacaciones. Él tendrá un tablero con el LOGO de Caribbean Transfers. Esta persona llamará a su transporte de recogida.</p>
+                            <p>4.- Uno de nuestros representantes le estará esperando y gustosamente le dará la bienvenida para que pueda empezar a disfrutar de sus vacaciones. Él tendrá un tablero con el LOGO de {{ $provider_name }}. Esta persona llamará a su transporte de recogida.</p>
                             <p>5.- SIEMPRE ESTAMOS EN EL AEROPUERTO, en caso de que no pueda vernos, marque nuestros números de teléfono.</p>
                             <p>6.- La propina para el conductor <strong>NO ESTÁ INCLUIDA</strong>.</p>
                             <p>IMPORTANTE: <strong>NO</strong> se deje engañar por otras personas en el aeropuerto. Otros pueden decir que están con nosotros o decirle que no nos conocen para robarle su negocio. Nuestros recepcionistas están allí todo el día, por lo que puede pedir ayuda a seguridad para encontrarnos, pero tenga cuidado con los piratas, ya que pueden decirle que no estamos allí. Estamos <strong>SIEMPRE</strong>.</p>
@@ -435,7 +437,7 @@
                             <a href="https://www.facebook.com/caribbeantransferscun" target="_blank"><img src="https://ik.imagekit.io/zqiqdytbq/transportation-api/mailing/social/facebook.png?updatedAt=1692978703979" style="margin-right: 15px;"></a>
                             <!--<a href="#" target="_blank"><img src="https://ik.imagekit.io/zqiqdytbq/transportation-api/mailing/social/instagram.png?updatedAt=1692978703965"></a>-->
                         </div>
-                        <p style="font-size: 11pt; color: #6A829E;">&copy; Caribbean Transfers | {{ __('mailing/client.rights_reserved') }}</p>
+                        <p style="font-size: 11pt; color: #6A829E;">&copy; {{ $provider_name }} | {{ __('mailing/client.rights_reserved') }}</p>
                     </td>
                 </tr>
             </tbody>
