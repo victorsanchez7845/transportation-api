@@ -103,7 +103,7 @@ class CreationRepository{
             $payment = [
                 "status" => false,
                 "data" => []
-            ];            
+            ];
 
             if( isset( $this->request['data']['payment']['id'] ) ):
                 $payment['status'] = true;
@@ -247,7 +247,7 @@ class CreationRepository{
                     $sales_db->reservation_id = $rez_db->id;
                     $sales_db->save();
 
-                    if( $rez_db->pay_at_arrival ):
+                    if( $rez_db->pay_at_arrival && $site[0]->is_taxes == 1 ):
                         $sales_db = new Sales;
                         $sales_db->description = (( $service_token['data']['request']['language'] == "en" ) ? 'Tax service':'Tarifa de servicio');
                         $sales_db->quantity = 1;
@@ -296,7 +296,7 @@ class CreationRepository{
     }
 
     public function getSite($id){
-        return DB::select('SELECT id, is_commissionable, is_cxc FROM sites WHERE id = :id ', [ 'id' => $id ]);
+        return DB::select('SELECT id, is_commissionable, is_cxc, is_taxes FROM sites WHERE id = :id ', [ 'id' => $id ]);
     }
 
     public function getNewDate($fecha1, $fecha2){
@@ -341,5 +341,4 @@ class CreationRepository{
             $payment_db->save();            
         endif;
     }
-
 }
