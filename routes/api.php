@@ -43,6 +43,10 @@ Route::middleware([Auth::class])->group(function () {
         Route::post('/spamCallCount', [SpamController::class,'spamCallCount'])->withoutMiddleware([Auth::class]);
 
         Route::get('/bookings', [SpamController::class,'bookings'])->withoutMiddleware([Auth::class]);
+        // En routes/web.php
+        Route::get('/ip', function() {
+            return request()->ip();
+        });        
 
         // VALIDATE QUOTATION CANCEL
         Route::get('/validateQuotation', [validateQuotationController::class,'validateQuotation'])->withoutMiddleware([Auth::class]);
