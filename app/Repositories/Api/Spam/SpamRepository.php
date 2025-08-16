@@ -2,6 +2,7 @@
 
 namespace App\Repositories\Api\Spam;
 
+use App\Models\Reservations;
 use App\Models\ReservationsItems;
 use App\Models\ReservationsFollowUp;
 use Illuminate\Support\Facades\DB;
@@ -25,4 +26,13 @@ class SpamRepository{
         $item->spam_count = ( $item->spam_count + 1 );
         $item->save();
     }
+
+    public function bookings(){
+        $sql = "SELECT res.uuid, res.id as reservation_id, res.is_advanced, res.pay_at_arrival, item.code, res.destination_id, res.created_at, res.client_first_name, res.client_last_name, res.client_email, res.client_phone, res.currency, res.language, res.rate_group, res.is_cancelled
+                            FROM reservations_items as item 
+                            INNER JOIN reservations as res ON res.id = item.reservation_id";
+
+        $data = DB::select($sql);
+        return $data;
+    }    
 }

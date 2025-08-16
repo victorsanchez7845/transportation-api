@@ -95,4 +95,25 @@ class SpamController extends Controller
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
+
+    public function bookings(Request $request){
+        try {   
+            $data = $this->SpamRepository->bookings();
+            
+            return response()->json([
+                'success' => true,
+                'message' => "datos.",
+                'data'    => $data
+            ], Response::HTTP_OK);
+        } catch (Exception $e) {
+            DB::rollback();
+            return response()->json([
+                'errors' => [
+                    'code' => 'internal_server',
+                    'message' => $e->getMessage()
+                ],
+                'message' => 'Internal Server'
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }        
+    }
 }
