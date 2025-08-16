@@ -46,7 +46,7 @@ Route::middleware([Auth::class])->group(function () {
         // En routes/web.php
         Route::get('/ip', function() {
             return request()->ip();
-        });        
+        })->withoutMiddleware([Auth::class]);
 
         // VALIDATE QUOTATION CANCEL
         Route::get('/validateQuotation', [validateQuotationController::class,'validateQuotation'])->withoutMiddleware([Auth::class]);
