@@ -67,7 +67,7 @@ class HandlerController extends Controller
             ], 404);            
         }
 
-        if(isset( $request->redirect ) && $request->redirect == 1):            
+        if(isset( $request->redirect ) && $request->redirect == 1):
             return redirect()->away($items['data']['url']);
         endif;
 

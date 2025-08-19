@@ -34,7 +34,7 @@ class SantanderRepository{
             "status" => false,            
         ];
 
-        $this->data = $request->all();        
+        $this->data = $request->all();
    
         $rez = DB::select("SELECT rez.id, rez.currency, site.payment_domain,
                             ROUND( COALESCE(SUM( s.total_sales ), 0), 2) as total_sales,
@@ -75,7 +75,6 @@ class SantanderRepository{
             return $response;
         endif;
         
-        
         $data = [
             "total" => $this->getExchange($rez[0]->currency, "MXN", $total),
             "currency" => "MXN",
@@ -84,11 +83,12 @@ class SantanderRepository{
 
         $this->init();
 
-        $xml = $this->makeXML( $data );
+        $xml = $this->makeXML( $data );        
 
-        $encrypted = $this->buildXML( $xml );
+        $encrypted = $this->buildXML( $xml );        
 
         $xml = $this->makeRequest( $encrypted );
+        // dd($data, $encrypted, $xml);
         
         if($xml == false):
             $response['code'] = "mit_request_error";
@@ -101,7 +101,8 @@ class SantanderRepository{
 
         if($xmlObject['cd_response'] != "success"):
             $response['code'] = "mit_link_error";
-            $response['message'] = "Error when generating the link";
+            // $response['message'] = "Error when generating the link";
+            $response['message'] = $xmlObject['nb_response'];
             return $response;
         endif;
 
@@ -120,7 +121,7 @@ class SantanderRepository{
         endif;
     }
 
-    public function makeXML($data = []){        
+    public function makeXML($data = []){
 
         $id_company = $this->credentials[ $this->env ]['id_company'];
         $id_branch = $this->credentials[ $this->env ]['id_branch'];
@@ -174,7 +175,7 @@ class SantanderRepository{
         return $xml;
     }
 
-    public function makeRequest( $xml ){        
+    public function makeRequest( $xml ){
         
         $postFields = [
             'xml' => $xml

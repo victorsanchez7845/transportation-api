@@ -14,6 +14,7 @@ class RatesRepository{
     private $exchange = [];
 
     public function check($availability, $request = []){
+        // dd($availability, $request->all());
         $this->data = $availability;
         $this->request = $request->all();
         $this->setExchangeRate();
@@ -128,9 +129,20 @@ class RatesRepository{
             //return $this->getGeneralRates();
         //endif;
 
-        $rates = DB::select('SELECT rate.*, dest.name as destination_name, dest.status as destination_status, IFNULL(dest_trans.translation, serv.name) AS service_name, 
-                                serv.passengers, serv.luggage, serv.price_type, serv.image_url, serv.id as service_id, serv.cash_fee,
-                                zoneA.name as zone_nameA, zoneA.status as zone_statusA, zoneB.name as zone_nameB, zoneB.status as zone_statusB
+        $rates = DB::select('SELECT rate.*, 
+                                    dest.name as destination_name, 
+                                    dest.status as destination_status, 
+                                    IFNULL(dest_trans.translation, serv.name) AS service_name, 
+                                    serv.passengers, 
+                                    serv.luggage, 
+                                    serv.price_type, 
+                                    serv.image_url, 
+                                    serv.id as service_id, 
+                                    serv.cash_fee,
+                                    zoneA.name as zone_nameA, 
+                                    zoneA.status as zone_statusA, 
+                                    zoneB.name as zone_nameB, 
+                                    zoneB.status as zone_statusB
                             FROM rates_transfers as rate
                             INNER JOIN destinations as dest ON dest.id = rate.destination_id
                             INNER JOIN zones as zoneA ON zoneA.id = rate.zone_one
@@ -149,7 +161,7 @@ class RatesRepository{
                                         'zoneThree' => $this->data['end']['data']['zone']['id'],
                                         'zoneFour' => $this->data['start']['data']['zone']['id'],
                                     ]);
-
+                            
         if(!$rates){
             return false;
         }
