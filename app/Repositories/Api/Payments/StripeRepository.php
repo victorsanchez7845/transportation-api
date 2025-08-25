@@ -13,28 +13,33 @@ class StripeRepository{
 
         $this->data = $request->all();        
    
-        $rez = DB::select("SELECT rez.id, rez.currency, site.payment_domain,
-                            ROUND( COALESCE(SUM( s.total_sales ), 0), 2) as total_sales,
-                            ROUND( COALESCE(SUM( p.total_payments ), 0), 2) as total_payments
-                            FROM reservations AS rez
-                            LEFT JOIN (
-                                    SELECT reservation_id,  ROUND( COALESCE(SUM(total), 0), 2) as total_sales
-                                    FROM sales
-                                    WHERE deleted_at IS NULL AND sales.sale_type_id <> 3
-                                    GROUP BY reservation_id
-                            ) as s ON s.reservation_id = rez.id
-                            LEFT JOIN (
-                                SELECT reservation_id,
-                                ROUND(SUM(CASE WHEN operation = 'multiplication' THEN total * exchange_rate
-                                                            WHEN operation = 'division' THEN total / exchange_rate
-                                                    ELSE total END), 2) AS total_payments,
-                                GROUP_CONCAT(DISTINCT payment_method ORDER BY payment_method ASC SEPARATOR ',') AS payment_type_name
-                                FROM payments
-                                GROUP BY reservation_id
-                            ) as p ON p.reservation_id = rez.id
-                            INNER JOIN sites as site ON site.id = rez.site_id
-                            WHERE rez.id = :code AND rez.is_cancelled = 0 
-                            GROUP BY rez.id, site.payment_domain",
+        $rez = DB::select("SELECT   rez.id, 
+                                    rez.currency, 
+                                    site.payment_domain,
+                                    ROUND( COALESCE(SUM( s.total_sales ), 0), 2) as total_sales,
+                                    ROUND( COALESCE(SUM( p.total_payments ), 0), 2) as total_payments
+                                FROM reservations AS rez
+                                    LEFT JOIN (
+                                        SELECT reservation_id,  ROUND( COALESCE(SUM(total), 0), 2) as total_sales
+                                        FROM sales
+                                        WHERE deleted_at IS NULL AND sales.sale_type_id <> 3
+                                        GROUP BY reservation_id
+                                    ) as s ON s.reservation_id = rez.id
+                                    LEFT JOIN (
+                                        SELECT reservation_id,
+                                        ROUND(SUM(CASE WHEN operation = 'multiplication' THEN total * exchange_rate
+                                                                    WHEN operation = 'division' THEN total / exchange_rate
+                                                            ELSE total END), 2) AS total_payments,
+                                        GROUP_CONCAT(DISTINCT payment_method ORDER BY payment_method ASC SEPARATOR ',') AS payment_type_name
+                                        FROM payments
+                                        GROUP BY reservation_id
+                                    ) as p ON p.reservation_id = rez.id
+                                INNER JOIN sites as site ON site.id = rez.site_id
+                                    WHERE rez.id = :code AND rez.is_cancelled = 0 
+                                    GROUP BY 
+                                            rez.id, 
+                                            rez.currency, 
+                                            site.payment_domain",
                         [
                             'code' => $this->data['id']
                         ]);

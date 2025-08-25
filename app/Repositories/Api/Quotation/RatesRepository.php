@@ -9,8 +9,8 @@ use App\Traits\TokenTrait;
 class RatesRepository{
     use TokenTrait;
 
-    private $data = [];
-    private $request = [];
+    private $data = []; //Almacena los datos de disponibilidad, por zona, ya que encontro zonas relacionadas por la cotización del TPV
+    private $request = []; //Datos que vienen del TPV
     private $exchange = [];
 
     public function check($availability, $request = []){
