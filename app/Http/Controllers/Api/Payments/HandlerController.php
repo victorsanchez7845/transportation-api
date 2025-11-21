@@ -9,10 +9,13 @@ use App\Repositories\Api\Payments\StripeElementsRepository;
 use App\Repositories\Api\Payments\PaypalRepository;
 use App\Repositories\Api\Payments\MifelRepository;
 use App\Repositories\Api\Payments\SantanderRepository;
+use App\Traits\LoggerTrait;
 use Illuminate\Support\Facades\Validator;
 
 class HandlerController extends Controller
 {
+    use LoggerTrait;
+
     public function index(Request $request, StripeRepository $handlerStripe, PaypalRepository $handlerPaypal, MifelRepository $handlerMifel, SantanderRepository $handlerSantander){
         $validator = Validator::make($request->all(), [
             'type' => 'required|in:STRIPE,STRIPE-2,PAYPAL,MIFEL,PAYPAL-1,PAYPAL-V2,SANTANDER',
@@ -134,6 +137,13 @@ class HandlerController extends Controller
     }
 
     public function payPalCaptureOrder(Request $request, PaypalRepository $handlerPaypal){
+
+        $this->createLog([
+            'type' => 'info',
+            'category' => 'paypal_debug',
+            'message' => 'API. Entra al controlador de payPalCaptureOrder',
+        ]);
+
         $validator = Validator::make($request->all(), [            
             'id' => 'required',            
         ]);
@@ -147,14 +157,47 @@ class HandlerController extends Controller
                 ], 404);
         }
 
+        $this->createLog([
+            'type' => 'info',
+            'category' => 'paypal_debug',
+            'message' => 'API. pasa la validación de payPalCaptureOrder',
+        ]);
+
         $items = $handlerPaypal->ordersCapture($request);
+
+        $this->createLog([
+            'type' => 'info',
+            'category' => 'paypal_debug',
+            'message' => 'API. pasa ordersCapture payPalCaptureOrder',
+        ]);
+
         if($items == false){
+            $this->createLog([
+                'type' => 'warning',
+                'category' => 'paypal_debug',
+                'message' => 'API. items = false en payPalCaptureOrder',
+            ]);
+
             return response()->json([
                 'error' => [
                     'code' => 'order_capture',
                     'message' => 'Error capturing the order'
                 ]
             ], 404);
+        }
+
+        try {
+            $this->createLog([
+                'type' => 'info',
+                'category' => 'paypal_debug',
+                'message' => "API. Antes de enviar respuesta en payPalCaptureOrder. Respuesta json: " . json_encode($items),
+            ]);
+        } catch(\Exception $e) {
+            $this->createLog([
+                'type' => 'error',
+                'message' => "API",
+                'exception' => $e,
+            ]);
         }
 
         return response()->json($items, 200);

@@ -1,9 +1,13 @@
 <?php
 
 namespace App\Repositories\Api\Payments;
+
+use App\Traits\LoggerTrait;
 use Illuminate\Support\Facades\DB;
 
 class PaypalRepository{
+    use LoggerTrait;
+    
     private $data = [];
     private $PayPal = [
         "clientId" => "AWTzKEcwaE0x4o6LaZSkVu7ewjCEPKADYnn7Zsgj1W7Sj6CDT0FXtALR3C0PZNkXC3-EJuUQHJ53VFtU",
@@ -241,12 +245,24 @@ class PaypalRepository{
 
         $token = $this->getToken();
         if($token == false){
+            $this->createLog([
+                'type' => 'warning',
+                'category' => 'paypal_debug',
+                'message' => 'API. error en token',
+            ]);
+
             $response['code'] = "token";
             $response['message'] = "Error handling token";
             return $response;
         }
 
         $captureUrl = $this->PayPal['URL'] . "/v2/checkout/orders/{$request->id}/capture";        
+
+        $this->createLog([
+            'type' => 'info',
+            'category' => 'paypal_debug',
+            'message' => "API. $captureUrl",
+        ]);
 
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $captureUrl);
