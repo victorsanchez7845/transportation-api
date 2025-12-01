@@ -8,10 +8,11 @@ use App\Repositories\Api\Webhook\PaymentRepository;
 use Illuminate\Support\Facades\Validator;
 use App\Traits\FunctionsTrait;
 use App\Services\AESCrypto;
+use App\Traits\LoggerTrait;
 
 class VerifyController extends Controller
 {
-    use FunctionsTrait;
+    use FunctionsTrait, LoggerTrait;
     
     public function stripe(Request $request, PaymentRepository $paymentRepository){
 
@@ -75,10 +76,31 @@ class VerifyController extends Controller
     }
 
     public function paypal(Request $request, PaymentRepository $paymentRepository){
+
+        $this->createLog([
+            'type' => 'info',
+            'category' => 'paypal_debug',
+            'message' => 'API. ENTRA WEBHOOK!!',
+        ]);
         
         $payload = @file_get_contents('php://input');
         $event = array();
         parse_str($payload, $event);                
+
+        try {
+            $this->createLog([
+                'type' => 'info',
+                'category' => 'paypal_debug',
+                'message' => 'API. webhook data: ' . json_encode($event),
+            ]);
+        } catch(\Exception $e) {
+            $this->createLog([
+                'type' => 'error',
+                'category' => 'paypal_debug',
+                'message' => 'API. Error en webhook al capturar log',
+                'exception' => $e
+            ]);
+        }
 
         if(isset( $event['payment_status'] ) && $event['payment_status'] == "Completed"):
             $check = $paymentRepository->checkReservation( $event['invoice'] );
