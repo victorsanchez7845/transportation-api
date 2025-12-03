@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\Webhook;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\Payments;
 use App\Repositories\Api\Payments\PaypalRepository;
 use App\Repositories\Api\Webhook\PaymentRepository;
 use Illuminate\Support\Facades\Validator;
@@ -177,6 +178,9 @@ class VerifyController extends Controller
                     endif;
 
                     foreach($unit['payments']['captures'] as $capture) {
+                        $payment_already_exists = Payments::where('reference', $capture['id'])->exists();
+                        if($payment_already_exists) continue;
+
                         $exchange = $paymentRepository->getExchange(strtoupper($capture['amount']['currency_code']), $check->currency);
                         $data = [
                             'id' => $unit['reference_id'],
