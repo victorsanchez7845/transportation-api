@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\Webhook;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Repositories\Api\Payments\PaypalRepository;
 use App\Repositories\Api\Webhook\PaymentRepository;
 use Illuminate\Support\Facades\Validator;
 use App\Traits\FunctionsTrait;
@@ -75,7 +76,7 @@ class VerifyController extends Controller
         //$stripe->index($request);
     }
 
-    public function paypal(Request $request, PaymentRepository $paymentRepository){
+    public function paypal(Request $request, PaymentRepository $paymentRepository, PaypalRepository $paypalRepository){
         try {
             $this->createLog([
                 'type' => 'info',
@@ -102,7 +103,51 @@ class VerifyController extends Controller
                 ]);
             }
     
-            if(isset( $event['payment_status'] ) && $event['payment_status'] == "Completed"):
+            if($event['event_type'] === 'CHECKOUT.ORDER.APPROVED' && $event['status'] === 'SUCCESS') {
+                $order = $paypalRepository->getOrder($event['resource']['id']);
+
+                foreach($order['purchase_units'] as $unit) {
+                    $check = $paymentRepository->checkReservation( $unit['reference_id'] );
+                    if($check == false):
+                        http_response_code(400);
+                        exit();
+                    endif;
+
+                    foreach($unit['payments']['captures'] as $capture) {
+                        $exchange = $paymentRepository->getExchange(strtoupper($capture['amount']['currency_code']), $check->currency);
+                        $data = [
+                            'id' => $unit['reference_id'],
+                            'total' => $capture['amount']['value'],
+                            'currency' => $capture['amount']['currency_code'],
+                            'exchange_rate' => $exchange->exchange_rate,
+                            'operation' => $exchange->operation,
+                            'method' => 'PAYPAL',
+                            'description' => 'PayPal',
+                            'object' => json_encode($event),
+                            'reference' => $capture['id'],
+                        ];
+            
+                        //Guardamos el pago en la base de datos
+                        $response = $paymentRepository->savePayment($data);
+                        if( $response ):
+                            //Envío de correo al cliente...
+                            $email = [];
+                            $email['code'] = $check->code;
+                            $email['email'] = $check->client_email;
+                            $email['language'] = $check->language;
+                            $email['type'] = 'update';        
+                            $this->sendEmail(config('app.url')."/api/v1/reservation/send", $email);  
+            
+                            http_response_code(200);
+                            exit();
+                        else:
+                            http_response_code(400);
+                            exit();
+                        endif;
+                    }
+                }
+            }
+            else if(isset( $event['payment_status'] ) && $event['payment_status'] == "Completed") { // Código anterior (no se sabe a qué evento respondía realmente)
                 $check = $paymentRepository->checkReservation( $event['invoice'] );
                 if($check == false):
                     http_response_code(400);
@@ -139,8 +184,7 @@ class VerifyController extends Controller
                     http_response_code(400);
                     exit();
                 endif;
-    
-            endif;
+            }
         } catch(\Exception $e) {
             $this->createLog([
                 'type' => 'error',
@@ -148,6 +192,7 @@ class VerifyController extends Controller
                 'message' => 'API. Error general en webhook de paypal',
                 'exception' => $e
             ]);
+        http_response_code(400);
         }
         http_response_code(200);
     }

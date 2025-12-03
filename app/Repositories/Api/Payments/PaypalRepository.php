@@ -341,4 +341,26 @@ class PaypalRepository{
         }
     }
 
+    public function getOrder($resource_id) {
+        $token = $this->getToken();
+        if(!$token) throw new \Exception('No se pudo obtener el token de paypal');
+
+        $captureUrl = $this->PayPal['URL'] . "/v2/checkout/orders/{$resource_id}";
+
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $captureUrl);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+            "Content-Type: application/json",
+            "Authorization: Bearer $token"
+        ]);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+        $captureResponse = curl_exec($ch);
+        curl_close($ch);
+
+        $response['status'] = true;
+        $response['data'] = json_decode($captureResponse, true);
+        return $response;
+    }
+
 }
