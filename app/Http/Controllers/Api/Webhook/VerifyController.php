@@ -155,6 +155,20 @@ class VerifyController extends Controller
             else if($eventJson['event_type'] === 'CHECKOUT.ORDER.APPROVED') {
                 $order = $paypalRepository->getOrder($eventJson['resource']['id']);
 
+                try {
+                    $this->createLog([
+                        'type' => 'info',
+                        'category' => 'paypal_debug',
+                        'message' => 'API. webook. log de order: ' . json_encode($order),
+                    ]);
+                } catch(\Exception $e) {
+                    $this->createLog([
+                        'type' => 'error',
+                        'category' => 'paypal_debug',
+                        'exception' => $e
+                    ]);
+                }
+
                 foreach($order['purchase_units'] as $unit) {
                     $check = $paymentRepository->checkReservation( $unit['reference_id'] );
                     if($check == false):
