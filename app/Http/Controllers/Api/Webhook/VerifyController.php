@@ -102,9 +102,53 @@ class VerifyController extends Controller
                     'exception' => $e
                 ]);
             }
+            
+            try {
+                // Esto porque aún no se averigua cómo antes funcionaba que $event fuera un json correcto
+                // Se optó por no borrar el código anterior por si acaso, pero se agrega la nueva capa que sí funciona
+                $eventJson = json_decode($payload, true);
+            } catch(\Exception $e) {}
+
+            if(isset( $event['payment_status'] ) && $event['payment_status'] == "Completed") { // Código anterior (no se sabe a qué evento respondía realmente)
+                $check = $paymentRepository->checkReservation( $event['invoice'] );
+                if($check == false):
+                    http_response_code(400);
+                    exit();
+                endif;
     
-            if($event['event_type'] === 'CHECKOUT.ORDER.APPROVED' && $event['status'] === 'SUCCESS') {
-                $order = $paypalRepository->getOrder($event['resource']['id']);
+                $exchange = $paymentRepository->getExchange(strtoupper($event['mc_currency']), $check->currency);
+                $data = [
+                    'id' => $event['invoice'],
+                    'total' => $event['mc_gross'],
+                    'currency' => $event['mc_currency'],
+                    'exchange_rate' => $exchange->exchange_rate,
+                    'operation' => $exchange->operation,
+                    'method' => 'PAYPAL',
+                    'description' => 'PayPal',
+                    'object' => json_encode($event),
+                    'reference' => $event['txn_id'],
+                ];
+    
+                //Guardamos el pago en la base de datos
+                $response = $paymentRepository->savePayment($data);
+                if( $response ):
+                    //Envío de correo al cliente...
+                    $email = [];
+                    $email['code'] = $check->code;
+                    $email['email'] = $check->client_email;
+                    $email['language'] = $check->language;
+                    $email['type'] = 'update';        
+                    $this->sendEmail(config('app.url')."/api/v1/reservation/send", $email);  
+    
+                    http_response_code(200);
+                    exit();
+                else:
+                    http_response_code(400);
+                    exit();
+                endif;
+            }
+            else if($eventJson['event_type'] === 'CHECKOUT.ORDER.APPROVED' && $eventJson['status'] === 'SUCCESS') {
+                $order = $paypalRepository->getOrder($eventJson['resource']['id']);
 
                 foreach($order['purchase_units'] as $unit) {
                     $check = $paymentRepository->checkReservation( $unit['reference_id'] );
@@ -146,44 +190,6 @@ class VerifyController extends Controller
                         endif;
                     }
                 }
-            }
-            else if(isset( $event['payment_status'] ) && $event['payment_status'] == "Completed") { // Código anterior (no se sabe a qué evento respondía realmente)
-                $check = $paymentRepository->checkReservation( $event['invoice'] );
-                if($check == false):
-                    http_response_code(400);
-                    exit();
-                endif;
-    
-                $exchange = $paymentRepository->getExchange(strtoupper($event['mc_currency']), $check->currency);
-                $data = [
-                    'id' => $event['invoice'],
-                    'total' => $event['mc_gross'],
-                    'currency' => $event['mc_currency'],
-                    'exchange_rate' => $exchange->exchange_rate,
-                    'operation' => $exchange->operation,
-                    'method' => 'PAYPAL',
-                    'description' => 'PayPal',
-                    'object' => json_encode($event),
-                    'reference' => $event['txn_id'],
-                ];
-    
-                //Guardamos el pago en la base de datos
-                $response = $paymentRepository->savePayment($data);
-                if( $response ):
-                    //Envío de correo al cliente...
-                    $email = [];
-                    $email['code'] = $check->code;
-                    $email['email'] = $check->client_email;
-                    $email['language'] = $check->language;
-                    $email['type'] = 'update';        
-                    $this->sendEmail(config('app.url')."/api/v1/reservation/send", $email);  
-    
-                    http_response_code(200);
-                    exit();
-                else:
-                    http_response_code(400);
-                    exit();
-                endif;
             }
         } catch(\Exception $e) {
             $this->createLog([
