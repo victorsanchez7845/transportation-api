@@ -358,9 +358,7 @@ class PaypalRepository{
         $captureResponse = curl_exec($ch);
         curl_close($ch);
 
-        $response['status'] = true;
-        $response['data'] = json_decode($captureResponse, true);
-        return $response;
+        return json_decode($captureResponse, true);
     }
 
 }
