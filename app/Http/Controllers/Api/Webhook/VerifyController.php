@@ -178,7 +178,7 @@ class VerifyController extends Controller
                     endif;
 
                     foreach($unit['payments']['captures'] as $capture) {
-                        $payment_already_exists = Payments::where('reference', $capture['id'])->first();
+                        $payment_already_exists = Payments::where('reference', $capture['id'])->whereNull('deleted_at')->exists();
                         if($payment_already_exists) continue;
 
                         $exchange = $paymentRepository->getExchange(strtoupper($capture['amount']['currency_code']), $check->currency);
