@@ -108,6 +108,11 @@ class VerifyController extends Controller
                 // Se optó por no borrar el código anterior por si acaso, pero se agrega la nueva capa que sí funciona
                 $eventJson = json_decode($payload, true);
             } catch(\Exception $e) {}
+            $this->createLog([
+                'type' => 'info',
+                'category' => 'paypal_debug',
+                'message' => 'API. webook. Registrando eventJson' . json_encode($eventJson),
+            ]);
 
             if(isset( $event['payment_status'] ) && $event['payment_status'] == "Completed") { // Código anterior (no se sabe a qué evento respondía realmente)
                 $check = $paymentRepository->checkReservation( $event['invoice'] );
