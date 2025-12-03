@@ -107,12 +107,12 @@ class VerifyController extends Controller
                 // Esto porque aún no se averigua cómo antes funcionaba que $event fuera un json correcto
                 // Se optó por no borrar el código anterior por si acaso, pero se agrega la nueva capa que sí funciona
                 $eventJson = json_decode($payload, true);
+                $this->createLog([
+                    'type' => 'info',
+                    'category' => 'paypal_debug',
+                    'message' => 'API. webook. Registrando eventJson' . json_encode($eventJson),
+                ]);
             } catch(\Exception $e) {}
-            $this->createLog([
-                'type' => 'info',
-                'category' => 'paypal_debug',
-                'message' => 'API. webook. Registrando eventJson' . json_encode($eventJson),
-            ]);
 
             if(isset( $event['payment_status'] ) && $event['payment_status'] == "Completed") { // Código anterior (no se sabe a qué evento respondía realmente)
                 $check = $paymentRepository->checkReservation( $event['invoice'] );
@@ -152,7 +152,7 @@ class VerifyController extends Controller
                     exit();
                 endif;
             }
-            else if($eventJson['event_type'] === 'CHECKOUT.ORDER.APPROVED' && $eventJson['status'] === 'SUCCESS') {
+            else if($eventJson['event_type'] === 'CHECKOUT.ORDER.APPROVED') {
                 $order = $paypalRepository->getOrder($eventJson['resource']['id']);
 
                 foreach($order['purchase_units'] as $unit) {
