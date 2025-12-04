@@ -153,66 +153,96 @@ class VerifyController extends Controller
                     exit();
                 endif;
             }
-            else if($eventJson['event_type'] === 'CHECKOUT.ORDER.APPROVED') {
-                $order = $paypalRepository->getOrder($eventJson['resource']['id']);
+            else if ($eventJson['event_type'] === 'CHECKOUT.ORDER.APPROVED') {
+                $maxRetries = 20;
+                $delaySeconds = 60;
 
-                try {
+                for ($attempt = 1; $attempt <= $maxRetries; $attempt++) {
                     $this->createLog([
                         'type' => 'info',
                         'category' => 'paypal_debug',
-                        'message' => 'API. webook. log de order: ' . json_encode($order),
+                        'message' => "Webhook PayPal: Intento #{$attempt} de {$maxRetries}"
                     ]);
-                } catch(\Exception $e) {
-                    $this->createLog([
-                        'type' => 'error',
-                        'category' => 'paypal_debug',
-                        'exception' => $e
-                    ]);
-                }
 
-                foreach($order['purchase_units'] as $unit) {
-                    $check = $paymentRepository->checkReservation( $unit['reference_id'] );
-                    if($check == false):
-                        http_response_code(400);
-                        exit();
-                    endif;
+                    $order = $paypalRepository->getOrder($eventJson['resource']['id']);
 
-                    foreach($unit['payments']['captures'] as $capture) {
-                        $payment_already_exists = Payments::where('reference', $capture['id'])->whereNull('deleted_at')->exists();
-                        if($payment_already_exists) continue;
+                    $foundPayments = false;
 
-                        $exchange = $paymentRepository->getExchange(strtoupper($capture['amount']['currency_code']), $check->currency);
-                        $data = [
-                            'id' => $unit['reference_id'],
-                            'total' => $capture['amount']['value'],
-                            'currency' => $capture['amount']['currency_code'],
-                            'exchange_rate' => $exchange->exchange_rate,
-                            'operation' => $exchange->operation,
-                            'method' => 'PAYPAL',
-                            'description' => 'PayPal',
-                            'object' => json_encode($event),
-                            'reference' => $capture['id'],
-                        ];
-            
-                        //Guardamos el pago en la base de datos
-                        $response = $paymentRepository->savePayment($data);
-                        if( $response ):
-                            //Envío de correo al cliente...
-                            $email = [];
-                            $email['code'] = $check->code;
-                            $email['email'] = $check->client_email;
-                            $email['language'] = $check->language;
-                            $email['type'] = 'update';        
-                            $this->sendEmail(config('app.url')."/api/v1/reservation/send", $email);  
-            
-                            http_response_code(200);
-                            exit();
-                        else:
+                    foreach ($order['purchase_units'] as $purchaseUnit) {
+
+                        if (!isset($purchaseUnit['payments'])) {
+                            continue; // revisa otros units antes de reintentar
+                        }
+
+                        $foundPayments = true; // existe payments en al menos un unit
+
+                        $reservation = $paymentRepository->checkReservation($purchaseUnit['reference_id']);
+                        if (!$reservation) {
                             http_response_code(400);
                             exit();
-                        endif;
+                        }
+
+                        foreach ($purchaseUnit['payments']['captures'] as $capture) {
+                            $paymentExists = Payments::where('reference', $capture['id'])->whereNull('deleted_at')->exists();
+                            if($paymentExists) continue;
+
+                            $exchange = $paymentRepository->getExchange(
+                                strtoupper($capture['amount']['currency_code']),
+                                $reservation->currency
+                            );
+
+                            $data = [
+                                'id' => $purchaseUnit['reference_id'],
+                                'total' => $capture['amount']['value'],
+                                'currency' => $capture['amount']['currency_code'],
+                                'exchange_rate' => $exchange->exchange_rate,
+                                'operation' => $exchange->operation,
+                                'method' => 'PAYPAL',
+                                'description' => 'PayPal',
+                                'object' => json_encode($event),
+                                'reference' => $capture['id'],
+                            ];
+
+                            //Guardamos el pago en la base de datos
+                            $saved = $paymentRepository->savePayment($data);
+                            if ($saved) {
+                                //Envío de correo al cliente...
+                                $email = [
+                                    'code'     => $reservation->code,
+                                    'email'    => $reservation->client_email,
+                                    'language' => $reservation->language,
+                                    'type'     => 'update'
+                                ];
+                                $this->sendEmail(config('app.url') . "/api/v1/reservation/send", $email);
+                                http_response_code(200);
+                                exit();
+                            }
+
+                            http_response_code(400);
+                            exit();
+                        }
                     }
+
+                    // Si no se encontró payments EN NINGÚN purchase_unit -> esperar y reintentar
+                    if (!$foundPayments) {
+                        sleep($delaySeconds);
+                        continue;
+                    }
+
+                    // Si encontramos payments pero no había nada que registrar (todos existían)
+                    http_response_code(200);
+                    exit();
                 }
+
+                // Si se agotaron todos los intentos
+                $this->createLog([
+                    'type' => 'error',
+                    'category' => 'paypal_debug',
+                    'message' => "Webhook PayPal: No se encontraron pagos después de {$maxRetries} intentos."
+                ]);
+
+                http_response_code(400);
+                exit();
             }
         } catch(\Exception $e) {
             $this->createLog([
