@@ -9,7 +9,8 @@ class AutocompleteRepository{
 
     public function searcDB($request){
    
-        $term = preg_replace('/[^a-zA-Z0-9_ ]/', '', $request->keyword);
+        $term = iconv('UTF-8', 'ASCII//TRANSLIT', $request->keyword);
+        $term = preg_replace('/[^a-zA-Z0-9_ ]/', '', $term);
 
         $data = DB::select("
                     SELECT
@@ -51,7 +52,7 @@ class AutocompleteRepository{
             return $searchDB;
         endif;        
         
-        $data = $this->sendAws($request->keyword);
+        $data = $this->sendGoogle($request->keyword);
 
         if($data == false){
             return false;
@@ -157,6 +158,7 @@ class AutocompleteRepository{
         $data = [
             "Text" => $keyword,
             "FilterCountries" => ["MEX"],
+            "FilterBBox" => [-90.5, 18.0, -86.0, 22.5],
             "MaxResults" => 15
         ];
 
