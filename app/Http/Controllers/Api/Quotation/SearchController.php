@@ -51,7 +51,7 @@ class SearchController extends Controller
         }
 
         // -------------- Temporal
-         /*
+        
         $start_date = '2025-12-25 00:00';
         $end_date   = '2025-12-26 00:00';
 
@@ -72,7 +72,7 @@ class SearchController extends Controller
                 ]
             ], 404);
         }
-        */
+    
         // -------------- Temporal
 
         //Buscamos dentro de las geocercas existentes...
