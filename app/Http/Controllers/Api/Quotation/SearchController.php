@@ -75,7 +75,6 @@ class SearchController extends Controller
         }
 
         */
-    
         // -------------- Temporal
 
         //Buscamos dentro de las geocercas existentes...
