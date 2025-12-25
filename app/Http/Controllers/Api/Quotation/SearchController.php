@@ -52,7 +52,7 @@ class SearchController extends Controller
 
         // -------------- Temporal
         $start_date = '2025-12-25 00:00';
-        $end_date   = '2025-12-26 12:00';
+        $end_date   = '2025-12-26 00:00';
 
         $one_way_date = Carbon::createFromFormat('Y-m-d H:i', $request['start']['pickup']);
         if(isset($request['end']['pickup'])) $round_trip_date = Carbon::createFromFormat('Y-m-d H:i', $request['end']['pickup']);
