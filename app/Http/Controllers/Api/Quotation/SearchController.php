@@ -9,6 +9,7 @@ use Illuminate\Validation\Rule;
 use App\Repositories\Api\Quotation\SearchRepository;
 use App\Repositories\Api\Quotation\RatesRepository;
 use App\Repositories\Api\Quotation\DistanceRepository;
+use Carbon\Carbon;
 
 class SearchController extends Controller
 {
@@ -48,6 +49,29 @@ class SearchController extends Controller
                 ]
             ], 422);
         }
+
+        // -------------- Temporal
+        $start_date = '2025-12-25 00:00';
+        $end_date   = '2025-12-26 12:00';
+
+        $one_way_date = Carbon::createFromFormat('Y-m-d H:i', $request['start']['pickup']);
+        if(isset($request['end']['pickup'])) $round_trip_date = Carbon::createFromFormat('Y-m-d H:i', $request['end']['pickup']);
+
+        $start = Carbon::createFromFormat('Y-m-d H:i', $start_date);
+        $end   = Carbon::createFromFormat('Y-m-d H:i', $end_date);
+
+        if (
+            $one_way_date->between($start, $end, true) ||
+            (isset($round_trip_date) && $round_trip_date->between($start, $end, true))
+        ) {
+            return response()->json([
+                'error' => [
+                    'code' => 'availability',
+                    'message' => 'Sorry, we have no availability'
+                ]
+            ], 404);
+        }
+        // -------------- Temporal
 
         //Buscamos dentro de las geocercas existentes...
         $availability = $search->findDestinations($request);
