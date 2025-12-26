@@ -63,7 +63,6 @@ Route::middleware([Auth::class])->group(function () {
 
         Route::post('/autocomplete', [AutocompleteController::class,'index']);
         Route::post('/quote', [SearchController::class,'index']);
-        Route::post('/quote-tpv', [SearchController::class,'quoteTpv']);
         Route::get('/phone', [PhoneController::class,'index']);
         Route::post('/create', [CreationController::class,'index']);
 
