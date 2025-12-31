@@ -9,6 +9,7 @@ use Illuminate\Validation\Rule;
 use App\Repositories\Api\Quotation\SearchRepository;
 use App\Repositories\Api\Quotation\RatesRepository;
 use App\Repositories\Api\Quotation\DistanceRepository;
+use Carbon\Carbon;
 
 class SearchController extends Controller
 {
@@ -48,6 +49,63 @@ class SearchController extends Controller
                 ]
             ], 422);
         }
+
+        // -------------- Capa protectora de horario de madrugada
+        if ( !isset($request->is_tpv) ) {
+            $now = Carbon::now();
+
+            $oneWayDate = Carbon::createFromFormat('Y-m-d H:i', $request['start']['pickup']);
+            $roundTripDate = isset($request['end']['pickup'])
+                ? Carbon::createFromFormat('Y-m-d H:i', $request['end']['pickup'])
+                : null;
+
+            // Ventana de riesgo basada en HOY
+            $dangerStart = $now->copy()->setTime(22, 0);
+            $dangerEnd   = $now->copy()->addDay()->setTime(8, 30);
+
+            $nowInDangerZone = $now->between($dangerStart, $dangerEnd, true);
+
+            $oneWayInDangerZone = $oneWayDate->between($dangerStart, $dangerEnd, true);
+            $roundTripInDangerZone = $roundTripDate
+                ? $roundTripDate->between($dangerStart, $dangerEnd, true)
+                : false;
+
+            if (
+                $nowInDangerZone &&
+                ($oneWayInDangerZone || $roundTripInDangerZone)
+            ) {
+                return response()->json([
+                    'error' => [
+                        'code' => 'availability',
+                        'message' => 'Sorry, we have no availability'
+                    ]
+                ], 404);
+            }
+
+            if(true) { // Esta protección, es sólo por si de emergencia se necesitan bloquear los servicios el mero 31 (temporal)
+                $start_date = '2025-12-31 00:00';
+                $end_date   = '2026-01-01 23:59';
+        
+                $one_way_date = Carbon::createFromFormat('Y-m-d H:i', $request['start']['pickup']);
+                if(isset($request['end']['pickup'])) $round_trip_date = Carbon::createFromFormat('Y-m-d H:i', $request['end']['pickup']);
+        
+                $start = Carbon::createFromFormat('Y-m-d H:i', $start_date);
+                $end   = Carbon::createFromFormat('Y-m-d H:i', $end_date);
+        
+                if (
+                    $one_way_date->between($start, $end, true) ||
+                    (isset($round_trip_date) && $round_trip_date->between($start, $end, true))
+                ) {
+                    return response()->json([
+                        'error' => [
+                            'code' => 'availability',
+                            'message' => 'Sorry, we have no availability'
+                        ]
+                    ], 404);
+                }
+            }
+        }
+        // -------------- Capa protectora de horario de madrugada
 
         //Buscamos dentro de las geocercas existentes...
         $availability = $search->findDestinations($request);
