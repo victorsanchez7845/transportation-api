@@ -59,9 +59,39 @@ class SearchController extends Controller
                 ? Carbon::createFromFormat('Y-m-d H:i', $request['end']['pickup'])
                 : null;
 
-            // Ventana de riesgo basada en HOY
-            $dangerStart = $now->copy()->setTime(22, 0);
-            $dangerEnd   = $now->copy()->addDay()->setTime(8, 30);
+            /*
+            |---------------------------------------------
+            | Configuración del rango de madrugada
+            |---------------------------------------------
+            */
+            $nightStartHour = 22;
+            $nightStartMinute = 0;
+
+            $dayEndHour = 8;
+            $dayEndMinute = 30;
+
+            /*
+            |---------------------------------------------
+            | Determinar el "día lógico" de la madrugada
+            |---------------------------------------------
+            | Si aún no pasamos la hora final, seguimos
+            | en la madrugada iniciada el día anterior
+            */
+            $nightEndToday = $now->copy()->setTime($dayEndHour, $dayEndMinute);
+
+            if ($now->lt($nightEndToday)) {
+                $baseDay = $now->copy()->subDay()->startOfDay();
+            } else {
+                $baseDay = $now->copy()->startOfDay();
+            }
+
+            /*
+            |---------------------------------------------
+            | Construcción de la ventana de riesgo
+            |---------------------------------------------
+            */
+            $dangerStart = $baseDay->copy()->setTime($nightStartHour, $nightStartMinute);
+            $dangerEnd   = $baseDay->copy()->addDay()->setTime($dayEndHour, $dayEndMinute);
 
             $nowInDangerZone = $now->between($dangerStart, $dangerEnd, true);
 
@@ -82,7 +112,7 @@ class SearchController extends Controller
                 ], 404);
             }
 
-            if(true) { // Esta protección, es sólo por si de emergencia se necesitan bloquear los servicios el mero 31 (temporal)
+            if(false) { // Esta protección, es sólo por si de emergencia se necesitan bloquear los servicios el mero 31 (temporal)
                 $start_date = '2025-12-31 00:00';
                 $end_date   = '2026-01-01 23:59';
         
