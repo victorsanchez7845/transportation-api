@@ -401,7 +401,7 @@
 
                             <h4>Policies</h4>                            
                             <p class="gray_color">In case the service has been paid by credit card, you must present the card and your identification when boarding.</p>
-                            <p class="gray_color">Cancellations can only be made 12 hours prior to arrival or departure.</p>
+                            <p class="gray_color">The service may only be canceled 24 hours before your arrival or departure. If you purchased the Plus fare, you may receive a partial refund; otherwise, you are not eligible for a refund.</p>
 
 
                             <h5>Service Hours</h5> 
@@ -424,7 +424,7 @@
 
                             <h4>Políticas</h4>
                             <p class="gray_color">En caso de que el servicio haya sido pagado con tarjeta, deberá presentar la tarjeta y su identificación al abordar.</p>                            
-                            <p class="gray_color">Unicamente se podra cancelar el servicio 12 hrs antes de su servicio sea llegada o salida.</p>
+                            <p class="gray_color">Unicamente se podrá cancelar el servicio 24 hrs antes de su llegada o salida, si usted adquirió la tarifa plus puede obtener un reembolso parcial, de lo contrario no es candidato a reembolso.</p>
 
                             <h5>Horario de Servicio</h5> 
                             <p class="gray_color">En caso de cambio de hora de servicio se podra efectuar si se comunica 12 hrs antes de la hora acordada ya que se tiene que reprogramar su servicio. Contáctanos de 7AM a 11PM de Lunes a Domingo al numero <a class="pink" href="tel:+529983870157">+52 (998) 387 0157</a> o al correo <a class="pink" href="mailto:bookings@caribbean-transfers.com">bookings@caribbean-transfers.com</a></p>
