@@ -31,7 +31,7 @@
     <ul>
         <li>To cancel your reservation, you should contact the email {{ $data['email'] }} customer service department with your reservation number and the reason of the cancellation</li>
         <li>If you acquired the Economical rate you are only eligible for open-credit</li>
-        <li>The service may only be canceled at least 24 hours prior to your arrival or departure. If you purchased the PLUS service, you may be eligible for a partial refund</li>
+        <li>The service may only be canceled at least 24 hours prior to your arrival or departure. If you purchased the PLUS service, you are not eligible for a refund</li>
         <li>In case of a NO SHOW, NO refund apply.</li>        
     </ul>
 
@@ -93,7 +93,7 @@
     <ul>
         <li>Para cancelar su reservación, debe contactar al correo electrónico {{ $data['email'] }} al departamento de servicio al cliente con su número de reservación y el motivo de la cancelación</li>
         <li>Si usted adquirió la tarifa Economica solo eres candidato a un credito abierto por 12 meses</li>
-        <li>Únicamente se podrá cancelar el servicio con 24 horas de anticipación a su llegada o salida. Si usted adquirió la tarifa Plus, podrá obtener un reembolso parcial.</li>
+        <li>Únicamente se podrá cancelar el servicio con 24 horas de anticipación a su llegada o salida. Si usted adquirió la tarifa Plus, no podrá obtener un reembolso.</li>
         <li>En caso de un NO SHOW, no se aplica ningún reembolso.</li>        
     </ul>
     
