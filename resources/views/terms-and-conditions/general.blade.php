@@ -92,7 +92,7 @@
     <p>Cualquier solicitud de cancelación debe ser comunicada por escrito por correo electrónico a nuestro Departamento de Atención al Cliente, mencionando su número de reserva.</p>
     <ul>
         <li>Para cancelar su reservación, debe contactar al correo electrónico {{ $data['email'] }} al departamento de servicio al cliente con su número de reservación y el motivo de la cancelación</li>
-        <li>Si usted adquirió la tarifa Economica solo eres candidato a un credito abierto por 12 meses</li>
+        <li>Si usted adquirió la Tarifa Economica solo eres candidato a un credito abierto por 12 meses</li>
         <li>Únicamente se podrá cancelar el servicio con 24 horas de anticipación a su llegada o salida. Si usted adquirió la tarifa Plus, podrá obtener un reembolso parcial.</li>
         <li>En caso de un NO SHOW, no se aplica ningún reembolso.</li>        
     </ul>
