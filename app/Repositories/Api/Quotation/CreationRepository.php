@@ -188,6 +188,11 @@ class CreationRepository{
                             $rez_item_db->op_two_pickup = $service_token['data']['request']['end']['pickup'];
                         endif;
                         
+                        if(isset( $this->request['special_request'] )):
+                            $rez_item_db->op_one_comments = $this->request['special_request'];
+                            $rez_item_db->op_two_comments = $this->request['special_request'];
+                        endif;
+                        
                         if($rez_item_db->save()):
                             // APLICA SOLO SI ES COTIZACION
                             if($is_quotation):
