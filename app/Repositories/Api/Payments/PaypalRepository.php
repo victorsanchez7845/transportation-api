@@ -9,11 +9,15 @@ class PaypalRepository{
     use LoggerTrait;
     
     private $data = [];
-    private $PayPal = [
-        "clientId" => "AWTzKEcwaE0x4o6LaZSkVu7ewjCEPKADYnn7Zsgj1W7Sj6CDT0FXtALR3C0PZNkXC3-EJuUQHJ53VFtU",
-        "clientSecret" => "EBPMvZyXNP87ynoIil-0Pn6_2jVW7YVzkQy1n9HLXQX5AaDQxOQtiiNvvgNojOI_1uDhjiw9Swtb2XRA",
-        "URL" => "https://api-m.paypal.com"
-    ];
+    private $PayPal;
+
+    public function __construct() {
+        $this->PayPal = [
+            "clientId" => env('PAYMENT_PAYPAL_PUBLIC', ''),
+            "clientSecret" => env('PAYMENT_PAYPAL_PRIVATE', ''),
+            "URL" => "https://api-m.paypal.com"
+        ];
+    }
 
     public function check($request, $type = 0){
         $response = [
