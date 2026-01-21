@@ -245,6 +245,145 @@ class PaypalRepository{
         return $response;
     }
 
+    public function ordersV2($request){
+        $response = [
+            "status" => false,            
+        ];
+
+        $this->data = $request->all(); 
+   
+        $rez = DB::select("SELECT rez.id, rez.currency, site.payment_domain,
+                            ROUND( COALESCE(SUM( s.total_sales ), 0), 2) as total_sales,
+                            ROUND( COALESCE(SUM( p.total_payments ), 0), 2) as total_payments
+                            FROM reservations AS rez
+                            LEFT JOIN (
+                                    SELECT reservation_id,  ROUND( COALESCE(SUM(total), 0), 2) as total_sales
+                                    FROM sales
+                                    WHERE deleted_at IS NULL AND sales.sale_type_id <> 3
+                                    GROUP BY reservation_id
+                            ) as s ON s.reservation_id = rez.id
+                            LEFT JOIN (
+                                SELECT reservation_id,
+                                ROUND(SUM(CASE WHEN operation = 'multiplication' THEN total * exchange_rate
+                                                            WHEN operation = 'division' THEN total / exchange_rate
+                                                    ELSE total END), 2) AS total_payments,
+                                GROUP_CONCAT(DISTINCT payment_method ORDER BY payment_method ASC SEPARATOR ',') AS payment_type_name
+                                FROM payments
+                                GROUP BY reservation_id
+                            ) as p ON p.reservation_id = rez.id
+                            INNER JOIN sites as site ON site.id = rez.site_id
+                            WHERE rez.id = :code AND rez.is_cancelled = 0
+                            GROUP BY rez.id, site.payment_domain",
+                        [
+                            'code' => $this->data['id']
+                        ]);
+        
+        if(sizeof($rez) <= 0):
+            $response['code'] = "cancelled";
+            $response['message'] = "Your reservation has been cancelled, if you want to reactivate it contact us.";
+            return $response;
+        endif;
+
+        $total = $rez[0]->total_sales - $rez[0]->total_payments;
+        if($total <= 0):
+            $response['code'] = "payments";
+            $response['message'] = "No payments to be made";
+            return $response;
+        endif;
+        
+        $data = [
+            "total" => $this->getExchange($rez[0]->currency, $rez[0]->currency, $total),
+            "currency" => $rez[0]->currency,
+            "payment_domain" => $rez[0]->payment_domain
+        ];
+
+        $description = (($request->language == "en")?'Transportation service':'Servicio de transportación');
+
+        $lang = "en-US";
+        if($request->language == "es"):
+            $lang = "es-MX";
+        endif;
+        
+        $itemData = [
+            "intent" => "CAPTURE", 
+            "purchase_units" => [
+                  [
+                    "reference_id" => $rez[0]->id,
+                    "invoice_id" => $rez[0]->id,
+                    "items" => [
+                        [
+                           "name" => $description, 
+                           "description" => '', 
+                           "quantity" => 1, 
+                           "unit_amount" => [
+                              "currency_code" => $data['currency'], 
+                              "value" => $data['total']
+                           ] 
+                        ] 
+                    ], 
+                    "amount" => [
+                        "currency_code" => $data['currency'], 
+                        "value" => $data['total'], 
+                        "breakdown" => [
+                            "item_total" => [
+                                "currency_code" => $data['currency'], 
+                                "value" => $data['total']
+                            ]
+                        ] 
+                    ]
+                ]
+            ], 
+            "application_context" => [
+                "landing_page" => "BILLING",
+                "user_action" => "PAY_NOW",                
+                "return_url" => $data['payment_domain'] . $request->success_url, 
+                "cancel_url" => $data['payment_domain'] . $request->cancel_url,
+                "locale" => $lang
+            ] 
+        ];
+
+        $token = $this->getToken();
+        if($token == false){
+            $response['code'] = "token";
+            $response['message'] = "Error handling token";
+            return $response;
+        }
+
+        $paypalResponse = $this->createOrderV2($token, $itemData);
+
+        if ($paypalResponse === false || !isset($paypalResponse['links'])) {
+            $response['code'] = "order";
+            $response['message'] = "Error making order";
+            return $response;
+        }
+
+        $approvalUrl = null;
+
+        foreach ($paypalResponse['links'] as $link) {
+            if (
+                isset($link['rel'], $link['href']) &&
+                $link['rel'] === 'approve'
+            ) {
+                $approvalUrl = $link['href'];
+                break;
+            }
+        }
+
+        if (!$approvalUrl) {
+            $response['code'] = "order";
+            $response['message'] = "Approval URL not found";
+            return $response;
+        }
+
+        $response['status'] = true;
+        $response['data'] = [
+            'url' => $approvalUrl,
+            'order_id' => $paypalResponse['id'] ?? null
+        ];
+
+        return $response;
+    }
+
     public function ordersCapture($request){        
 
         $token = $this->getToken();
@@ -340,6 +479,31 @@ class PaypalRepository{
         
         if (isset($orderResponse['id'])) {
             return $orderResponse['id'];
+        } else {
+            return false;
+        }
+    }
+
+    public function createOrderV2($token, $itemData){
+
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $this->PayPal['URL'] . "/v2/checkout/orders");
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+            "Content-Type: application/json",
+            "Authorization: Bearer $token"
+        ]);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($itemData));
+
+        $response = curl_exec($ch);
+        curl_close($ch);
+
+        // Mostrar respuesta
+        $orderResponse = json_decode($response, true);
+        
+        if (isset($orderResponse['id'])) {
+            return $orderResponse;
         } else {
             return false;
         }
