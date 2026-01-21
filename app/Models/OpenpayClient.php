@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class OpenpayClient extends Model
 {
     use HasFactory;
+    protected $table = 'openpay_clients';
     protected $fillable = [
         'client_name',
         'client_email',
