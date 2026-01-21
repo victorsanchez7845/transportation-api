@@ -55,8 +55,13 @@ return [
         'merchant' => env('PAYPAL_MERCHANT_ID'),
     ],
     'santander' => [
-        'user' => env('SANTANDER_USER',''),
-        'password' => env('SANTANDER_PASSWORD',''),
-        'seed' => env('SANTANDER_SEED',''),
+        'user' => env('SANTANDER_USER', ''),
+        'password' => env('SANTANDER_PASSWORD', ''),
+        'seed' => env('SANTANDER_SEED', ''),
     ],
+    'openpay' => [
+        'public' => env('OPENPAY_PUBLIC_KEY'),
+        'private' => env('OPENPAY_PRIVATE_KEY'),
+        'merchant' => env('OPENPAY_MERCHANT_ID')
+    ]
 ];
