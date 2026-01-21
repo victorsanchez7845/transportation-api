@@ -27,6 +27,22 @@ class PaymentRepository{
         }        
     }
 
+    public function getReservationByUUID($uuid) {
+        $rez = DB::select('SELECT rez.id, rez.client_email, rez.language, it.code, rez.currency
+                                            FROM reservations as rez
+                                        INNER JOIN reservations_items as it ON it.reservation_id = rez.id
+                                         WHERE rez.uuid = :code
+                                        LIMIT 1', [
+                                     'code' => $uuid
+                                    ]);
+
+        if(isset( $rez[0] )){
+            return $rez[0];
+        }else{
+            return false;
+        }        
+    }
+
     public function savePayment($data){
         $sales_db = new Payments;
         $sales_db->description = $data['description'];
