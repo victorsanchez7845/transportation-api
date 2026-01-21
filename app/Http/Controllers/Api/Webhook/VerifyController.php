@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\Webhook;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\OpenpayWeebhookAvailable;
 use App\Models\Payments;
 use App\Repositories\Api\Payments\PaypalRepository;
 use App\Repositories\Api\Webhook\PaymentRepository;
@@ -15,8 +16,9 @@ use App\Traits\LoggerTrait;
 class VerifyController extends Controller
 {
     use FunctionsTrait, LoggerTrait;
-    
-    public function stripe(Request $request, PaymentRepository $paymentRepository){
+
+    public function stripe(Request $request, PaymentRepository $paymentRepository)
+    {
 
         $payload = @file_get_contents('php://input');
         $event = json_decode($payload);
@@ -26,19 +28,19 @@ class VerifyController extends Controller
             case 'charge.succeeded':
                 $paymentIntent = $event->data->object;
 
-                if(!isset( $paymentIntent->metadata->reservation_id )):
+                if (!isset($paymentIntent->metadata->reservation_id)):
                     http_response_code(400);
                     exit();
                 endif;
 
                 //Verificar que exista la reservación
                 $check = $paymentRepository->checkReservation($paymentIntent->metadata->reservation_id);
-                if($check == false):
+                if ($check == false):
                     http_response_code(400);
                     exit();
                 endif;
-                
-                $exchange = $paymentRepository->getExchange("MXN", $check->currency);       
+
+                $exchange = $paymentRepository->getExchange("MXN", $check->currency);
                 $data = [
                     'id' => $paymentIntent->metadata->reservation_id,
                     'total' => ($paymentIntent->amount / 100),
@@ -50,17 +52,17 @@ class VerifyController extends Controller
                     'object' => json_encode($paymentIntent),
                     'reference' => $paymentIntent->id
                 ];
-            
+
                 //Guardamos el pago en la base de datos
                 $response = $paymentRepository->savePayment($data);
-                if( $response ):
+                if ($response):
                     //Envío de correo al cliente...
                     $email = [];
                     $email['code'] = $check->code;
                     $email['email'] = $check->client_email;
                     $email['language'] = $check->language;
-                    $email['type'] = 'confirmed';        
-                    $this->sendEmail(config('app.url')."/api/v1/reservation/send", $email);
+                    $email['type'] = 'confirmed';
+                    $this->sendEmail(config('app.url') . "/api/v1/reservation/send", $email);
 
                     http_response_code(200);
                     //$stripe->index($request);
@@ -77,25 +79,26 @@ class VerifyController extends Controller
         //$stripe->index($request);
     }
 
-    public function paypal(Request $request, PaymentRepository $paymentRepository, PaypalRepository $paypalRepository){
+    public function paypal(Request $request, PaymentRepository $paymentRepository, PaypalRepository $paypalRepository)
+    {
         try {
             $this->createLog([
                 'type' => 'info',
                 'category' => 'paypal_debug',
                 'message' => 'API. ENTRA WEBHOOK!!',
             ]);
-            
+
             $payload = @file_get_contents('php://input');
             $event = array();
-            parse_str($payload, $event);                
-    
+            parse_str($payload, $event);
+
             try {
                 $this->createLog([
                     'type' => 'info',
                     'category' => 'paypal_debug',
                     'message' => 'API. webhook data: ' . json_encode($event),
                 ]);
-            } catch(\Exception $e) {
+            } catch (\Exception $e) {
                 $this->createLog([
                     'type' => 'error',
                     'category' => 'paypal_debug',
@@ -103,7 +106,7 @@ class VerifyController extends Controller
                     'exception' => $e
                 ]);
             }
-            
+
             try {
                 // Esto porque aún no se averigua cómo antes funcionaba que $event fuera un json correcto
                 // Se optó por no borrar el código anterior por si acaso, pero se agrega la nueva capa que sí funciona
@@ -113,15 +116,16 @@ class VerifyController extends Controller
                     'category' => 'paypal_debug',
                     'message' => 'API. webook. Registrando eventJson' . json_encode($eventJson),
                 ]);
-            } catch(\Exception $e) {}
+            } catch (\Exception $e) {
+            }
 
-            if(isset( $event['payment_status'] ) && $event['payment_status'] == "Completed") { // Código anterior (no se sabe a qué evento respondía realmente)
-                $check = $paymentRepository->checkReservation( $event['invoice'] );
-                if($check == false):
+            if (isset($event['payment_status']) && $event['payment_status'] == "Completed") { // Código anterior (no se sabe a qué evento respondía realmente)
+                $check = $paymentRepository->checkReservation($event['invoice']);
+                if ($check == false):
                     http_response_code(400);
                     exit();
                 endif;
-    
+
                 $exchange = $paymentRepository->getExchange(strtoupper($event['mc_currency']), $check->currency);
                 $data = [
                     'id' => $event['invoice'],
@@ -134,26 +138,25 @@ class VerifyController extends Controller
                     'object' => json_encode($event),
                     'reference' => $event['txn_id'],
                 ];
-    
+
                 //Guardamos el pago en la base de datos
                 $response = $paymentRepository->savePayment($data);
-                if( $response ):
+                if ($response):
                     //Envío de correo al cliente...
                     $email = [];
                     $email['code'] = $check->code;
                     $email['email'] = $check->client_email;
                     $email['language'] = $check->language;
-                    $email['type'] = 'update';        
-                    $this->sendEmail(config('app.url')."/api/v1/reservation/send", $email);  
-    
+                    $email['type'] = 'update';
+                    $this->sendEmail(config('app.url') . "/api/v1/reservation/send", $email);
+
                     http_response_code(200);
                     exit();
                 else:
                     http_response_code(400);
                     exit();
                 endif;
-            }
-            else if ($eventJson['event_type'] === 'CHECKOUT.ORDER.APPROVED') {
+            } else if ($eventJson['event_type'] === 'CHECKOUT.ORDER.APPROVED') {
                 $maxRetries = 20;
                 $delaySeconds = 60;
 
@@ -184,7 +187,7 @@ class VerifyController extends Controller
 
                         foreach ($purchaseUnit['payments']['captures'] as $capture) {
                             $paymentExists = Payments::where('reference', $capture['id'])->whereNull('deleted_at')->exists();
-                            if($paymentExists) continue;
+                            if ($paymentExists) continue;
 
                             $exchange = $paymentRepository->getExchange(
                                 strtoupper($capture['amount']['currency_code']),
@@ -244,32 +247,33 @@ class VerifyController extends Controller
                 http_response_code(400);
                 exit();
             }
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             $this->createLog([
                 'type' => 'error',
                 'category' => 'paypal_debug',
                 'message' => 'API. Error general en webhook de paypal',
                 'exception' => $e
             ]);
-        http_response_code(400);
+            http_response_code(400);
         }
         http_response_code(200);
     }
 
-    public function mifel(Request $request, PaymentRepository $paymentRepository){
-        
+    public function mifel(Request $request, PaymentRepository $paymentRepository)
+    {
+
         $payload = @file_get_contents('php://input');
         $event = json_decode($payload, true);
 
-        if(!isset( $event['encryptedBody'] )):
+        if (!isset($event['encryptedBody'])):
             return response()->json([
                 'error' => [
                     'code' => 'params',
                     'message' => 'encryptedBody are needed'
                 ]
-            ], 400);            
+            ], 400);
         endif;
-        
+
         $key_from_configuration = "DE11A77EB43C76E68A84631C6A716B5AC9C3499148CE27DF70F72CA511FEA8B0";  //KEY de desarrollo: A316D872053A63C8BEDE94971DA4CFEA8F7B7B0927741DA7033965C62471FD9D
         $iv_from_http_header = $request->header('x-initialization-vector');
         $auth_tag_from_http_header = $request->header('x-authentication-tag');
@@ -279,9 +283,9 @@ class VerifyController extends Controller
         $iv = hex2bin($iv_from_http_header);
         $auth_tag = hex2bin($auth_tag_from_http_header);
         $cipher_text = hex2bin($http_body);
-        
+
         $decrypt_data = openssl_decrypt($cipher_text, "aes-256-gcm", $key, OPENSSL_RAW_DATA, $iv, $auth_tag);
-        if($decrypt_data == false):
+        if ($decrypt_data == false):
             return response()->json([
                 'error' => [
                     'code' => 'decrypt',
@@ -289,11 +293,11 @@ class VerifyController extends Controller
                 ]
             ], 400);
         endif;
-        
+
         $result = json_decode($decrypt_data, true);
-        if($result['type'] == "PAYMENT"):
+        if ($result['type'] == "PAYMENT"):
             //$result['payload']['merchantTransactionId'] = "16318-12312312312312"; //ELIMINAR EN PRODUCCIÓN
-            if( $result['payload']['paymentType'] != "DB" ){
+            if ($result['payload']['paymentType'] != "DB") {
                 return response()->json([
                     'error' => [
                         'code' => 'payment_type',
@@ -303,7 +307,7 @@ class VerifyController extends Controller
             }
 
 
-            if ( $result['payload']['resultDetails']['acquirerResponse'] != 00 ) {
+            if ($result['payload']['resultDetails']['acquirerResponse'] != 00) {
                 return response()->json([
                     'error' => [
                         'code' => 'payment_type',
@@ -311,7 +315,7 @@ class VerifyController extends Controller
                     ]
                 ], 400);
             }
-            
+
             /*if($result['payload']['result']['code'] != "000.100.110"){
                 return response()->json([
                     'error' => [
@@ -320,12 +324,12 @@ class VerifyController extends Controller
                     ]
                 ], 400);
             }*/
-            
+
             $transactionID = explode("-", $result['payload']['merchantTransactionId']);
             $id = $transactionID[0];
 
-            $check = $paymentRepository->checkReservation( $id );
-            if($check == false):
+            $check = $paymentRepository->checkReservation($id);
+            if ($check == false):
                 return response()->json([
                     'error' => [
                         'code' => 'not_found',
@@ -335,7 +339,7 @@ class VerifyController extends Controller
             endif;
 
             $exchange = $paymentRepository->getExchange("MXN", $check->currency);
-            
+
             $data = [
                 'id' => $id,
                 'total' => $result['payload']['amount'],
@@ -350,14 +354,14 @@ class VerifyController extends Controller
 
             //Guardamos el pago en la base de datos
             $response = $paymentRepository->savePayment($data);
-            if( $response ):
+            if ($response):
                 //Envío de correo al cliente...
                 $email = [];
                 $email['code'] = $check->code;
                 $email['email'] = $check->client_email;
                 $email['language'] = $check->language;
-                $email['type'] = 'confirmed';        
-                $this->sendEmail(config('app.url')."/api/v1/reservation/send", $email);  
+                $email['type'] = 'confirmed';
+                $this->sendEmail(config('app.url') . "/api/v1/reservation/send", $email);
 
                 return response()->json(['OK'], 200);
             else:
@@ -379,33 +383,34 @@ class VerifyController extends Controller
         endif;
     }
 
-    public function mit(Request $request, PaymentRepository $paymentRepository){
+    public function mit(Request $request, PaymentRepository $paymentRepository)
+    {
 
         $strResponse = $request->input('strResponse');
-        if( $strResponse == NULL ):
+        if ($strResponse == NULL):
             return response()->json([
                 'error' => [
                     'code' => 'strResponse',
                     'message' => 'strResponse is needed'
                 ]
             ], 400);
-        endif;        
+        endif;
 
-        $xml = AESCrypto::decrypt( $strResponse, config('services.santander.seed') );
+        $xml = AESCrypto::decrypt($strResponse, config('services.santander.seed'));
         //$xml = AESCrypto::decrypt( $event['strResponse'], '5DCC67393750523CD165F17E1EFADD21' ); //COMENTAR EN PRODUCCIÓN  
 
         $xmlObject = simplexml_load_string($xml);
         $xmlObject = json_decode(json_encode($xmlObject), true);
 
-        if($xmlObject['response'] == "approved"):
-            
-            //$xmlObject['reference'] = "36949-".strtotime(date("Y-m-d H:i:s")); //COMENTAR EN PRODUCCIÓN
-        
-            $id = explode("-", $xmlObject['reference']);
-            $id = $id[0];           
+        if ($xmlObject['response'] == "approved"):
 
-            $check = $paymentRepository->checkReservation( $id );
-            if($check == false):
+            //$xmlObject['reference'] = "36949-".strtotime(date("Y-m-d H:i:s")); //COMENTAR EN PRODUCCIÓN
+
+            $id = explode("-", $xmlObject['reference']);
+            $id = $id[0];
+
+            $check = $paymentRepository->checkReservation($id);
+            if ($check == false):
                 return response()->json([
                     'error' => [
                         'code' => 'not_found',
@@ -414,7 +419,7 @@ class VerifyController extends Controller
                 ], 400);
             endif;
 
-            $exchange = $paymentRepository->getExchange("MXN", $check->currency);            
+            $exchange = $paymentRepository->getExchange("MXN", $check->currency);
 
             $data = [
                 'id' => $id,
@@ -430,14 +435,14 @@ class VerifyController extends Controller
 
             //Guardamos el pago en la base de datos
             $response = $paymentRepository->savePayment($data);
-            if( $response ):
+            if ($response):
                 //Envío de correo al cliente...
                 $email = [];
                 $email['code'] = $check->code;
                 $email['email'] = $check->client_email;
                 $email['language'] = $check->language;
-                $email['type'] = 'confirmed';        
-                $this->sendEmail(config('app.url')."/api/v1/reservation/send", $email);  
+                $email['type'] = 'confirmed';
+                $this->sendEmail(config('app.url') . "/api/v1/reservation/send", $email);
 
                 return response()->json(['OK'], 200);
             else:
@@ -453,9 +458,70 @@ class VerifyController extends Controller
             return response()->json([
                 'error' => [
                     'code' => 'not_approved',
-                    'message' => 'The response is: '.$xmlObject['response']
+                    'message' => 'The response is: ' . $xmlObject['response']
                 ]
             ], 400);
         endif;
+    }
+
+    public function openpay(Request $request, PaymentRepository $paymentRepository)
+    {
+        $data = $request->all();
+        // this is due verification process on openpay config
+        if ($data["type"] == "verification") {
+            $existVerificationCode = OpenpayWeebhookAvailable::where('verification_code', $data["verification_code"])->first();
+            if (!isset($existVerificationCode)) {
+                OpenpayWeebhookAvailable::create([
+                    'event_type' => 'weebhoook_validation',
+                    'verification_code' => $data["verification_code"]
+                ]);
+            }
+
+            http_response_code(200);
+            return;
+        }
+
+        if($data["type"] != "charge.succeeded") {
+            // we do not procceed other webhook than charge.succeeded
+            // we send 200 for avoid retries
+            http_response_code(200);
+            return;
+        }
+
+        // Basically the same logic as stripe function just adjusting data 
+        $check = $paymentRepository->getReservationByUUID($data["transaction"]["order_id"]);
+        if ($check == false):
+            http_response_code(400);
+            return;
+        endif;
+
+        $exchange = $paymentRepository->getExchange("MXN", $check->currency);
+        $data = [
+            'id' => $data["transaction"]["order_id"],
+            'total' => ($data["transaction"]["amount"]),
+            'currency' => "MXN",
+            'exchange_rate' => $exchange->exchange_rate,
+            'operation' => $exchange->operation,
+            'method' => 'OPENPAY',
+            'description' => 'Openpay',
+            'object' => json_encode($data),
+            'reference' => $data["transaction"]["id"]
+        ];
+
+        $response = $paymentRepository->savePayment($data);
+        if ($response):
+            $email = [];
+            $email['code'] = $check->code;
+            $email['email'] = $check->client_email;
+            $email['language'] = $check->language;
+            $email['type'] = 'confirmed';
+            $this->sendEmail(config('app.url') . "/api/v1/reservation/send", $email);
+
+            http_response_code(200);
+            return;
+        endif;
+
+        http_response_code(400);
+        return;
     }
 }
