@@ -112,8 +112,8 @@ class ReservationController extends Controller
         
         $data = $data[0];
 
-        $paypal_URL = $this->makePaymentURL( $request, $data, 'PAYPAL' );
-        $stripe_URL = $this->makePaymentURL( $request, $data, 'STRIPE' );
+        $paypal_URL = $this->makePaymentURL( $request->reservation_id, $request->lang, $data, 'PAYPAL' );
+        $stripe_URL = $this->makePaymentURL( $request->reservation_id, $request->lang, $data, 'STRIPE' );
 
         App::setLocale($request['lang']);
 
@@ -123,12 +123,12 @@ class ReservationController extends Controller
         return view('mailing.sendPaymentRequest', ['data' => $data, 'site' => $site, 'paypal_URL' => $paypal_URL, 'stripe_URL' => $stripe_URL, 'provider' => $provider]);
     }
 
-    private static function makePaymentURL($request, $data, $type = "STRIPE"){
+    private static function makePaymentURL($reservation_id, $lang, $data, $type = "STRIPE"){
 
         $data = [
             "type" => $type,
-            "id" => $request->item_id,
-            "language" => $request->lang,
+            "id" => $reservation_id,
+            "language" => $lang,
             "success_url" => $data->success_payment_url,
             "cancel_url" => $data->cancel_payment_url,
             "redirect" => 1
