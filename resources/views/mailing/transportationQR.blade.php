@@ -18,6 +18,7 @@
         default:
             break;
     }
+    $provider_name = $data['provider']['name'];
 @endphp
 <!DOCTYPE html>
 <html lang="{{$lang}}">
@@ -52,7 +53,7 @@
         table.table_init {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 15px;
+            margin-top: 0px;
             border-radius: 15px;
         }
 
@@ -117,6 +118,9 @@
 </head>
 <body style="background-color: #f7fafb;">
     <div class="container">
+        <div class="header">
+            <img src="{{ $data['site']['logo'] }}" style="max-width:600px;">
+        </div>
         <table class="table_init">
             <tbody>
                 <tr>
@@ -247,6 +251,26 @@
                             @endforeach
                         @endif
                     </td>                    
+                </tr>
+                <tr>
+                    <td class="white_content information" style="text-align:left; padding-top: 0px; border-top: 1px solid #CCD5D8;">
+                        @if($lang == "en")                            
+                            <h5>Service Hours</h5> 
+                            <p class="gray_color">In case of change of time of service can be made if you contact us 12 hours before the agreed time because you have to reschedule your service. Contact us from 7AM to 11PM from Monday to Sunday at <a class="pink" href="tel:+529983870157">+52 (998) 387 0157</a> or email <a class="pink" href="mailto:bookings@caribbean-transfers.com">bookings@caribbean-transfers.com</a></p>
+                        @else
+                            <h5>Horario de Servicio</h5> 
+                            <p class="gray_color">En caso de cambio de hora de servicio se podra efectuar si se comunica 12 hrs antes de la hora acordada ya que se tiene que reprogramar su servicio. Contáctanos de 7AM a 11PM de Lunes a Domingo al numero <a class="pink" href="tel:+529983870157">+52 (998) 387 0157</a> o al correo <a class="pink" href="mailto:bookings@caribbean-transfers.com">bookings@caribbean-transfers.com</a></p>
+                        @endif
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding: 15px; text-align:center;">
+                        <div>
+                            <a href="https://www.facebook.com/caribbeantransferscun" target="_blank"><img src="https://ik.imagekit.io/zqiqdytbq/transportation-api/mailing/social/facebook.png?updatedAt=1692978703979" style="margin-right: 15px;"></a>
+                            <!--<a href="#" target="_blank"><img src="https://ik.imagekit.io/zqiqdytbq/transportation-api/mailing/social/instagram.png?updatedAt=1692978703965"></a>-->
+                        </div>
+                        <p style="font-size: 11pt; color: #6A829E;">&copy; {{ $provider_name }} | {{ __('mailing/client.rights_reserved') }}</p>
+                    </td>
                 </tr>
             </tbody>
         </table>
