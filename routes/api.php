@@ -73,6 +73,7 @@ Route::middleware([Auth::class])->group(function () {
         //Mailing
         Route::get('/mailing/reservation/view', [MailingReservation::class,'view'])->withoutMiddleware([Auth::class]);
         Route::get('/mailing/reservation/viewQR', [MailingReservation::class,'viewQR'])->withoutMiddleware([Auth::class]);
+        Route::get('/mailing/reservation/payment-request', [MailingReservation::class,'paymentRequest'])->withoutMiddleware([Auth::class]);
 
         //Reservation
         Route::post('/reservation/get', [SearchReservation::class,'index'])->withoutMiddleware([Auth::class]);
