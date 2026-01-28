@@ -491,7 +491,7 @@ class VerifyController extends Controller
         // Basically the same logic as stripe function just adjusting data 
         $check = $paymentRepository->getReservationByUUID($data["transaction"]["order_id"]);
         if ($check == false):
-            http_response_code(400);
+            http_response_code(200);
             return;
         endif;
 
@@ -521,7 +521,7 @@ class VerifyController extends Controller
             return;
         endif;
 
-        http_response_code(400);
+        http_response_code(200);
         return;
     }
 }
