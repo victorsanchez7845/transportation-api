@@ -261,7 +261,7 @@ class HandlerController extends Controller
                 'redirect_url' => $data["metadata"]["redirect_url"]
             ];
 
-            Openpay::setProductionMode(false);
+            Openpay::setProductionMode( config('services.openpay.production_mode') );
             /** @var array{publicKey: string, privateKey: string, merchantId: string} $keys */
             $keys = $this->getOpenPayKeys();
 
