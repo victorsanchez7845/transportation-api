@@ -218,7 +218,8 @@ class HandlerController extends Controller
         $keys = $this->getOpenPayKeys();
         return response()->json([
             'publicKey' => $keys['publicKey'],
-            'merchantId' => $keys['merchantId']
+            'merchantId' => $keys['merchantId'],
+            'productionMode' => config('services.openpay.production_mode'),
         ], 200);
     }
 
