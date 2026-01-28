@@ -14,9 +14,8 @@ return new class extends Migration
         Schema::create('openpay_transactions', function (Blueprint $table) {
             $table->id();
             $table->string('openpay_transaction_id',255)->nullable(false);
-            $table->string('reservation_uuid', 255)->nullable(false);
+            $table->varchar('reservation_uuid', 150)->nullable(false);
             $table->string('status',255)->nullable(true);
-            $table->foreign('reservation_uuid')->references('uuid')->on('reservations')->onDelete('cascade');
             $table->timestamps();
         });
     }
