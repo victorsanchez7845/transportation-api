@@ -220,7 +220,7 @@ class HandlerController extends Controller
         return response()->json([
             'publicKey' => $keys['publicKey'],
             'merchantId' => $keys['merchantId'],
-            'productionMode' => config('services.openpay.production_mode'),
+            'productionMode' => (bool) config('services.openpay.production_mode'),
         ], 200);
     }
 
@@ -372,7 +372,7 @@ class HandlerController extends Controller
             $transactionWithReservation = OpenpayTransaction::where('openpay_transaction_id', $charge->id);
             if(isset($transactionWithReservation)) {
                 $transactionWithReservation->update(['status' => $charge->status]);
-            } 
+            }
 
             return response()->json([
                 'success' => true,
