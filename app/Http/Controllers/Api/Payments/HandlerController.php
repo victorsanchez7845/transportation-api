@@ -219,7 +219,8 @@ class HandlerController extends Controller
         $keys = $this->getOpenPayKeys();
         return response()->json([
             'publicKey' => $keys['publicKey'],
-            'merchantId' => $keys['merchantId']
+            'merchantId' => $keys['merchantId'],
+            'productionMode' => config('services.openpay.production_mode'),
         ], 200);
     }
 
@@ -263,7 +264,7 @@ class HandlerController extends Controller
                 'use_3d_secure' => true
             ];
 
-            Openpay::setProductionMode(false);
+            Openpay::setProductionMode( config('services.openpay.production_mode') );
             /** @var array{publicKey: string, privateKey: string, merchantId: string} $keys */
             $keys = $this->getOpenPayKeys();
 

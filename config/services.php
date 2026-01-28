@@ -60,6 +60,7 @@ return [
         'seed' => env('SANTANDER_SEED', ''),
     ],
     'openpay' => [
+        'production_mode' => (bool) env('OPENPAY_PRODUCTION_MODE', false),
         'public' => env('OPENPAY_PUBLIC_KEY'),
         'private' => env('OPENPAY_PRIVATE_KEY'),
         'merchant' => env('OPENPAY_MERCHANT_ID')
