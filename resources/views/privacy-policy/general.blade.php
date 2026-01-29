@@ -1,72 +1,99 @@
-@if( $data['lang'] == "en")
-    <p>In compliance with Mexico&rsquo;s Federal Law of Protection of Personal Data in Possession of Individuals, {{ $data['brand'] }} is responsible for the processing of your personal data.</p>
-    <p><strong>Data collection and means of obtaining</strong></p>
-    <p>The information that the user provides voluntarily must be true,  {{ $data['brand'] }} is not responsible if the user-provided incorrect or false information. The information is collected and stored by  {{ $data['brand'] }} at the moment of making a reservation with us via internet, telephone, in one of our counters or offices or by any other means.</p>
-    <p>The means by which the user's data will be obtained will be</p>
+@if($data['lang'] == "es")
+    <h2>¿Qué información recolectamos?</h2>
+    <p>Recolectamos información personal cuando usted llena alguna forma para hacer una reservación o para contactarnos. Al reservar en nuestro sitio, se le pedirá:</p>
     <ul>
-    <li>Through our web page {{ $data['brand'] }} where you will voluntarily introduce your data when using our services. Since the law allows other sources of information such as telephone directories, services andwork, as well as social networks, the data that we can obtain by these means are names and surnames, telephone, email and physical address.</li>
-    <li>The information provided by the user within the social networks in which  {{ $data['brand'] }} participates as a user, does not constitute or form part of the Personal Data subject to the Protection of this Privacy Notice, being theresponsibility of the company providing that platform and who publishes it. In principle you can browse our websites without providing personal information. However,  {{ $data['brand'] }} has created certain fields in which you can providepersonal data on a voluntary basis.  {{ $data['brand'] }} will treat only the personal data that you decide to share through the websites; whether when you register on the site, when you create an account, when you decide to contact us byemail with questions or concerns, when you are provided with customer service, when you request information online, when you participate in promotions, when you submit personal information in some other form analogous or similar tothe above.  {{ $data['brand'] }} will process your personal data only for the time necessary to fulfill the purposes described herein and/or in accordance with the applicable legal provisions</li>
-    <li>Through the reservation center personally or by contacting our Call Center.</li>
+        <li>Su nombre completo.</li>
+        <li>Correo electrónico.</li>
+        <li>Dirección.</li>
+        <li>Información de vuelo.</li>
+        <li>Número de teléfono.</li>
     </ul>
-    <p>Full name, sex, home and conventional address, home, office and cell phone numbers, e-mail address, telephone number, address, autograph signature, RFC or CURP, use preferences and financial data such as Credit card number, name of the card holder, expiration date, security code and any other information that may be necessary to complete the reservations requested by you. In this same sense, it is important to mention that in order to process the reservations and sales made with us, the banking and credit card information you provide may be shared with American Express Corporation, Master Card or VISA to make the corresponding charges,  {{ $data['brand'] }} reserves the right to disclose personal information provided via telephone or online in the following cases:</p>
-    <ul>
-    <li>When the transfer of personal data is necessary or legally required for the safeguard of a public interest, or for the pursuit of justice.</li>
-    <li>When requested by state or federal, national or international authorities where it is necessary or appropriate to investigate illegal or fraudulent acts.</li>
-    <li>To seek assistance from public safety authorities to protect the interests or safety of  {{ $data['brand'] }}.</li>
-    <li>In any of the cases established in Article 37 of Mexico&rsquo;s Federal Law for the Protection of Personal Data in Possession of Individuals and its Regulations.</li>
-    </ul>
-    <p><strong>Use of the requested information</strong></p>
-    <p> {{ $data['brand'] }} will use your personal data to speed up the process of vehicle reservation, to provide the services and products requested, to monitor, update, cancel, notify about new products or services related to those already contracted, modify or confirm the service contracted; for promotional purposes; for financial and credit purposes, to comply with obligations to our customers; to evaluate the quality of service; and, to conduct surveys on preferences and consumption habits.</p>
-    <p><strong>Data transfer, national and international</strong></p>
-    <p>Your personal data may be transferred and/or shared with: business partners, affiliates, suppliers, financial, banking, and credit institutions to confirm your reservations and to comply with this Privacy Notice.</p>
-    <p><strong>Exercise of ARCO Rights (Access, Rectification, Cancellation, Opposition)</strong></p>
-    <p>You have the right to request access to your personal data at any time in order to know the situation of the same; rectification in case these are incorrect or outdated; cancellation of the data when it is your consideration that they are not used for the purposes established in this Privacy Notice; or opposition to the treatment of your personal data with respect to any of the purposes established in this Privacy Notice and you must clearly express, with respect to the personal data that concern you.</p>
-    <p><strong>Right to revoke your consent to the processing of data</strong></p>
-    <p>In accordance with the Federal Law on the Protection of Personal Data in Possession of Individuals, approved on April 13, 2010 in Articles 3, Sections II and VII, and 33, as well as the denomination of Chapter II, of Title Two, of the Federal Law on Transparency and Access to Public Government Information and in the event that you wish to remove your personal data from our database, you have the right at all times to revoke the consent granted for the processing of your personal data, with the purpose of ceasing to make use of them.</p>
-    <p>In order to exercise this right, you must submit a written request in Spanish to the following e-mail address:&nbsp;<a href="mailto:{{ $data['email'] }}">{{ $data['email'] }}</a>.</p>
-    <p>This writing must contain the following points: Full name with surnames, copy of official identification, e-mail address, or physical address designated for notifications and some contact telephone number.</p>
-    <p>It must clearly and precisely describe the personal data with respect to which it is sought to exercise some of the ARCO rights.</p>
-    <p>Within a period of 20 working days from the reception of your request of revocation, we will give you an answer about the origin of the same one, by means of e-mail directed to your person sent to the e-mail address that has been indicated or a letter will be sent to the physical address that you have indicated.</p>
-    <p><strong>Security</strong></p>
-    <p>We understand the importance of information security and the techniques needed to protect information. We protect your data by using technical and administrative security measures that reduce the risks of loss, misuse, unauthorized access, disclosure, and alteration. Some of the security measures we use are firewalls and data encryption, physical access controls to our data centers, and authorization controls for access to information. However, no data transmission over the Internet is completely secure, and therefore  {{ $data['brand'] }} cannot guarantee that processing of your personal data will be free from damage, loss, alteration, destruction, or unauthorized use, access, or processing.  {{ $data['brand'] }} makes reasonable efforts to ensure that the information on our website is accurate and up-to-date. However, the information may contain factual or typographical errors and  {{ $data['brand'] }} makes no warranty as to the accuracy of the information.  {{ $data['brand'] }} may change the information on its website at any time without notice.</p>
-    <p><strong>Changes to this Privacy Notice</strong></p>
-    <p> {{ $data['brand'] }} reserves the right to make changes or updates to this Privacy Notice at any time. Therefore, we suggest you to constantly review it in order to know the latest modifications. The current Privacy Policy will be published in this same medium. Your use of our website shall be deemed to be an acceptance of the Privacy Policy and the terms set forth therein.</p>
-    <p>The modifications or updates that are made will be published on the website https:// {{ $data['brand'] }} and will become effective at the time they are published.</p>
-    <p>By using one of our websites, you acknowledge that you have read and are aware of the Privacy Policy and your consent to have your personal data processed by  {{ $data['brand'] }} in accordance with this Privacy Policy.</p>
-@endif
+    <p>Puede visitar nuestro sitio de forma anónima, pero estos datos son necesarios para garantizar la logística de su transporte.</p>
 
-@if( $data['lang'] == "es")
-    <p>En cumplimiento a la Ley Federal de Protecci&oacute;n de Datos Personales en Posesi&oacute;n de los Particulares, {{ $data['brand'] }}, (en lo siguiente &ldquo;{{ $data['brand'] }}&rdquo;) es el responsable del tratamiento de sus datos personales.</p>
-    <p><strong>Recopilaci&oacute;n de datos y medios de obtenci&oacute;n</strong></p>
-    <p>La informaci&oacute;n que el usuario proporcione&nbsp;<u>de manera voluntaria</u>&nbsp;deber&aacute; ser veraz, {{ $data['brand'] }} no se hace responsable si el usuario proporcion&oacute; informaci&oacute;n incorrecta o falsa. La informaci&oacute;n es recolectada y guardada por&nbsp;<strong>{{ $data['brand'] }}</strong>&nbsp;al momento de hacer con nosotros una reservaci&oacute;n v&iacute;a internet, v&iacute;a telef&oacute;nica, en alguno de nuestros mostradores u oficinas o por cualquier otro medio.</p>
-    <p>Los medios por los cuales se obtendr&aacute;n los datos del usuario ser&aacute;:</p>
+    <h2>¿Cómo procesamos sus pagos?</h2>
+    <p>Para su total seguridad, todas nuestras transacciones son procesadas por proveedores externos líderes:</p>
     <ul>
-    <li>Por medio de nuestra p&aacute;gina web {{ $data['brand'] }} donde introducir&aacute; de manera voluntaria sus datos al utilizar nuestros servicios. Toda vez que la Ley permite otras fuentes de allegarnos de informaci&oacute;ncomo lo son directorios telef&oacute;nicos, de servicios y laborales, as&iacute; como redes sociales, los datos que por dichos medios podemos obtener son nombres y apellidos, tel&eacute;fono, correo electr&oacute;nico y direcci&oacute;n f&iacute;sica.</li>
-    <li>La informaci&oacute;n que proporcione el usuario dentro de las redes sociales en las que {{ $data['brand'] }} participa como usuario, no constituye ni forma parte de los Datos Personales sujetos a la Protecci&oacute;n de este aviso de Privacidad, siendoresponsabilidad de la empresa prestadora de esa plataforma y de quien la publica. En principio usted puede navegar por nuestros sitios web sin proporcionar informaci&oacute;n de car&aacute;cter personal. Sin embargo, {{ $data['brand'] }} ha creado ciertoscampos en los cuales usted&nbsp;<strong><u>puede proporcionar datos personales de manera voluntaria</u></strong>. {{ $data['brand'] }}&nbsp; tratar&aacute; &uacute;nicamente los datos personales que usted decida compartir a trav&eacute;s de los sitios web; ya seacuando se registre en el sitio, cuando cree una cuenta, cuando decida contactarnos por correo electr&oacute;nico con preguntas o inquietudes, cuando se le brinden servicios de atenci&oacute;n al cliente, cuando solicite informaci&oacute;n en l&iacute;nea,cuando participe en promociones, cuando presente informaci&oacute;n personal en alguna otra forma an&aacute;loga o similar a las anteriores. {{ $data['brand'] }} tratar&aacute; sus datos personales &uacute;nicamente por el tiempo que sea necesario a fin de cumplir conlas finalidades descritas en la presente y/o de conformidad con lo que establezcan las disposiciones legales aplicables</li>
-    <li>Por medio del centro de reservaciones de manera personal o comunic&aacute;ndose a nuestro Call Center.</li>
+        <li><strong>Openpay:</strong> Todas las transacciones se validan mediante el protocolo <strong>3D Secure</strong>, el cual requiere una verificación adicional con su banco para prevenir fraudes.</li>
+        <li><strong>PayPal:</strong> La información es procesada directamente en su sistema.</li>
+        <li><strong>Importante:</strong> Nosotros <strong>no guardamos ningún dato de facturación de su tarjeta</strong> ni códigos CVV en nuestros servidores.</li>
     </ul>
-    <p>Nombre completo, sexo, domicilio particular y convencional, tel&eacute;fono de hogar, oficina y m&oacute;viles&nbsp; direcci&oacute;n de correo electr&oacute;nico, n&uacute;mero telef&oacute;nico, direcci&oacute;n, firma aut&oacute;grafa, RFC o CURP, preferencias de uso y datos financieros como lo son: N&uacute;mero de tarjeta de cr&eacute;dito, nombre del titular de la misma, fecha de vencimiento, c&oacute;digo de seguridad y cualquier otro dato que resulte necesario para concluir las reservaciones solicitadas por usted. En este mismo sentido es importante mencionar que para procesar las reservaciones y ventas que se hayan realizado con nosotros, los datos bancarios e informaci&oacute;n de tarjetas de cr&eacute;dito que nos proporcione puede ser compartida con</p>
-    <p>American Express Corporation, Master Card o VISA para realizar los cargos correspondientes,&nbsp;<strong>{{ $data['brand'] }}&nbsp;</strong>se reserva el derecho de revelar informaci&oacute;n personal proporcionada en v&iacute;a telef&oacute;nica o en l&iacute;nea en los siguientes casos:</p>
+
+    <h2>¿Para qué utilizamos su información?</h2>
+    <p>Cualquiera de la información que recolectamos puede ser usada de la siguiente forma:</p>
     <ul>
-    <li>Cuando la transferencia de datos personales sea necesaria o legalmente exigida para la salvaguarda de un inter&eacute;s p&uacute;blico, o para la procuraci&oacute;n de Justicia.</li>
-    <li>Ante peticiones de autoridades estatales o federales, nacionales o internacionales donde sea necesaria o apropiada para investigar hechos il&iacute;citos o fraudulentos.</li>
-    <li>Para buscar asistencia por parte de autoridades de seguridad p&uacute;blica para proteger los intereses o seguridad de {{ $data['brand'] }}.</li>
-    <li>En cualquier de los supuestos establecidos en el art&iacute;culo 37 de la Ley Federal de Protecci&oacute;n de Datos Personales en Posesi&oacute;n de Particulares y su Reglamento.</li>
+        <li>Personalizar su experiencia al navegar en nuestro sitio.</li>
+        <li>Mejorar nuestro sitio web y servicio al cliente.</li>
+        <li>Procesar sus transacciones de transporte de manera eficiente.</li>
+        <li>Enviar correos electrónicos periódicos relacionados con su reserva.</li>
     </ul>
-    <p><strong>Uso de la informaci&oacute;n solicitada</strong></p>
-    <p>{{ $data['brand'] }} utilizar&aacute; sus datos personales para agilizar el proceso de reservaci&oacute;n de veh&iacute;culos, proveer los servicios y productos solicitados, con fines de seguimiento, actualizaci&oacute;n, cancelaci&oacute;n, notificaci&oacute;n sobre nuevos productos o servicios que tengan relaci&oacute;n con los ya contratados,&nbsp; modificaci&oacute;n o confirmaci&oacute;n del servicio contratado; con fines promocionales; con fines financieros y crediticios, para dar cumplimiento a obligaciones contra&iacute;das con nuestros clientes; evaluar la calidad del servicio; y, realizar sondeos sobre preferencias y h&aacute;bitos de consumo.</p>
-    <p><strong>Transferencia de datos, nacional e internacional</strong></p>
-    <p>Sus datos personales pueden ser transferidos y/o compartidos a: socios comerciales, afiliados, proveedores, instituciones financieras, bancarias y crediticias para confirmar sus reservaciones y cumplir con lo establecido en este Aviso de Privacidad.</p>
-    <p><strong>Ejercicio de los Derechos ARCO (Acceso, Rectificaci&oacute;n, Cancelaci&oacute;n, Oposici&oacute;n)</strong></p>
-    <p>Usted tiene derecho a ejercer el solicitar en cualquier momento el acceso a sus datos personales para conocer cu&aacute;l es la situaci&oacute;n de los mismos; rectificaci&oacute;n en caso de que estos sean incorrectos o est&eacute;n desactualizados; cancelaci&oacute;n de los datos cuando sea su consideraci&oacute;n que no son utilizados para los fines establecidos en el presente Aviso de Privacidad; u oposici&oacute;n al tratamiento de sus datos personales respecto a alguno de los fines establecidos en el presente Aviso de Privacidad y deber&aacute; de expresar de manera clara, respecto de los datos personales que le conciernen.</p>
-    <p><strong>Derecho de revocar su consentimiento para el tratamiento de datos</strong></p>
-    <p>De acuerdo a la Ley Federal de Protecci&oacute;n de Datos Personales en Posesi&oacute;n de los Particulares, aprobada el d&iacute;a 13 de abril de 2010 en los art&iacute;culos 3, Fracciones II y VII, y 33, as&iacute; como la denominaci&oacute;n del cap&iacute;tulo II, del T&iacute;tulo Segundo, de la Ley Federal de Transparencia y Acceso a la Informaci&oacute;n P&uacute;blica Gubernamental y en el caso que desee eliminar sus datos personales de nuestra base de datos, Usted tiene en todo momento el derecho de revocar el consentimiento otorgado para el tratamiento de sus datos personales, con el prop&oacute;sito para que se deje de hacer uso de los mismos.</p>
-    <p>Para poder ejercer este derecho deber&aacute; presentar una solicitud por escrito y en idioma espa&ntilde;ol, &eacute;sta deber&aacute; hacerla llegar a la siguiente direcci&oacute;n de correo electr&oacute;nico&nbsp;<a href="mailto:{{ $data['email'] }}">{{ $data['email'] }}</a>.</p>
-    <p>Este escrito deber&aacute; contener los siguientes puntos: Nombre completo con apellidos, copia de una identificaci&oacute;n oficial, direcci&oacute;n de correo electr&oacute;nico o direcci&oacute;n f&iacute;sica que se designe para notificaciones y alg&uacute;n n&uacute;mero telef&oacute;nico de contacto.</p>
-    <p>En este deber&aacute; describir de manera clara y precisa los datos personales respecto de los que se busca ejercer algunos de los derechos ARCO.</p>
-    <p>En un lapso de 20 d&iacute;as h&aacute;biles contados a partir de la recepci&oacute;n de su solicitud de revocaci&oacute;n le daremos contestaci&oacute;n sobre la procedencia de la misma, por medio de correo electr&oacute;nico dirigido a su persona enviado a la direcci&oacute;n de correo electr&oacute;nico que haya sido indicado o se enviar&aacute; una carta al domicilio f&iacute;sico que haya indicado.</p>
-    <p><strong>Seguridad</strong></p>
-    <p>Comprendemos la importancia de la seguridad de la informaci&oacute;n y las t&eacute;cnicas necesarias para proteger la informaci&oacute;n. Protegemos tus datos mediante el uso de medidas de seguridad t&eacute;cnicas y administrativas que reducen los riesgos de p&eacute;rdida, uso indebido, acceso no autorizado, divulgaci&oacute;n y alteraci&oacute;n. Algunas de las medidas de seguridad que utilizamos son los cortafuegos y el encriptado de datos, controles de acceso f&iacute;sico a nuestros centros de datos y controles de autorizaci&oacute;n de acceso a la informaci&oacute;n. Sin embargo, ninguna transmisi&oacute;n de datos por Internet es completamente segura y por ende {{ $data['brand'] }} no puede garantizar que el tratamiento de sus datos personales estar&aacute; libre de todo da&ntilde;o, p&eacute;rdida, alteraci&oacute;n, destrucci&oacute;n o el uso, acceso o tratamiento no autorizado. {{ $data['brand'] }} realiza esfuerzos razonables para asegurar que la informaci&oacute;n en nuestro sitio web sea exacta y est&eacute; actualizada. Sin embargo, la informaci&oacute;n puede contener errores de hecho o tipogr&aacute;ficos y {{ $data['brand'] }} no ofrece ninguna garant&iacute;a en cuanto a la exactitud de la informaci&oacute;n. {{ $data['brand'] }} puede cambiar la informaci&oacute;n en su sitio web en cualquier momento y sin notificaci&oacute;n previa.</p>
-    <p><strong>Modificaciones al presente Aviso de Privacidad</strong></p>
-    <p>{{ $data['brand'] }} se reserva el derecho de efectuar en cualquier momento modificaciones o actualizaciones al presente Aviso de Privacidad.&nbsp;<strong><u>Por lo que le sugerimos que la revise constantemente a fin de conocer las &uacute;ltimas modificaciones. La Pol&iacute;tica de Privacidad vigente ser&aacute; publicada en este mismo medio. El uso que haga de nuestro sitio web se considerar&aacute; como una aceptaci&oacute;n de la Pol&iacute;tica de Privacidad y los t&eacute;rminos que en ellas establecen.</u></strong>&nbsp;Las modificaciones o actualizaciones que se efect&uacute;en, ser&aacute;n publicadas en el sitio de internet {{ $data['brand'] }} y entrar&aacute;n en vigor en el momento que estas sean publicadas.&nbsp; Mediante el uso de uno de nuestros sitios web, usted reconoce que ha le&iacute;do y conoce la Pol&iacute;tica de Privacidad y otorga su consentimiento para que sus datos personales sean tratados por {{ $data['brand'] }} de conformidad con la presente Pol&iacute;tica de Privacidad.</p>
+
+    <h2>¿Cómo protegemos su información?</h2>
+    <p>Ofrecemos un servidor protegido y seguro. Toda la información sensible es transmitida a través de tecnología <strong>Secure Socket Layer (SSL)</strong>. Al momento de realizar una transacción, sus datos privados no son almacenados en nuestros servidores para garantizar su tranquilidad.</p>
+
+    <h2>¿Utilizamos cookies?</h2>
+    <p>Sí. Las cookies son archivos pequeños que el sitio transfiere a su dispositivo para permitirnos reconocer su navegador y recordar cierta información (como su idioma o preferencias de búsqueda). Esto beneficia al usuario al agilizar el llenado de campos en visitas futuras.</p>
+
+    <h2>¿Cómo usamos las cookies de terceros?</h2>
+    <p>Utilizamos <strong>Google Analytics</strong> para analizar cómo los usuarios interactúan con el sitio. Google utiliza cookies para recopilar información (incluida su IP) que se almacena en sus servidores. También utilizamos cookies de publicidad de Google para mostrar anuncios basados en sus visitas anteriores. Usted puede deshabilitar estas opciones en la configuración de su navegador o en la política de anuncios de Google.</p>
+
+    <h2>¿Transferimos información a terceros?</h2>
+    <p><strong>No.</strong> Caribbean Transfers no vende, intercambia ni transfiere su información personal a nadie. Esto no incluye a terceros de confianza que nos ayudan a operar el sitio web o a realizar el servicio de transporte, siempre y cuando dichas partes acuerden mantener la confidencialidad.</p>
+
+    <h2>¿Cómo ejercer sus derechos ARCO o contactarnos?</h2>
+    <p>Usted tiene derecho a conocer, corregir o cancelar el uso de sus datos personales. Para cualquier solicitud relacionada con su privacidad, puede escribirnos a nuestro canal oficial:</p>
+    <ul>
+        <li><strong>Correo electrónico: contacto@caribbean-transfers.com</strong></li>
+    </ul>
+
+    <h2>¿Cuánto tiempo retenemos su información?</h2>
+    <p>Solo conservaremos sus datos personales durante el tiempo que sea necesario para cumplir con los fines para los que los hemos recopilado, incluyendo requisitos legales, contables o de reportes de servicio.</p>
+
+    <h2>¿Habrá cambios en esta política?</h2>
+    <p>Si decidimos realizar modificaciones a nuestras políticas de privacidad, actualizaremos la información directamente en este apartado.</p>
+@else
+    <h2>What information do we collect?</h2>
+    <p>We collect information from you when you fill out a form to make a reservation or contact us. When booking on our site, you will be asked for:</p>
+
+    <ul>
+        <li>Full name.</li>
+        <li>Email address.</li>
+        <li>Physical address.</li>
+        <li>Flight information (airline and flight number).</li>
+        <li>Phone number.</li>
+    </ul>
+
+    <p>You may visit our site anonymously, but this information is required to ensure the correct logistics of your transportation service.</p>
+
+    <h2>How do we process your payments?</h2>
+
+    <p>To ensure maximum security, all transactions are handled by industry-leading third-party providers:</p>
+
+    <ul>
+        <li><strong>Openpay: </strong> All transactions are validated using the <strong>3D Secure</strong> protocol, which requires additional verification from your issuing bank to prevent unauthorized charges.</li>
+        <li><strong>PayPal:</strong> Information is processed directly within their secure system.</li>
+        <li><strong>Important:</strong> We <strong>do not store any credit card billing data</strong> or CVV codes on our servers.</li>
+    </ul>
+
+    <h2>What do we use your information for?</h2>
+
+    <p>Any of the information we collect from you may be used in the following ways:</p>
+
+    <ul>
+        <li>To personalize your experience on our website.</li>
+        <li>To improve our website and customer service.</li>
+        <li>To process your transportation transactions efficiently.</li>
+        <li>To send periodic emails regarding your booking or service updates.</li>
+    </ul>
+
+    <h2>How do we protect your information?</h2>
+    <p>We offer a protected and secure server environment. All sensitive information is transmitted via <strong>Secure Socket Layer (SSL)</strong> technology. At the time of a transaction, your private billing data is not stored on our servers to guarantee your peace of mind.</p>
+
+    <h2>Do we use cookies?</h2>
+    <p>Yes. Cookies are small files that a site transfers to your device to enable us to recognize your browser and remember certain information (such as language or search preferences). This benefits the user by automatically filling in fields during future visits.</p>
+
+    <h2>How do we use third-party cookies?</h2>
+    <p>We use <strong>Google Analytics</strong> to analyze how users interact with our site. Google uses cookies to collect information (including your IP address) stored on its servers. We also use Google advertising cookies to show ads based on your previous visits. You can disable these options in your browser settings or through Google’s ad privacy policy.</p>
+
+    <h2>Do we transfer information to third parties?</h2>
+    <p><strong>No.</strong> Caribbean Transfers does not sell, trade, or transfer your personal information to outside parties. This does not include trusted third parties who assist us in operating our website or </p>
 @endif
