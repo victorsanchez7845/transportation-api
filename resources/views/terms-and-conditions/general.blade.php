@@ -26,6 +26,25 @@
         <li>All Hotel-Hotel transfer services must be paid in full.</li>
     </ul>
     
+    <h2>PAYMENT METHODS AND DATA SECURITY</h2>
+    <p>To ensure the safety of our customers and the efficiency of the booking process, Caribbean Transfers uses the most recognized and secure payment platforms on the market:</p>
+    <ul>
+        <li>
+            <strong>Openpay (by BBVA) with 3D Secure Technology:</strong> For credit and debit card payments (Visa, MasterCard, American Express), we utilize <strong>3D Secure</strong> technology via Openpay.
+            <ul>
+                <li><strong>What is 3D Secure?</strong> It is a security protocol that adds an extra layer of authentication. When making a payment, the system may redirect you to your issuing bank's portal to confirm your identity via a code (OTP) sent to your mobile device, a digital token, or through your banking app. This ensures that only the legitimate cardholder can authorize the transaction, significantly reducing the risk of unauthorized charges.</li>
+            </ul>
+        </li>
+        <li><strong>PayPal:</strong> Customers may choose to pay via their PayPal account or by a credit/debit card processed by this platform. PayPal provides buyer protection and high-level encryption</li>
+    </ul>
+
+    <h2>Payment Considerations:</h2>
+    <ul>
+        <li><strong>Fees and Charges:</strong> The prices displayed on our website include all applicable taxes unless otherwise stated. No additional fees will be applied for the use of these payment platforms.</li>
+        <li><strong>Data Privacy:</strong> Caribbean Transfers <strong>does not store or have access</strong> to your sensitive card data (card number, CVV, or expiration date). All information is processed in an encrypted format under <strong>PCI DSS Level 1</strong> certification provided by Openpay and PayPal.</li>
+        <li><strong>Identity Verification:</strong> To comply with anti-fraud protocols, Caribbean Transfers reserves the right to request an official ID and the signature of a service voucher upon boarding the vehicle.</li>
+    </ul>
+    
     <h2><strong>Cancellation and refund policy:</strong></h2>    
     <p>Any request for cancellation must be informed in writing by e-mail to our Customer Service Department, mentioning your reservation number.</p>
     <ul>
@@ -86,6 +105,26 @@
     <p>General:</p>
     <ul>
         <li>Todo servicio de traslado Hotel-Hotel deber&aacute; ser pagado en su totalidad.</li>
+    </ul>
+
+    <h2>MÉTODOS DE PAGO Y SEGURIDAD DE LA INFORMACIÓN</h2>
+    <p>Para garantizar la seguridad de nuestros clientes y la eficiencia en el proceso de reserva, Caribbean Transfers utiliza las plataformas de pago más reconocidas y seguras del mercado:</p>
+
+    <ul>
+        <li>
+            <strong>Openpay (by BBVA) con Tecnología 3D Secure:</strong> Para pagos con tarjetas de crédito y débito (Visa, MasterCard, American Express), utilizamos la tecnología <strong>3D Secure</strong> de Openpay.
+            <ul>
+                <li><strong>¿Qué es 3D Secure?</strong> Es un protocolo de seguridad que añade una capa de autenticación adicional. Al realizar su pago, el sistema podría redirigirlo al portal de su banco emisor para confirmar su identidad mediante un código (OTP) enviado a su celular, un token digital o su aplicación bancaria. Esto garantiza que solo el titular legítimo pueda autorizar la transacción, reduciendo significativamente el riesgo de cargos no reconocidos.</li>
+            </ul>
+        </li>
+        <li><strong>PayPal:</strong> El cliente puede realizar su pago a través de su cuenta de PayPal o mediante tarjeta procesada por dicha plataforma. PayPal ofrece protección al comprador y estrictos estándares de encriptación.</li>
+    </ul>
+
+    <h2>Consideraciones sobre los pagos:</h2>
+    <ul>
+        <li><strong>Cargos y Comisiones:</strong> Los precios mostrados en el sitio web ya incluyen los impuestos correspondientes. No se aplicarán cargos adicionales por el uso de estas plataformas.</li>
+        <li><strong>Seguridad de Datos:</strong> Caribbean Transfers <strong>no almacena ni tiene acceso</strong> a los datos sensibles de su tarjeta (número, CVV o fecha de vencimiento). Toda la información es procesada de forma encriptada bajo la certificación <strong>PCI DSS Nivel 1</strong> de Openpay y PayPal.</li>
+        <li><strong>Verificación de Identidad:</strong> En cumplimiento con los protocolos de prevención de fraude, Caribbean Transfers se reserva el derecho de solicitar una identificación oficial y la firma de un comprobante de servicio al abordar la unidad.</li>
     </ul>
     
     <h2><strong>Política de cancelación y reembolso</strong></h2>    
