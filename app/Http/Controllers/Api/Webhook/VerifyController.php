@@ -491,13 +491,13 @@ class VerifyController extends Controller
         // Basically the same logic as stripe function just adjusting data 
         $check = $paymentRepository->getReservationByUUID($data["transaction"]["order_id"]);
         if ($check == false):
-            http_response_code(400);
+            http_response_code(200);
             return;
         endif;
 
         $exchange = $paymentRepository->getExchange("MXN", $check->currency);
         $data = [
-            'id' => $data["transaction"]["order_id"],
+            'id' => $check->id,
             'total' => ($data["transaction"]["amount"]),
             'currency' => "MXN",
             'exchange_rate' => $exchange->exchange_rate,
@@ -521,7 +521,7 @@ class VerifyController extends Controller
             return;
         endif;
 
-        http_response_code(400);
+        http_response_code(200);
         return;
     }
 }
