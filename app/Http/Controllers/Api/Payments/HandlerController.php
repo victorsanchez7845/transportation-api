@@ -15,6 +15,7 @@ use Exception;
 use Illuminate\Support\Facades\Validator;
 use Openpay\Data\Openpay;
 use Openpay\Data\OpenpayApiRequestError;
+use App\Models\OpenpayTransaction;
 
 class HandlerController extends Controller
 {
@@ -55,10 +56,10 @@ class HandlerController extends Controller
         if ($request->type == "PAYPAL-V2"):
             $items = $handlerPaypal->orders($request, 1);
         endif;
-        if($request->type == "PAYPAL-V3"):
+        if ($request->type == "PAYPAL-V3"):
             $items = $handlerPaypal->ordersV2($request);
         endif;
-        if($request->type == "MIFEL"):
+        if ($request->type == "MIFEL"):
             $items = $handlerMifel->check($request);
         endif;
         if ($request->type == "SANTANDER"):
@@ -219,7 +220,7 @@ class HandlerController extends Controller
         return response()->json([
             'publicKey' => $keys['publicKey'],
             'merchantId' => $keys['merchantId'],
-            'productionMode' => config('services.openpay.production_mode'),
+            'productionMode' => (bool) config('services.openpay.production_mode'),
         ], 200);
     }
 
@@ -259,7 +260,8 @@ class HandlerController extends Controller
                 'order_id' => $data["metadata"]["uuid"],
                 'device_session_id' => $data["charge"]["device_session_id"],
                 'capture' => true,
-                'redirect_url' => $data["metadata"]["redirect_url"]
+                'redirect_url' => $data["metadata"]["redirect_url"],
+                'use_3d_secure' => true
             ];
 
             Openpay::setProductionMode( config('services.openpay.production_mode') );
@@ -319,17 +321,77 @@ class HandlerController extends Controller
                 }
             }
 
+            // Here asocciated this transaction Id with the UUID
+            OpenpayTransaction::create([
+                'openpay_transaction_id' => $charge->id,
+                'reservation_uuid' => $data["metadata"]["uuid"],
+                'status' => $charge->status
+            ]);
+
             return response()->json([
                 'success' => true,
-                'data' => $charge->id
+                'data' => [
+                    'transaction_id' => $charge->id,
+                    'payment_method' => [
+                        'type' => $charge->payment_method->type,
+                        'url' => $charge->payment_method->url,
+                    ]
+                ]
             ], 200);
-
         } catch (Exception $e) {
             return response()->json([
                 'success' => false,
                 'error' => [
                     'code' => 'openpay_error',
                     'message' =>  $e->getMessage(),
+                    'http_code' => $e->getCode(),
+                ]
+            ], 500);
+        }
+    }
+
+    public function getOpenPayTransaction(Request $request)
+    {
+        $transactionId = $request->input("transaction_id");
+        $ip = $request->input("ip", $request->ip());
+        $lang = $request->input("language", "en");
+        try {
+
+            Openpay::setProductionMode(config('services.openpay.production_mode'));
+            /** @var array{publicKey: string, privateKey: string, merchantId: string} $keys */
+            $keys = $this->getOpenPayKeys();
+
+            $openpay = Openpay::getInstance(
+                $keys['merchantId'],
+                $keys['privateKey'],
+                "MX",
+                $ip
+            );
+
+            $charge = $openpay->charges->get($transactionId);
+            $transactionWithReservation = OpenpayTransaction::where('openpay_transaction_id', $charge->id);
+            if(isset($transactionWithReservation)) {
+                $transactionWithReservation->update(['status' => $charge->status]);
+            }
+
+            return response()->json([
+                'success' => true,
+                'data' => [
+                    'transaction_id' => $charge->id,
+                    'status' => $charge->status,
+                    'payment_method' => [
+                        'type' => $charge->payment_method->type,
+                        'url' => $charge->payment_method->url,
+                    ],
+                    'transaction_reservation' => $transactionWithReservation
+                ]
+            ], 200);
+        } catch (Exception $e) {
+            return response()->json([
+                'success' => false,
+                'error' => [
+                    'code' => 'openpay_error',
+                    'message' =>  $this->getOpenPayMessageError($e->getCode(), $lang, $e->getMessage()),
                     'http_code' => $e->getCode(),
                 ]
             ], 500);
@@ -374,6 +436,8 @@ class HandlerController extends Controller
         }
     }
 
+
+
     /**
      * Get OpenPay error message translated to Spanish
      * 
@@ -382,63 +446,117 @@ class HandlerController extends Controller
      * @param string $message Default error message in English
      * @return string Translated error message or original message
      */
-    private function getOpenPayMessageError($code, $lang, $message) {
-        if($lang == "en") return $message;
+    private function getOpenPayMessageError($code, $lang, $message)
+    {
+        if ($lang == "en") return $message;
 
-        switch($code) {
-            case 1001: return "Ocurrió un error interno en el servidor de Openpay";
-            case 1001: return "El formato de la petición no es JSON, los campos no tienen el formato correcto, o la petición no tiene campos que son requeridos.";
-            case 1002: return "La llamada no esta autenticada o la autenticación es incorrecta.";
-            case 1003: return "La operación no se pudo completar por que el valor de uno o más de los parámetros no es correcto.";
-            case 1004: return "Un servicio necesario para el procesamiento de la transacción no se encuentra disponible.";
-            case 1004: return "Uno de los recursos requeridos no existe.";
-            case 1006: return "Ya existe una transacción con el mismo ID de orden.";
-            case 1007: return "La transferencia de fondos entre una cuenta de banco o tarjeta y la cuenta de Openpay no fue aceptada.";
-            case 1008: return "Una de las cuentas requeridas en la petición se encuentra desactivada.";
-            case 1009: return "El cuerpo de la petición es demasiado grande.";
-            case 1010: return "Se esta utilizando la llave pública para hacer una llamada que requiere la llave privada, o bien, se esta usando la llave privada desde JavaScript.";
-            case 1011: return "Se solicita un recurso que esta marcado como eliminado.";
-            case 1012: return "El monto transacción esta fuera de los limites permitidos.";
-            case 1013: return "La operación no esta permitida para el recurso.";
-            case 1014: return "La cuenta esta inactiva.";
-            case 1015: return "No se ha obtenido respuesta de la solicitud realizada al servicio.";
-            case 1016: return "El mail del comercio ya ha sido procesada.";
-            case 1017: return "El gateway no se encuentra disponible en ese momento.";
-            case 1018: return "El número de intentos de cargo es mayor al permitido.";
-            case 1020: return "El número de dígitos decimales es inválido para esta moneda.";
-            case 1023: return "Se han terminado las transacciones incluidas en tu paquete. Para contratar otro paquete contacta a soporte@openpay.mx.";
-            case 1024: return "El monto de la transacción excede su límite de transacciones permitido por TPV";
-            case 1025: return "Se han bloqueado las transacciones CoDi contratadas en tu plan";
-            case 2001: return "La cuenta de banco con esta CLABE ya se encuentra registrada en el cliente.";
-            case 2003: return "El cliente con este identificador externo (External ID) ya existe.";
-            case 2004: return "El número de tarjeta es invalido.";
-            case 2005: return "La fecha de expiración de la tarjeta es anterior a la fecha actual.";
-            case 2006: return "El código de seguridad de la tarjeta (CVV2) no fue proporcionado.";
-            case 2007: return "El número de tarjeta es de prueba, solamente puede usarse en Sandbox.";
-            case 2008: return "La tarjeta no es valida para pago con puntos.";
-            case 2009: return "El código de seguridad de la tarjeta (CVV2) es inválido.";
-            case 2010: return "Autenticación 3D Secure fallida.";
-            case 2011: return "Tipo de tarjeta no soportada.";
-            case 3001: return "La tarjeta fue declinada por el banco.";
-            case 3002: return "La tarjeta ha expirado.";
-            case 3003: return "La tarjeta no tiene fondos suficientes.";
-            case 3004: return "La tarjeta ha sido identificada como una tarjeta robada.";
-            case 3005: return "La tarjeta ha sido identificada como una tarjeta fraudulenta.";
-            case 3006: return "La operación no esta permitida para este cliente o esta transacción.";
-            case 3009: return "La tarjeta fue reportada como perdida.";
-            case 3010: return "El banco ha restringido la tarjeta.";
-            case 3011: return "El banco ha solicitado que la tarjeta sea retenida. Contacte al banco.";
-            case 3012: return "Se requiere solicitar al banco autorización para realizar este pago.";
-            case 3201: return "Comercio no autorizado para procesar pago a meses sin intereses.";
-            case 3203: return "Promoción no valida para este tipo de tarjetas.";
-            case 3204: return "El monto de la transacción es menor al mínimo permitido para la promoción.";
-            case 3205: return "Promoción no permitida.";
-            case 4001: return "La cuenta de Openpay no tiene fondos suficientes.";
-            case 4002: return "La operación no puede ser completada hasta que sean pagadas las comisiones pendientes.";
-            case 6001: return "El webhook ya ha sido procesado.";
-            case 6002: return "No se ha podido conectar con el servicio de webhook.";
-            case 6003: return "El servicio respondió con errores.";
-            default: return $message;
+        switch ($code) {
+            case 1001:
+                return "Ocurrió un error interno en el servidor de Openpay";
+            case 1001:
+                return "El formato de la petición no es JSON, los campos no tienen el formato correcto, o la petición no tiene campos que son requeridos.";
+            case 1002:
+                return "La llamada no esta autenticada o la autenticación es incorrecta.";
+            case 1003:
+                return "La operación no se pudo completar por que el valor de uno o más de los parámetros no es correcto.";
+            case 1004:
+                return "Un servicio necesario para el procesamiento de la transacción no se encuentra disponible.";
+            case 1004:
+                return "Uno de los recursos requeridos no existe.";
+            case 1006:
+                return "Ya existe una transacción con el mismo ID de orden.";
+            case 1007:
+                return "La transferencia de fondos entre una cuenta de banco o tarjeta y la cuenta de Openpay no fue aceptada.";
+            case 1008:
+                return "Una de las cuentas requeridas en la petición se encuentra desactivada.";
+            case 1009:
+                return "El cuerpo de la petición es demasiado grande.";
+            case 1010:
+                return "Se esta utilizando la llave pública para hacer una llamada que requiere la llave privada, o bien, se esta usando la llave privada desde JavaScript.";
+            case 1011:
+                return "Se solicita un recurso que esta marcado como eliminado.";
+            case 1012:
+                return "El monto transacción esta fuera de los limites permitidos.";
+            case 1013:
+                return "La operación no esta permitida para el recurso.";
+            case 1014:
+                return "La cuenta esta inactiva.";
+            case 1015:
+                return "No se ha obtenido respuesta de la solicitud realizada al servicio.";
+            case 1016:
+                return "El mail del comercio ya ha sido procesada.";
+            case 1017:
+                return "El gateway no se encuentra disponible en ese momento.";
+            case 1018:
+                return "El número de intentos de cargo es mayor al permitido.";
+            case 1020:
+                return "El número de dígitos decimales es inválido para esta moneda.";
+            case 1023:
+                return "Se han terminado las transacciones incluidas en tu paquete. Para contratar otro paquete contacta a soporte@openpay.mx.";
+            case 1024:
+                return "El monto de la transacción excede su límite de transacciones permitido por TPV";
+            case 1025:
+                return "Se han bloqueado las transacciones CoDi contratadas en tu plan";
+            case 2001:
+                return "La cuenta de banco con esta CLABE ya se encuentra registrada en el cliente.";
+            case 2003:
+                return "El cliente con este identificador externo (External ID) ya existe.";
+            case 2004:
+                return "El número de tarjeta es invalido.";
+            case 2005:
+                return "La fecha de expiración de la tarjeta es anterior a la fecha actual.";
+            case 2006:
+                return "El código de seguridad de la tarjeta (CVV2) no fue proporcionado.";
+            case 2007:
+                return "El número de tarjeta es de prueba, solamente puede usarse en Sandbox.";
+            case 2008:
+                return "La tarjeta no es valida para pago con puntos.";
+            case 2009:
+                return "El código de seguridad de la tarjeta (CVV2) es inválido.";
+            case 2010:
+                return "Autenticación 3D Secure fallida.";
+            case 2011:
+                return "Tipo de tarjeta no soportada.";
+            case 3001:
+                return "La tarjeta fue declinada por el banco.";
+            case 3002:
+                return "La tarjeta ha expirado.";
+            case 3003:
+                return "La tarjeta no tiene fondos suficientes.";
+            case 3004:
+                return "La tarjeta ha sido identificada como una tarjeta robada.";
+            case 3005:
+                return "La tarjeta ha sido identificada como una tarjeta fraudulenta.";
+            case 3006:
+                return "La operación no esta permitida para este cliente o esta transacción.";
+            case 3009:
+                return "La tarjeta fue reportada como perdida.";
+            case 3010:
+                return "El banco ha restringido la tarjeta.";
+            case 3011:
+                return "El banco ha solicitado que la tarjeta sea retenida. Contacte al banco.";
+            case 3012:
+                return "Se requiere solicitar al banco autorización para realizar este pago.";
+            case 3201:
+                return "Comercio no autorizado para procesar pago a meses sin intereses.";
+            case 3203:
+                return "Promoción no valida para este tipo de tarjetas.";
+            case 3204:
+                return "El monto de la transacción es menor al mínimo permitido para la promoción.";
+            case 3205:
+                return "Promoción no permitida.";
+            case 4001:
+                return "La cuenta de Openpay no tiene fondos suficientes.";
+            case 4002:
+                return "La operación no puede ser completada hasta que sean pagadas las comisiones pendientes.";
+            case 6001:
+                return "El webhook ya ha sido procesado.";
+            case 6002:
+                return "No se ha podido conectar con el servicio de webhook.";
+            case 6003:
+                return "El servicio respondió con errores.";
+            default:
+                return $message;
         }
     }
 }
