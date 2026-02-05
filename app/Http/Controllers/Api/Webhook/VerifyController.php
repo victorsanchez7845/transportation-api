@@ -499,7 +499,7 @@ class VerifyController extends Controller
         $data = [
             'id' => $check->id,
             'total' => ($data["transaction"]["amount"]),
-            'currency' => "MXN",
+            'currency' => $data["transaction"]["currency"],
             'exchange_rate' => $exchange->exchange_rate,
             'operation' => $exchange->operation,
             'method' => 'OPENPAY',
