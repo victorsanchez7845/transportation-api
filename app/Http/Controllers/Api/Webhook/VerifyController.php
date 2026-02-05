@@ -495,7 +495,7 @@ class VerifyController extends Controller
             return;
         endif;
 
-        $exchange = $paymentRepository->getExchange("MXN", $check->currency);
+        $exchange = $paymentRepository->getExchange($data["transaction"]["currency"], $check->currency);
         $data = [
             'id' => $check->id,
             'total' => ($data["transaction"]["amount"]),
