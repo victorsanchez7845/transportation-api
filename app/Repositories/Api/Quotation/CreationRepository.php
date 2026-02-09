@@ -191,6 +191,16 @@ class CreationRepository{
                         if(isset( $this->request['special_request'] )):
                             $rez_item_db->op_one_comments = $this->request['special_request'];
                             $rez_item_db->op_two_comments = $this->request['special_request'];
+                            
+                            if(
+                                isset($this->request['payment_method'])
+                                && $this->request['payment_method'] === 'CORTESIA'
+                                && isset( $this->request['data']['callcenter']['total'] )
+                                && $this->request['data']['callcenter']['total'] == 0
+                            ) {
+                                $rez_item_db->op_one_comments = $rez_item_db->op_one_comments . ' ' . '(ESTE SERVICIO ES DE CORTESÍA)';
+                                $rez_item_db->op_two_comments = $rez_item_db->op_two_comments . ' ' . '(ESTE SERVICIO ES DE CORTESÍA)';
+                            }
                         endif;
                         
                         if($rez_item_db->save()):
