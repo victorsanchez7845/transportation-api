@@ -170,29 +170,29 @@
                                     <tr>
                                         <td>
                                             @if($lang == "en")
-                                                <a class="main-title-btn" href="{{ $paypal_URL }}">Complete Your Reservation</a>
+                                                <a class="main-title-btn" style="color: white;" href="{{ $paypal_URL }}">Complete Your Reservation</a>
                                                 <p style="margin-top: 20px; margin-bottom: 10px;">Secure your transfer now at our special online rate:</p>
                                                 
                                                 <table>
                                                     <tbody>
-                                                        <tr>
+                                                        <tr style="height: 62px;">
                                                             <td style="vertical-align: center;">
-                                                                <a class="link-btn" href="{{ $paypal_URL }}" title="Pay with PayPal">Pay with PayPal</a>
+                                                                <a class="link-btn" style="color: white;" href="{{ $paypal_URL }}" title="Pay with PayPal">Pay with PayPal</a>
                                                             </td>
                                                             <td style="vertical-align: center;">
-                                                                <img style="max-width: 160px;" width="159.95" height="57.36" src="/img/paypal-credit-card-logo.png" alt="PAYPAL">
+                                                                <img style="max-width: 160px;" width="159.95" height="57.36" src="https://api.caribbean-transfers.com/img/paypal-credit-card-logo.png" alt="PAYPAL">
                                                             </td>
                                                         </tr>
                                                     </tbody>
                                                 </table>
                                                 <table>
                                                     <tbody>
-                                                        <tr>
+                                                        <tr style="height: 30px;">
                                                             <td style="vertical-align: center;">
-                                                                <a class="link-btn" href="{{ $stripe_URL }}" title="Pay with Stripe">Pay with Stripe</a>
+                                                                <a class="link-btn" style="color: white;" href="{{ $stripe_URL }}" title="Pay with Stripe">Pay with Stripe</a>
                                                             </td>
                                                             <td style="vertical-align: center;">
-                                                                <img style="max-width: 160px; margin-left: 12px;" width="160" height="41" src="/img/powered_by_stripe.png" alt="STRIPE">
+                                                                <img style="max-width: 160px; margin-left: 12px;" width="160" height="41" src="https://api.caribbean-transfers.com/img/powered_by_stripe.png" alt="STRIPE">
                                                             </td>
                                                         </tr>
                                                     </tbody>
@@ -208,29 +208,29 @@
                                                 <p><strong>Hours:</strong> 7:00 am to 11:00 pm.</p>
                                                 <p>We look forward to welcoming you soon!</p>
                                             @else
-                                                <a class="main-title-btn" href="{{ $paypal_URL }}">Complete su reserva</a>
+                                                <a class="main-title-btn" style="color: white;" href="{{ $paypal_URL }}">Complete su reserva</a>
                                                 <p style="margin-top: 20px; margin-bottom: 10px;">Asegura tu traslado ahora con nuestra tarifa especial online:</p>
                                             
                                                 <table>
                                                     <tbody>
-                                                        <tr>
+                                                        <tr style="height: 62px;">
                                                             <td style="vertical-align: center;">
-                                                                <a class="link-btn" href="{{ $paypal_URL }}" title="Pagar con PayPal">Pagar con PayPal</a>
+                                                                <a class="link-btn" style="color: white;" href="{{ $paypal_URL }}" title="Pagar con PayPal">Pagar con PayPal</a>
                                                             </td>
                                                             <td style="vertical-align: center;">
-                                                                <img style="max-width: 160px;" width="159.95" height="57.36" src="/img/paypal-credit-card-logo.png" alt="PAYPAL">
+                                                                <img style="max-width: 160px;" width="159.95" height="57.36" src="https://api.caribbean-transfers.com/img/paypal-credit-card-logo.png" alt="PAYPAL">
                                                             </td>
                                                         </tr>
                                                     </tbody>
                                                 </table>
                                                 <table>
                                                     <tbody>
-                                                        <tr>
+                                                        <tr style="height: 30px;">
                                                             <td style="vertical-align: center;">
-                                                                <a class="link-btn" href="{{ $stripe_URL }}" title="Pagar con Stripe">Pagar con Stripe</a>
+                                                                <a class="link-btn" style="color: white;" href="{{ $stripe_URL }}" title="Pagar con Stripe">Pagar con Stripe</a>
                                                             </td>
                                                             <td style="vertical-align: center;">
-                                                                <img style="max-width: 160px; margin-left: 12px;" width="160" height="41" src="/img/powered_by_stripe.png" alt="STRIPE">
+                                                                <img style="max-width: 160px; margin-left: 12px;" width="160" height="41" src="https://api.caribbean-transfers.com/img/powered_by_stripe.png" alt="STRIPE">
                                                             </td>
                                                         </tr>
                                                     </tbody>
