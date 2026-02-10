@@ -192,7 +192,7 @@
                                                                 <a class="link-btn" style="color: white;" href="{{ $stripe_URL }}" title="Pay with Stripe">Pay with Stripe</a>
                                                             </td>
                                                             <td style="vertical-align: center;">
-                                                                <img style="max-width: 160px; margin-left: 12px;" width="160" height="41" src="https://api.caribbean-transfers.com/img/powered_by_stripe.png" alt="STRIPE">
+                                                                <img style="max-width: 160px; margin-left: 12px; margin-top: 2px;" width="160" height="41" src="https://api.caribbean-transfers.com/img/powered_by_stripe.png" alt="STRIPE">
                                                             </td>
                                                         </tr>
                                                     </tbody>
@@ -230,7 +230,7 @@
                                                                 <a class="link-btn" style="color: white;" href="{{ $stripe_URL }}" title="Pagar con Stripe">Pagar con Stripe</a>
                                                             </td>
                                                             <td style="vertical-align: center;">
-                                                                <img style="max-width: 160px; margin-left: 12px;" width="160" height="41" src="https://api.caribbean-transfers.com/img/powered_by_stripe.png" alt="STRIPE">
+                                                                <img style="max-width: 160px; margin-left: 12px; margin-top: 2px;" width="160" height="41" src="https://api.caribbean-transfers.com/img/powered_by_stripe.png" alt="STRIPE">
                                                             </td>
                                                         </tr>
                                                     </tbody>
