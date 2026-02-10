@@ -135,6 +135,24 @@
         .main_text_content p {
             margin-bottom: 10px;
         }
+
+        .main-title-btn {
+            background-color: #333367;
+            font-weight: bold;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-size: 17px;
+        }
+        .link-btn {
+            background-color: #f15523;
+            font-weight: bold;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 10px;
+            text-decoration: none;
+        }
     </style>
 </head>
 <body style="background-color: #f7fafb;">
@@ -146,19 +164,41 @@
             <tbody>
                 <tr>
                     <td class="white_content main_text_content">
-                        <div style="background-color:#DDE9FA;padding: 15px;margin-bottom:15px;">
+                        <div style="background-color:#DDE9FA;padding: 15px;margin-bottom:15px; padding-top: 26px;">
                             <table style="width:100%;">
                                 <tbody>
                                     <tr>
                                         <td>
                                             @if($lang == "en")
-                                                <p>Complete Your Reservation</p>
-                                                <p>Secure your transfer now at our special online rate:</p>
-
-                                                <p style="text-align: center; font-size: 18px;"><a href="{{ $stripe_URL }}" title="Pay with Stripe">Pay with Stripe</a></p>
-                                                <p style="text-align: center; font-size: 18px;"><a href="{{ $paypal_URL }}" title="Pay with PayPal">Pay with PayPal</a></p>
-
-                                                <p>Hi again!</p>
+                                                <a class="main-title-btn" href="{{ $paypal_URL }}">Complete Your Reservation</a>
+                                                <p style="margin-top: 20px; margin-bottom: 10px;">Secure your transfer now at our special online rate:</p>
+                                                
+                                                <table>
+                                                    <tbody>
+                                                        <tr>
+                                                            <td style="vertical-align: center;">
+                                                                <a class="link-btn" href="{{ $paypal_URL }}" title="Pay with PayPal">Pay with PayPal</a>
+                                                            </td>
+                                                            <td style="vertical-align: center;">
+                                                                <img style="max-width: 160px;" width="159.95" height="57.36" src="/img/paypal-credit-card-logo.png" alt="PAYPAL">
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                                <table>
+                                                    <tbody>
+                                                        <tr>
+                                                            <td style="vertical-align: center;">
+                                                                <a class="link-btn" href="{{ $stripe_URL }}" title="Pay with Stripe">Pay with Stripe</a>
+                                                            </td>
+                                                            <td style="vertical-align: center;">
+                                                                <img style="max-width: 160px; margin-left: 12px;" width="160" height="41" src="/img/powered_by_stripe.png" alt="STRIPE">
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                                
+                                                <p style="margin-top: 10px">Hi again!</p>
                                                 <p>We noticed your booking is still pending. Prepay now to</p>
                                                 <p>confirm your transfer and avoid delays or last-minute fees.</p>
 
@@ -168,13 +208,35 @@
                                                 <p><strong>Hours:</strong> 7:00 am to 11:00 pm.</p>
                                                 <p>We look forward to welcoming you soon!</p>
                                             @else
-                                                <p>Complete su reserva</p>
-                                                <p>Asegura tu traslado ahora con nuestra tarifa especial online:</p>
+                                                <a class="main-title-btn" href="{{ $paypal_URL }}">Complete su reserva</a>
+                                                <p style="margin-top: 20px; margin-bottom: 10px;">Asegura tu traslado ahora con nuestra tarifa especial online:</p>
                                             
-                                                <p style="text-align: center; font-size: 18px;"><a href="{{ $stripe_URL }}" title="Pagar con Stripe">Pagar con Stripe</a></p>
-                                                <p style="text-align: center; font-size: 18px;"><a href="{{ $paypal_URL }}" title="Pagar con PayPal">Pagar con PayPal</a></p>
-                                            
-                                                <p>¡Hola de nuevo!</p>
+                                                <table>
+                                                    <tbody>
+                                                        <tr>
+                                                            <td style="vertical-align: center;">
+                                                                <a class="link-btn" href="{{ $paypal_URL }}" title="Pagar con PayPal">Pagar con PayPal</a>
+                                                            </td>
+                                                            <td style="vertical-align: center;">
+                                                                <img style="max-width: 160px;" width="159.95" height="57.36" src="/img/paypal-credit-card-logo.png" alt="PAYPAL">
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                                <table>
+                                                    <tbody>
+                                                        <tr>
+                                                            <td style="vertical-align: center;">
+                                                                <a class="link-btn" href="{{ $stripe_URL }}" title="Pagar con Stripe">Pagar con Stripe</a>
+                                                            </td>
+                                                            <td style="vertical-align: center;">
+                                                                <img style="max-width: 160px; margin-left: 12px;" width="160" height="41" src="/img/powered_by_stripe.png" alt="STRIPE">
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+
+                                                <p style="margin-top: 10px">¡Hola de nuevo!</p>
                                                 <p>Nos hemos dado cuenta de que tu reserva sigue pendiente. Paga por adelantado ahora para confirmar tu traslado y evitar retrasos o cargos de última hora.</p>
                                             
                                                 <p>Una vez recibido el pago, recibirás una confirmación por correo electrónico.</p>
