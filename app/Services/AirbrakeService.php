@@ -11,12 +11,13 @@ class AirbrakeService
     public function __construct()
     {
         // Initialize the Airbrake Notifier
-        $this->notifier = new Notifier([
-            'projectId' => config('services.airbrake.id'),
-            'projectKey' => config('services.airbrake.key'),
-            'environment' => 'production',
-        ]);
-    }
+if (config('services.airbrake.id') && config('services.airbrake.key')) {
+    $this->notifier = new Notifier([
+        'projectId' => config('services.airbrake.id'),
+        'projectKey' => config('services.airbrake.key'),
+        'environment' => 'production',
+    ]);
+}
 
     /**
      * Report an exception to Airbrake.
