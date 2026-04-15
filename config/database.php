@@ -58,11 +58,9 @@ return [
             'prefix_indexes' => true,
             'strict' => true,
             'engine' => null,
-            'options' => extension_loaded('pdo_mysql') ? array_filter([
-                PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
-                PDO::ATTR_TIMEOUT => 120, // Aumenta el timeout a 60s                
-            ]) : [],
-        ],
+            'options' => [
+             PDO::ATTR_TIMEOUT => 120,
+            ],
 
         'pgsql' => [
             'driver' => 'pgsql',
