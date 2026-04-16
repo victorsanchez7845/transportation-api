@@ -43,9 +43,7 @@ class CreationRepository{
         ];
 
         try {
-            
-            DB::beginTransaction();           
-            
+
             $bearer_token = $this->get( $this->bearer );
             $service_token = $this->get( $this->request['service_token'] );
 
@@ -75,9 +73,10 @@ class CreationRepository{
             endif;
 
             //Obtenemos la distancia en Tiempo (Segundos) y KM [Texto]
+            // Estas llamadas pueden tardar, por eso van FUERA de la transacción
             $distance_data = $distance->get( new \Illuminate\Http\Request($service_token['data']['request']) );
             $zones_data = $search->findDestinations( new \Illuminate\Http\Request($service_token['data']['request']) ); //Identificamos a que zona pertenecen los puntos..
-            $quantity = $service_token['data']['item']['vehicles']; //Cantidad de reservaciones a crear
+            $quantity = (int) $service_token['data']['item']['vehicles']; //Cantidad de reservaciones a crear
             $data_rez = [];
 
             $reference = '';
@@ -112,7 +111,16 @@ class CreationRepository{
                 $payment['data']['amount'] = $this->request['data']['payment']['amount'];
                 $payment['data']['currency'] = $this->request['data']['payment']['currency'];
             endif;
-                           
+
+            $total = $service_token['data']['item']['price'];
+            if( isset( $this->request['data']['callcenter']['total'] ) ):
+                $total = $this->request['data']['callcenter']['total'];
+            endif;
+
+            DB::beginTransaction();
+
+            try {
+
                 $rez_db = new Reservations;
                 $rez_db->uuid = Str::uuid();
                 $rez_db->client_first_name = $this->request['first_name'];
@@ -146,154 +154,164 @@ class CreationRepository{
                     $rez_db->was_is_quotation = 1;
                 endif;
 
-                if($rez_db->save()):
+                $rez_db->save();
+
+                $first_item_code = null;
+
+                //Con este loop agregamos otro código de reservación en caso de que sobrepase el limite de la unidad (ASUR así lo pide).
+                $counter = 1;
+                while ($counter <= $quantity) {                        
+                    //Insertamos los códigos de reservación, esto se aplico porque un cliente puede tener multiples reservaciones en caso de que haya superado el limite de capacidad dela uto.
+                    $rez_item_db = new ReservationsItems;
+                    $rez_item_db->reservation_id = $rez_db->id;
+                    $rez_item_db->code = $this->generateCode();
+
+                    $rez_item_db->destination_service_id = $service_token['data']['item']['id'];
+
+                    $rez_item_db->from_name = $service_token['data']['request']['start']['place'];
+                    $rez_item_db->from_lat = $service_token['data']['request']['start']['lat'];
+                    $rez_item_db->from_lng = $service_token['data']['request']['start']['lng'];
+                    $rez_item_db->from_zone = $zones_data['start']['data']['zone']['id'];
+
+                    $rez_item_db->to_name = $service_token['data']['request']['end']['place'];
+                    $rez_item_db->to_lat = $service_token['data']['request']['end']['lat'];
+                    $rez_item_db->to_lng = $service_token['data']['request']['end']['lng'];
+                    $rez_item_db->to_zone = $zones_data['end']['data']['zone']['id'];
+
+                    $rez_item_db->distance_time = ((isset($distance_data['time_seconds']))? $distance_data['time_seconds'] :  0);
+                    $rez_item_db->distance_km = ((isset($distance_data['distance']))? $distance_data['distance'] : '');
                     
-                    //Con este loop agregamos otro código de reservación en caso de que sobrepase el limite de la unidad (ASUR así lo pide).
-                    $counter = 1;
-                    while ($counter <= $quantity) {                        
-                        //Insertamos los códigos de reservación, esto se aplico porque un cliente puede tener multiples reservaciones en caso de que haya superado el limite de capacidad dela uto.
-                        $rez_item_db = new ReservationsItems;
-                        $rez_item_db->reservation_id = $rez_db->id;
-                        $rez_item_db->code = $this->generateCode();
+                    $rez_item_db->is_round_trip = 0;
+                    if(in_array($service_token['data']['request']['type'], ['round-trip']) ):
+                        $rez_item_db->is_round_trip = 1;
+                    endif;
+                    
+                    $rez_item_db->flight_number = $this->request['flight_number'];
+                    $rez_item_db->flight_data = '';
+                    $rez_item_db->passengers = ( $service_token['data']['request']['passengers'] / max($quantity, 1) );
 
-                        $rez_item_db->destination_service_id = $service_token['data']['item']['id'];
-
-                        $rez_item_db->from_name = $service_token['data']['request']['start']['place'];
-                        $rez_item_db->from_lat = $service_token['data']['request']['start']['lat'];
-                        $rez_item_db->from_lng = $service_token['data']['request']['start']['lng'];
-                        $rez_item_db->from_zone = $zones_data['start']['data']['zone']['id'];
-
-                        $rez_item_db->to_name = $service_token['data']['request']['end']['place'];
-                        $rez_item_db->to_lat = $service_token['data']['request']['end']['lat'];
-                        $rez_item_db->to_lng = $service_token['data']['request']['end']['lng'];
-                        $rez_item_db->to_zone = $zones_data['end']['data']['zone']['id'];
-
-                        $rez_item_db->distance_time = ((isset($distance_data['time_seconds']))? $distance_data['time_seconds'] :  0);
-                        $rez_item_db->distance_km = ((isset($distance_data['distance']))? $distance_data['distance'] : '');
+                    $rez_item_db->op_one_status = 'PENDING';                        
+                    $rez_item_db->op_one_pickup = $service_token['data']['request']['start']['pickup'];
+                                            
+                    if(in_array($service_token['data']['request']['type'], ['round-trip']) ):
+                        $rez_item_db->op_two_status = 'PENDING';
+                        $rez_item_db->op_two_pickup = $service_token['data']['request']['end']['pickup'];
+                    endif;
+                    
+                    if(isset( $this->request['special_request'] )):
+                        $comment = $this->request['special_request'];
                         
-                        $rez_item_db->is_round_trip = 0;
-                        if(in_array($service_token['data']['request']['type'], ['round-trip']) ):
-                            $rez_item_db->is_round_trip = 1;
-                        endif;
-                        
-                        $rez_item_db->flight_number = $this->request['flight_number'];
-                        $rez_item_db->flight_data = '';
-                        $rez_item_db->passengers = ( $service_token['data']['request']['passengers'] / $quantity);
+                        if(
+                            isset($this->request['payment_method'])
+                            && $this->request['payment_method'] === 'CORTESIA'
+                            && isset( $this->request['data']['callcenter']['total'] )
+                            && $this->request['data']['callcenter']['total'] == 0
+                        ) {
+                            $comment = $comment . ' ' . '(ESTE SERVICIO ES DE CORTESÍA)';
+                        }
 
-                        $rez_item_db->op_one_status = 'PENDING';                        
-                        $rez_item_db->op_one_pickup = $service_token['data']['request']['start']['pickup'];
-                                                
-                        if(in_array($service_token['data']['request']['type'], ['round-trip']) ):
-                            $rez_item_db->op_two_status = 'PENDING';
-                            $rez_item_db->op_two_pickup = $service_token['data']['request']['end']['pickup'];
-                        endif;
-                        
-                        if(isset( $this->request['special_request'] )):
-                            $rez_item_db->op_one_comments = $this->request['special_request'];
-                            $rez_item_db->op_two_comments = $this->request['special_request'];
-                            
-                            if(
-                                isset($this->request['payment_method'])
-                                && $this->request['payment_method'] === 'CORTESIA'
-                                && isset( $this->request['data']['callcenter']['total'] )
-                                && $this->request['data']['callcenter']['total'] == 0
-                            ) {
-                                $rez_item_db->op_one_comments = $rez_item_db->op_one_comments . ' ' . '(ESTE SERVICIO ES DE CORTESÍA)';
-                                $rez_item_db->op_two_comments = $rez_item_db->op_two_comments . ' ' . '(ESTE SERVICIO ES DE CORTESÍA)';
-                            }
-                        endif;
-                        
-                        if($rez_item_db->save()):
-                            // APLICA SOLO SI ES COTIZACION
-                            if($is_quotation):
-                                $newDate = $this->getNewDate(date('Y-m-d H:m:s'), $service_token['data']['request']['start']['pickup']);
-                                if( $newDate != null ){
-                                    $booking = Reservations::find($rez_db->id);
-                                    $booking->expires_at = $newDate;
-                                    $booking->save();
-                                }
-                            endif;
-                            
-                            $data_rez['code'] = $rez_item_db->code;
-                            $data_rez['email'] = $rez_db->client_email;
-                            $data_rez['language'] = $service_token['data']['request']['language'];
-                            $data_rez['type'] = 'new';
-                            $data_rez['provider'] = '1';
-                        endif;
+                        $rez_item_db->op_one_comments = $comment;
+                        $rez_item_db->op_two_comments = $comment;
+                    endif;
+                    
+                    $rez_item_db->save();
 
-                        $counter++;
-                    }
-
-                    $label = $service_token['data']['item']['name'].' | '.(($service_token['data']['request']['type'] == "one-way")?'One Way':'Round Trip');
-                    if($service_token['data']['request']['language'] == "en"):
-                        $label = $service_token['data']['item']['name'].' | '.(($service_token['data']['request']['type'] == "one-way")?'Viaje Sencillo':'Viaje Redondo');
+                    if($first_item_code === null):
+                        $first_item_code = $rez_item_db->code;
                     endif;
 
-                    $total = $service_token['data']['item']['price'];
-                    if( isset( $this->request['data']['callcenter']['total'] ) ):
-                        $total = $this->request['data']['callcenter']['total'];
+                    $counter++;
+                }
+
+                // APLICA SOLO SI ES COTIZACION
+                if($is_quotation):
+                    $newDate = $this->getNewDate(date('Y-m-d H:i:s'), $service_token['data']['request']['start']['pickup']);
+                    if( $newDate != null ):
+                        $rez_db->expires_at = $newDate;
+                        $rez_db->save();
                     endif;
+                endif;
 
-                    if($payment['status'] == true):
-                        $exchange = $this->getExchange("MXN", $service_token['data']['request']['currency']);
+                $label = $service_token['data']['item']['name'].' | '.(($service_token['data']['request']['type'] == "one-way")?'One Way':'Round Trip');
+                if($service_token['data']['request']['language'] == "es"):
+                    $label = $service_token['data']['item']['name'].' | '.(($service_token['data']['request']['type'] == "one-way")?'Viaje Sencillo':'Viaje Redondo');
+                endif;
 
-                        $payment_db = new Payments;
-                        if($payment['data']['brand'] == "STRIPE"):
-                            $payment_db->description = "Stripe";
-                        else:
-                            $payment_db->description = "PayPal";
-                        endif;                        
-                        $payment_db->total = $payment['data']['amount'];
-                        $payment_db->exchange_rate = $exchange->exchange_rate;
-                        $payment_db->operation = $exchange->operation;
-                        $payment_db->payment_method = $payment['data']['brand'];
-                        $payment_db->currency = strtoupper($payment['data']['currency']);
-                        $payment_db->reservation_id = $rez_db->id;
-                        $payment_db->reference = $payment['data']['id'];
-                        $payment_db->save();
-                    endif;
+                if($payment['status'] == true):
+                    $exchange = $this->getExchange("MXN", $service_token['data']['request']['currency']);
 
+                    $payment_db = new Payments;
+                    if($payment['data']['brand'] == "STRIPE"):
+                        $payment_db->description = "Stripe";
+                    else:
+                        $payment_db->description = "PayPal";
+                    endif;                        
+                    $payment_db->total = $payment['data']['amount'];
+                    $payment_db->exchange_rate = $exchange->exchange_rate;
+                    $payment_db->operation = $exchange->operation;
+                    $payment_db->payment_method = $payment['data']['brand'];
+                    $payment_db->currency = strtoupper($payment['data']['currency']);
+                    $payment_db->reservation_id = $rez_db->id;
+                    $payment_db->reference = $payment['data']['id'];
+                    $payment_db->save();
+                endif;
+
+                $sales_db = new Sales;
+                $sales_db->description = $label;
+                $sales_db->quantity = 1;
+                $sales_db->total = $total;
+                $sales_db->call_center_agent_id = ((isset($this->request['call_center_agent']))? $this->request['call_center_agent'] : 0);
+                $sales_db->sale_type_id = 1;
+                $sales_db->reservation_id = $rez_db->id;
+                $sales_db->save();
+
+                if( $rez_db->pay_at_arrival && $site[0]->is_taxes == 1 ):
                     $sales_db = new Sales;
-                    $sales_db->description = $label;
+                    $sales_db->description = (( $service_token['data']['request']['language'] == "en" ) ? 'Tax service':'Tarifa de servicio');
                     $sales_db->quantity = 1;
-                    $sales_db->total = $total;
-                    $sales_db->call_center_agent_id = ((isset($this->request['call_center_agent']))? $this->request['call_center_agent'] : 0);
-                    $sales_db->sale_type_id = 1;
+                    $sales_db->total = $cash_fee;
+                    $sales_db->call_center_agent_id = 0;
+                    $sales_db->sale_type_id = 3;
                     $sales_db->reservation_id = $rez_db->id;
                     $sales_db->save();
-
-                    if( $rez_db->pay_at_arrival && $site[0]->is_taxes == 1 ):
-                        $sales_db = new Sales;
-                        $sales_db->description = (( $service_token['data']['request']['language'] == "en" ) ? 'Tax service':'Tarifa de servicio');
-                        $sales_db->quantity = 1;
-                        $sales_db->total = $cash_fee;
-                        $sales_db->call_center_agent_id = 0;
-                        $sales_db->sale_type_id = 3;
-                        $sales_db->reservation_id = $rez_db->id;
-                        $sales_db->save();
-                    endif;
-                    
-
-                    if(isset( $this->request['special_request'] )):
-                        $follow_up_db = new ReservationsFollowUp;
-                        $follow_up_db->name = 'Cliente';
-                        $follow_up_db->text = $this->request['special_request'];
-                        $follow_up_db->type = 'CLIENT';
-                        $follow_up_db->reservation_id = $rez_db->id;
-                        $follow_up_db->save();
-                    endif;
-
                 endif;
                 
+
+                if(isset( $this->request['special_request'] )):
+                    $follow_up_db = new ReservationsFollowUp;
+                    $follow_up_db->name = 'Cliente';
+                    $follow_up_db->text = $this->request['special_request'];
+                    $follow_up_db->type = 'CLIENT';
+                    $follow_up_db->reservation_id = $rez_db->id;
+                    $follow_up_db->save();
+                endif;
+
+                $data_rez['code'] = $first_item_code;
+                $data_rez['email'] = $rez_db->client_email;
+                $data_rez['language'] = $service_token['data']['request']['language'];
+                $data_rez['type'] = 'new';
+                $data_rez['provider'] = '1';
+
                 DB::commit();
-                
-                //Enviar correo de reservación
-                $this->sendEmail(config('app.url')."/api/v1/reservation/send", $data_rez);        
 
-                $data['status'] = true;
-                $data['data'] = $data_rez;
+            } catch (\Exception $e) {
+                DB::rollback();
+                throw $e;
+            }
 
-                return $data;
+            //Enviar correo de reservación
+            // Temporalmente puedes comentar esta línea para validar si el freeze venía del envío
+            try {
+                $this->sendEmail(config('app.url')."/api/v1/reservation/send", $data_rez);
+            } catch (\Exception $mailException) {
+                $airbrake = app(AirbrakeService::class);
+                $airbrake->report($mailException);
+            }
+
+            $data['status'] = true;
+            $data['data'] = $data_rez;
+
+            return $data;
 
         } catch (\Exception $e) {
             DB::rollback();
