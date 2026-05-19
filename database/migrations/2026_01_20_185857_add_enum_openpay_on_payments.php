@@ -12,7 +12,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement("ALTER TABLE payments MODIFY COLUMN payment_method ENUM('CASH','PAYPAL','CARD','TRANSFER','MIFEL','SANTANDER','STRIPE','CREDIT','OPENPAY') NOT NULL");
+        if (config('database.default') !== 'sqlite') {
+            DB::statement("ALTER TABLE payments MODIFY COLUMN payment_method ENUM('CASH','PAYPAL','CARD','TRANSFER','MIFEL','SANTANDER','STRIPE','CREDIT','OPENPAY') NOT NULL");
+        }
     }
 
     /**
@@ -20,6 +22,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        DB::statement("ALTER TABLE payments MODIFY COLUMN payment_method ENUM('CASH','PAYPAL','CARD','TRANSFER','MIFEL','SANTANDER','STRIPE','CREDIT') NOT NULL");
+        if (config('database.default') !== 'sqlite') {
+            DB::statement("ALTER TABLE payments MODIFY COLUMN payment_method ENUM('CASH','PAYPAL','CARD','TRANSFER','MIFEL','SANTANDER','STRIPE','CREDIT') NOT NULL");
+        }
     }
 };
